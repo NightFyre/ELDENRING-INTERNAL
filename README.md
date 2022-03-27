@@ -14,7 +14,5 @@ After hearing the beep you may press [INSERT] to show/hide the menu
 
 https://user-images.githubusercontent.com/80198020/158001798-58b3a5d3-889b-45f2-a926-877e82881f62.mp4
 
-![image](https://user-images.githubusercontent.com/80198020/158002510-b04ceec9-7f97-4bff-8d1c-a2dc34fa41ba.png)
-
 CREDIT: NBOTT & koalabear
 ![image](https://user-images.githubusercontent.com/80198020/160305780-8cf8e33d-a2a7-4d72-93e5-48f58d65a0b0.png)
