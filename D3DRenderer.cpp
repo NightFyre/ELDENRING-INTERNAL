@@ -125,7 +125,9 @@ namespace ER
 			DeleteWindow();
 			return false;
 		}
-
+		Sleep(1000);
+		Beep(300, 300);
+							
 		MethodsTable = (uint64_t*)::calloc(150, sizeof(uint64_t));
 		memcpy(MethodsTable, *(uint64_t**)Device, 44 * sizeof(uint64_t));
 		memcpy(MethodsTable + 44, *(uint64_t**)CommandQueue, 19 * sizeof(uint64_t));

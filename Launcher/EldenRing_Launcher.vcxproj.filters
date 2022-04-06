@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="injector.cpp">
+      <Filter>INJECT</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="helper.h" />
+    <ClInclude Include="injector.h">
+      <Filter>INJECT</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>RESOURCES</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="INJECT">
+      <UniqueIdentifier>{7ff50b0d-24ad-44dd-b271-a786196c2c2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RESOURCES">
+      <UniqueIdentifier>{7294f686-bc8a-4b54-9af8-091ef268720c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\..\.BACKUPS\.(november 2021)\Downloads2\EasyAntiCheatBypass.ico">
+      <Filter>RESOURCES</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="EldenRing_Launcher.rc">
+      <Filter>RESOURCES</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
