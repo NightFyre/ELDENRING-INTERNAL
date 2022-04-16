@@ -165,6 +165,7 @@
     <ClInclude Include="ChrIns.hpp" />
     <ClInclude Include="ChrModules.hpp" />
     <ClInclude Include="Common.hpp" />
+    <ClInclude Include="Console.hpp" />
     <ClInclude Include="D3DRenderer.hpp" />
     <ClInclude Include="Game.hpp" />
     <ClInclude Include="GameDataMan.hpp" />
@@ -192,11 +193,13 @@
     <ClInclude Include="Minhook\src\HDE\table64.h" />
     <ClInclude Include="Minhook\src\trampoline.h" />
     <ClInclude Include="Vector.hpp" />
+    <ClInclude Include="WorldCharMan.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChrIns.cpp" />
     <ClCompile Include="ChrModules.cpp" />
     <ClCompile Include="Common.cpp" />
+    <ClCompile Include="Console.cpp" />
     <ClCompile Include="D3DRenderer.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -218,6 +221,7 @@
     <ClCompile Include="Minhook\src\HDE\hde64.c" />
     <ClCompile Include="Minhook\src\hook.c" />
     <ClCompile Include="Minhook\src\trampoline.c" />
+    <ClCompile Include="WorldCharMan.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Minhook\src\.gitkeep" />

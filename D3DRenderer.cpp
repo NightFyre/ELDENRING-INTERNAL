@@ -125,15 +125,17 @@ namespace ER
 			DeleteWindow();
 			return false;
 		}
-		Sleep(1000);
-		Beep(300, 300);
-							
+
 		MethodsTable = (uint64_t*)::calloc(150, sizeof(uint64_t));
 		memcpy(MethodsTable, *(uint64_t**)Device, 44 * sizeof(uint64_t));
 		memcpy(MethodsTable + 44, *(uint64_t**)CommandQueue, 19 * sizeof(uint64_t));
 		memcpy(MethodsTable + 44 + 19, *(uint64_t**)CommandAllocator, 9 * sizeof(uint64_t));
 		memcpy(MethodsTable + 44 + 19 + 9, *(uint64_t**)CommandList, 60 * sizeof(uint64_t));
 		memcpy(MethodsTable + 44 + 19 + 9 + 60, *(uint64_t**)SwapChain, 18 * sizeof(uint64_t));
+		Sleep(1000);
+		
+		//	INIT NOTICE
+		Beep(300, 300);
 
 		MH_Initialize();
 		Device->Release();
