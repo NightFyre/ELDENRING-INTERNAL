@@ -2,8 +2,6 @@
 Base Template for Launching Elden Ring w/ a variety of Launch Options  
 
 USAGE:
-- Build the Launcher Proect (icon is pointed to some folder , be sure to comment out the reference in the resource file or supply new path) 
-- Build the Menu Project
 - Place the Launcher inside of your games directory (SteamLibrary\steamapps\common\ELDEN RING\Game)  
 - Create the folder "CUSTOM" in your Elden Ring install path (SteamLibrary\steamapps\common\ELDEN RING\Game\CUSTOM\)
 - Place the created dll "ER Overlay.dll" in the newly created "CUSTOM" folder  
@@ -12,7 +10,14 @@ USAGE:
 - Press [INSERT] to initiate the menu  
 After hearing the beep you may press [INSERT] to show/hide the menu 
 
-https://user-images.githubusercontent.com/80198020/158001798-58b3a5d3-889b-45f2-a926-877e82881f62.mp4
 
-CREDIT: NBOTT & koalabear
-![image](https://user-images.githubusercontent.com/80198020/160305780-8cf8e33d-a2a7-4d72-93e5-48f58d65a0b0.png)
+## LAUNCHER
+<p align="center">
+<img src="https://user-images.githubusercontent.com/80198020/163708401-2b216abb-a09c-4b7c-bb4e-53a9aa110dec.png">
+</p>  
+
+## CHARACTER OPTIONS
+![image](https://user-images.githubusercontent.com/80198020/163708416-0fb9fd8e-95cf-48f8-ad4d-04a6a30968fd.png)
+![image](https://user-images.githubusercontent.com/80198020/163708465-b826a88a-3072-495d-8c66-86ec10ea2800.png)
+
+ADDITIONAL CREDITS: NBOTT & koalabear
