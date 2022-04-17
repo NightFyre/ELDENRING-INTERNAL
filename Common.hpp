@@ -56,6 +56,7 @@
 #include "Vector.hpp"
 #include <MinHook.h>
 
+
 namespace ER {
 
 	using namespace std::chrono_literals;
@@ -93,7 +94,6 @@ namespace ER {
 	}
 
 	static uint64_t dwGameBase = (uint64_t)GetModuleHandle(NULL);
-
 }
 
 #include "Game.hpp"
