@@ -58,6 +58,8 @@ namespace ER
 
 		static LRESULT WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
+		bool WorldToScreen(Vector3 pos, Vector2& screen, float matrix[16], int windowWidth, int windowHeight);
+
 		uint64_t m_OldWndProc{};
 
 	private:

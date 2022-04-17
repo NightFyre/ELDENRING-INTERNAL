@@ -39,6 +39,11 @@ namespace ER
 		GameFunctions(GameFunctions&&) = delete;
 		GameFunctions& operator=(GameFunctions const&) = delete;
 		GameFunctions& operator=(GameFunctions&&) = delete;
+
+		uintptr_t p2addy(uintptr_t PTR, std::vector<unsigned int> OFFSETS);
+		float GetDistanceToObject(Vector3 POS, Vector3 POS2);
+		void FPS();
+		bool Replace(uintptr_t address, std::vector<uint16_t> originalBytes, std::vector<uint8_t> newBytes);
 	};
 
 	inline std::unique_ptr<GameVariables> g_GameVariables;

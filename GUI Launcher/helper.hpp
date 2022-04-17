@@ -10,10 +10,10 @@
 #pragma comment(lib,"d3d11.lib")
 
 //	ImGui
-#include "ImGui\imgui.h"
-#include "ImGui\imgui_internal.h"
-#include "ImGui\imgui_impl_win32.h"
-#include "ImGui\imgui_impl_dx11.h"
+#include "..\ImGui\DOCKING\imgui.h"
+#include "..\ImGui\DOCKING\imgui_internal.h"
+#include "..\ImGui\DOCKING\imgui_impl_win32.h"
+#include "..\ImGui\DOCKING\imgui_impl_dx11.h"
 
 //	OTHER
 #include <tchar.h>

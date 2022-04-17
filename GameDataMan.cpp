@@ -9,7 +9,7 @@ namespace ER {
 
 	void GameDataMan::Init()
 	{
-		g_Console->printdbg("[+] INITIALIZING WorldCharMan\n", TRUE, g_Console->color.yellow);
+		g_Console->printdbg("[+] GameDataMan::Init STARTED\n", TRUE, g_Console->color.yellow);
 		if (!Base) // Base should never change.
 		{
 			auto Sig = Signature("48 8B 05 ? ? ? ? 48 85 C0 74 05 48 8B 40 58 C3 C3").Scan().Add(3).Rip().As<uint64_t>();

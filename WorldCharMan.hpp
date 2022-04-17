@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.hpp"
 #include "Memory.hpp"
-
+#include "GameDataMan.hpp"
 namespace ER {
 
 	//	PLAYER
@@ -121,6 +121,13 @@ namespace ER {
 		void Init();
 		void Update();
 		bool Valid();
+
+		//	CUSTOM FUNCTIONS
+		void ESP_SKELETON(float distance);
+		void dbg_SKELETON(bool ENABLED);
+		void stallENTS();
+		void d_StallEnts(float DISTANCE);
+		void killENTS();
 	};
 	inline std::unique_ptr<WorldCharMan> g_WorldCharMan;
 }
