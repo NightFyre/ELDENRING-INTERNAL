@@ -1,6 +1,4 @@
-# ELDEN RING Offline Bypass Launcher
-Base Template for Launching Elden Ring w/ a variety of Launch Options  
-
+# ELDEN RING Internal Menu
 USAGE:
 - Place the Launcher inside of your games directory (SteamLibrary\steamapps\common\ELDEN RING\Game)  
 - Create the folder "CUSTOM" in your Elden Ring install path (SteamLibrary\steamapps\common\ELDEN RING\Game\CUSTOM\)
