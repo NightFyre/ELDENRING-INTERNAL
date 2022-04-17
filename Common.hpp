@@ -56,6 +56,8 @@
 #include "Vector.hpp"
 #include <MinHook.h>
 
+extern void Nop(BYTE* dst, unsigned int size);
+extern void Patch(BYTE* dst, BYTE* src, unsigned int size);
 
 namespace ER {
 
