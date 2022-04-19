@@ -89,6 +89,7 @@ namespace ER {
 	public:
 		int count = 0;
 		int arraySIZE = 0;
+		bool m_isValid{}; 
 
 		uintptr_t Base{};
 		uintptr_t Ptr{};
@@ -119,7 +120,7 @@ namespace ER {
 		WorldCharMan& operator=(WorldCharMan&&) = delete;
 		
 		void Init();
-		void Update();
+		bool Update();
 		bool Valid();
 
 		//	CUSTOM FUNCTIONS

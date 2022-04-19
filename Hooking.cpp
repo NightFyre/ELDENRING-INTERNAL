@@ -43,7 +43,7 @@ namespace ER {
 	void Hooking::FindHooks()
 	{
 		m_InputHandler = Signature("48 8B C4 41 56 48 81 EC ? ? ? ? 48 C7 40 ? ? ? ? ? 48 89 58 08 48 89 68 10 48 89 70 18 48 89 78 20 0F 29 70 E8 0F 29 78 D8 44 0F 29 40 ? 44 0F 29 48 ? 44 0F 29 50 ?").Scan().As<uint64_t>();
-		m_W2SHandler = GetAddr(0x074E6A0);
+		m_W2SHandler = GetAddr(g_Menu->ptr_W2S_FUNCTION);
 	}
 
 	Hooking::Hooking()

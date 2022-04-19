@@ -345,6 +345,8 @@ namespace ER
 			ImGuiIO& io = ImGui::GetIO(); (void)io;
 			ImGui::GetIO().WantCaptureMouse || ImGui::GetIO().WantTextInput || ImGui::GetIO().WantCaptureKeyboard;
 			io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+			io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+			io.IniFilename = NULL;
 
 			DXGI_SWAP_CHAIN_DESC Desc;
 			m_Swapchain->GetDesc(&Desc);
@@ -488,6 +490,8 @@ namespace ER
 		Unhook();
 	}
 
+
+	//	GUIDED HACKING TEMPLATE
 	bool D3DRenderer::WorldToScreen(Vector3 pos, Vector2& screen, float matrix[16], int windowWidth, int windowHeight)
 	{
 		//Matrix-vector Product, multiplying world(eye) coordinates by projection matrix = clipCoords
