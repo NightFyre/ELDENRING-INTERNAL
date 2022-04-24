@@ -28,6 +28,7 @@ namespace ER
 		//	MENU RELATED
 		bool m_ShowMenu{};
 		bool m_ShowConsole{};
+		bool m_ShowDemo{};
 	};
 
 	class GameFunctions

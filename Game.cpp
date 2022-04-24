@@ -1,5 +1,6 @@
 #include "Game.hpp"
 #include "ImGui/imgui.h"
+#include "Menu.hpp"
 
 namespace ER {
 
@@ -35,6 +36,7 @@ namespace ER {
 		return;
 	}
 
+	//	Gets PTR address by resolving a pointer chain
 	uintptr_t GameFunctions::p2addy(uintptr_t PTR, std::vector<unsigned int> OFFSETS)
 	{
 		uintptr_t addr = PTR;
@@ -45,12 +47,14 @@ namespace ER {
 		return addr;
 	}
 
+	//	Gets distance from Position A to Position B
 	float GameFunctions::GetDistanceToObject(Vector3 POS, Vector3 POS2)
 	{
 		float distance = (POS.x - POS2.x) + (POS.y - POS2.y) + (POS.z - POS2.z);
 		return (distance);
 	}
 
+	//	Gets current game FPS
 	void GameFunctions::FPS()
 	{
 		//  CREDIT: XBOX360LSBEST
@@ -68,15 +72,19 @@ namespace ER {
 			init = true;
 		}
 
-		if (init && text[0])
-			ImGui::GetBackgroundDrawList()->AddText(ImVec2(20, 5), ImColor(255, 255, 255, 255), text);
+		if (init && text[0])	//	CASE SWITCH FOR 3rd BOOLEAN
+			if (g_Menu->dbg_RAINBOW_THEME)
+				ImGui::GetBackgroundDrawList()->AddText(ImVec2(20, 5), ImColor(g_Menu->dbg_RAINBOW), text);
+			else if (!g_Menu->dbg_RAINBOW_THEME)
+				ImGui::GetBackgroundDrawList()->AddText(ImVec2(20, 5), ImColor(255, 255, 255, 255), text);
 	}
 
-	//  CREDIT: techiew
-	// Replaces the memory at a given address with newBytes. Performs memory comparison with originalBytes to stop unintended memory modification.
 	static constexpr int MASKED = 0xffff;
+	// TEMP
+	// Replaces the memory at a given address with newBytes. Performs memory comparison with originalBytes to stop unintended memory modification.
 	bool GameFunctions::Replace(uintptr_t address, std::vector<uint16_t> originalBytes, std::vector<uint8_t> newBytes)
 	{
+		//  CREDIT: techiew
 		std::vector<uint8_t> truncatedOriginalBytes;
 		for (auto byte : originalBytes)
 		{
@@ -99,7 +107,6 @@ namespace ER {
 			}
 			bufferString.append(" ");
 		}
-		//Log("Bytes at address: %s", bufferString.c_str());
 
 		std::string newBytesString = "";
 		for (size_t i = 0; i < newBytes.size(); i++)
@@ -109,18 +116,11 @@ namespace ER {
 			std::string byte = stream.str();
 			newBytesString.append(byte + " ");
 		}
-		//Log("New bytes: %s", newBytesString.c_str());
 
 		if (memcmp(&buffer[0], &truncatedOriginalBytes[0], buffer.size()) == 0)
 		{
-			//Log("Bytes match");
 			memcpy((void*)address, &newBytes[0], newBytes.size());
-			//Log("Patch applied");
 			return true;
-		}
-		else
-		{
-			//RaiseError("Bytes do not match!");
 		}
 		return false;
 	}

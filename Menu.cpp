@@ -6,18 +6,55 @@
 #include "Hooking.hpp"
 #include "D3DRenderer.hpp"
 
+//  BUG : GAME CRASHES DURING WorldCharan::Update() loop
+
 namespace ER {
+
+    //  LOG EVENT FUNCTION
+    //  ONLY USE FOR ON|OFF DEBUG PRINTS
+    //<EXAMPLE>
+    //  TEXT: "[+] MENU:: ESP ; "
+    //  FLAG: bESP
+    //</EXAMPLE>
+    //  OUTPUT: [+] MENU:: ESP ; [<FLAG RESULT>]
+    void LogEvent(std::string TEXT, bool FLAG)
+    {
+        std::string output;
+        int color;
+        if (FLAG) {
+            output = " [ON]\n";
+            color = g_Console->color.green;
+        }
+        else if (!FLAG) {
+            output = " [OFF]\n";
+            color = g_Console->color.red;
+        }
+        std::string append = TEXT + output;
+        g_Console->printdbg(append.c_str(), TRUE, color);
+
+    }
 
     //  LINE + NAME ESP
     void ESP(float distance)
     {
         //  Update Entity Info
-        g_WorldCharMan->Update();
+        if (!g_WorldCharMan->m_isValid) {
+            g_Menu->bESP = FALSE;
+            g_Console->printdbg("[+] MENU:: ESP; OFF {WorldCharMan::Update ; FAILED}\n", TRUE, g_Console->color.red);
+            return;
+        }
+
+        if (g_WorldCharMan->pCharData->Health == NULL) {
+            g_Menu->bESP = FALSE;
+            g_Console->printdbg("[+] MENU:: ESP; OFF {Health is NULL}\n", TRUE, g_Console->color.red);
+            return;
+        }
 
         ///  Filter Entity Results
         int count = 0;
         Vector2 vecScreen;
-        uintptr_t ViewMatrix = g_GameFunctions->p2addy(g_GameVariables->m_ModuleBase + 0x03C61588, { 0x60, 0x60, 0x420 });   //g_Hooking->TRUE_W2S;
+        uintptr_t ViewMatrix = g_GameFunctions->p2addy(g_GameVariables->m_ModuleBase + g_Menu->ptr_NBOTT_W2S, { 0x60, 0x60, 0x420 });
+        //uintptr_t ViewMatrix = g_Hooking->TRUE_W2S;     //CRASH AT MAIN MENU
         Vector2 pos = { ImGui::GetMainViewport()->GetCenter().x, ImGui::GetMainViewport()->GetCenter().y };
         memcpy(&g_Menu->Matrix, (BYTE*)ViewMatrix, sizeof(g_Menu->Matrix));
         for (int i = 0; i <= g_WorldCharMan->arraySIZE - 1; i = i + 1) {
@@ -52,8 +89,7 @@ namespace ER {
             //    else if (g_WorldCharMan->CharFall[i]->DrawSkeleton == 1)
             //        g_WorldCharMan->CharFall[i]->DrawSkeleton = NULL;
             //}
-
-            //  
+              
             if (g_D3DRenderer->WorldToScreen(g_WorldCharMan->CharPhysics[i]->Position, vecScreen, g_Menu->Matrix, ImGui::GetWindowWidth(), ImGui::GetWindowHeight())) {
                 ImGui::GetBackgroundDrawList()->AddText(ImVec2(vecScreen.x, vecScreen.y), ImColor(255, 0, 0, 255), std::to_string(count).c_str());
                 ImGui::GetBackgroundDrawList()->AddLine(ImVec2(pos.x, pos.y + 960), ImVec2(vecScreen.x, vecScreen.y), ImColor(255, 255, 255), 0.3f);
@@ -67,11 +103,22 @@ namespace ER {
     //  DEBUG ESP WINDOW
     void dbg_ESP()
     {
-        g_WorldCharMan->Update();
+        if (!g_WorldCharMan->m_isValid) {
+            g_Menu->m_dbgMatrixWnd = FALSE;
+            g_Console->printdbg("[+] MENU:: ENT WINDOW; OFF {WorldCharMan::Update ; FAILED}\n", TRUE, g_Console->color.red);
+            return;
+        }
+
+        if (g_WorldCharMan->pCharData->Health == NULL) {
+            g_Menu->m_dbgMatrixWnd = FALSE;
+            g_Console->printdbg("[+] MENU:: ENT WINDOW; OFF {Health is NULL}\n", TRUE, g_Console->color.red);
+            return;
+        }
 
         ///  Filter Entity Results
         int count = 0;
         Vector2 vecScreen;
+        Vector2 pos = { ImGui::GetMainViewport()->GetCenter().x, ImGui::GetMainViewport()->GetCenter().y };
         for (int i = 0; i <= g_WorldCharMan->arraySIZE - 1; i = i + 1) {
 
             //  COMPARE WITH PLAYER
@@ -88,7 +135,14 @@ namespace ER {
 
             ///  DRAW
             if (g_D3DRenderer->WorldToScreen(g_WorldCharMan->CharPhysics[i]->Position, vecScreen, g_Menu->ViewMatrix, ImGui::GetWindowWidth(), ImGui::GetWindowHeight())) {
-                ImGui::GetBackgroundDrawList()->AddText(ImVec2(vecScreen.x, vecScreen.y), ImColor(0, 0, 255, 255), std::to_string(count).c_str());
+                if (g_Menu->dbg_ENT_RGB) {
+                    ImGui::GetBackgroundDrawList()->AddText(ImVec2(vecScreen.x, vecScreen.y), ImColor(g_Menu->dbg_RAINBOW), std::to_string(count).c_str());
+                    ImGui::GetBackgroundDrawList()->AddLine(ImVec2(pos.x, pos.y + 960), ImVec2(vecScreen.x, vecScreen.y), ImColor(g_Menu->dbg_RAINBOW), 0.3f);
+                }
+                else {
+                    ImGui::GetBackgroundDrawList()->AddText(ImVec2(vecScreen.x, vecScreen.y), ImColor(0, 0, 255, 255), std::to_string(count).c_str());
+                    ImGui::GetBackgroundDrawList()->AddLine(ImVec2(pos.x, pos.y + 960), ImVec2(vecScreen.x, vecScreen.y), ImColor(255, 255, 255), 0.3f);
+                }
                 count++;
             }
         }
@@ -100,17 +154,28 @@ namespace ER {
     void Menu::AboutTab()
     {
         ImGui::Text("ELDEN RING INTERNAL (PREVIEW)");
-        ImGui::Text("BUILD VERSION: alpha-0.0.3");
-        ImGui::Text("BUILD DATE: 4/15/2022");
+        ImGui::Text("BUILD VERSION: alpha-0.0.4");
+        ImGui::Text("BUILD DATE: 4/18/2022");
+        ImGui::Text("GAME VERSION: 1.04");
     }
 
     //  CHAR STATS
     void Menu::CharacterStats()
     {
-        if (!g_GameDataMan->Valid())
+        if (!g_GameDataMan->Valid()) {
+            ImGui::TextColored(ImColor(255, 96, 96, 255), "[+] GData::ENTITY ARRAY UPDATE ERROR");
             return;
-        if (!g_WorldCharMan->Valid())
+        }
+
+        if (!g_WorldCharMan->Valid()) {
+            ImGui::TextColored(ImColor(255, 96, 96, 255), "[+] CHARACTER UPDATE ERROR");
             return;
+        }
+
+        if (!g_WorldCharMan->m_isValid) {
+            ImGui::TextColored(ImColor(255, 96, 96, 255), "[+] g_WorldCharMan->m_isValid = FALSE");
+            return;
+        }
 
         ImGui::Text("CHARATER ATTRIBUTES");
         ImGui::Spacing();
@@ -193,11 +258,15 @@ namespace ER {
     //  ENTITY TAB
     void Menu::EntityStats()
     {
-        if (!g_GameDataMan->Valid())
+        if (!g_GameDataMan->Valid()) {
+            ImGui::TextColored(ImColor(255, 96, 96, 255), "[+] GAME DATA UPDATE ERROR");
             return;
+        }
 
-        if (!g_WorldCharMan->Valid())
+        if (!g_WorldCharMan->Valid()) {
+            ImGui::TextColored(ImColor(255, 96, 96, 255), "[+] ENTITY UPDATE ERROR");
             return;
+        }
 
         if (ImGui::Button("KILL ALL ENTITIES", ImVec2(ImGui::GetWindowContentRegionWidth() - 3, 20))) {
             g_Console->printdbg("[+] MENU:: KILL ALL ENTITIES\n", TRUE, g_Console->color.green);
@@ -208,7 +277,7 @@ namespace ER {
         //  Store all entity coords in an array of Vector3 Floats
         //  Flush data when boolean is false
         if (ImGui::Button("FREEZE ALL ENTITIES", ImVec2(ImGui::GetWindowContentRegionWidth() - 3, 20))) {
-            g_Console->printdbg("[!] MENU:: FREEZE ALL ENTITIES [NOT-IMPLEMENTED]\n", TRUE, g_Console->color.red);
+            g_Console->printdbg("[!] MENU:: FREEZE ALL ENTITIES [BUGGED]\n", TRUE, g_Console->color.dark_yellow);
             if (!f_TOGGLE)
                 g_WorldCharMan->stallENTS();
             else {
@@ -226,12 +295,13 @@ namespace ER {
 
         if (ImGui::Button("TELEPORT ALL TO CROSSHAIR", ImVec2(ImGui::GetWindowContentRegionWidth() - 3, 20))) {
             g_Console->printdbg("[!] MENU:: TELEPORT ALL TO CROSSHAIR\n", TRUE, g_Console->color.red);
-            g_WorldCharMan->Update();
-
-            for (int i = 0; i < g_WorldCharMan->arraySIZE - 1; i++) {
-                g_WorldCharMan->CharPhysics[i]->Position = g_WorldCharMan->pCharPhysics->Position;
+            if (g_WorldCharMan->m_isValid)
+            {
+                for (int i = 0; i < g_WorldCharMan->arraySIZE - 1; i++) {
+                    g_WorldCharMan->CharPhysics[i]->Position = g_WorldCharMan->pCharPhysics->Position;
+                }
+                printf("TELEPORTED: %d ENTITIES\n\n", g_WorldCharMan->arraySIZE);
             }
-            printf("TELEPORTED: %d ENTITIES\n", g_WorldCharMan->arraySIZE);
         }
         
         ImGui::Spacing();
@@ -243,14 +313,9 @@ namespace ER {
         ImGui::Separator();
 
         if (ImGui::Toggle("DISPLAY ENTITY ARRAY", &m_dbgEntityWnd)) {
-            if (m_dbgEntityWnd) {
-                g_Console->printdbg("[+] MENU::EntityArray; OPEN\n", TRUE, g_Console->color.green);
-                g_WorldCharMan->Update();
-            }
-            else {
-                g_Console->printdbg("[+] MENU::EntityArray; CLOSED\n", TRUE, g_Console->color.red);
+            LogEvent("[+] MENU:: ENTITY ARRAY ; ", m_dbgEntityWnd);
+            if (!m_dbgEntityWnd)
                 g_WorldCharMan->count = NULL;
-            }
         }
     }
 
@@ -275,24 +340,20 @@ namespace ER {
                 f_FPS = 60;
         }
 
-        ImGui::Toggle("DRAW CROSSHAIR", &m_dbgCrosshair);
+        if (ImGui::Toggle("DRAW CROSSHAIR", &m_dbgCrosshair)) 
+            LogEvent("[+] MENU:: CROSSHAIR ;", m_dbgCrosshair);
+
         if (m_dbgCrosshair)
         {
+            ImGui::Toggle("RGB Crosshair", &m_RGB_CROSSHAIR);
+
             //  CROSSHAIR COLOR
             ImGui::Text("CROSSHAIR COLOR");
             ImGui::SameLine();
             ImGui::ColorEdit4("CUSTOM##3", (float*)&color, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | misc_flags);
-            float a = (float)(color.x);
-            float b = (float)(color.y);
-            float c = (float)(color.z);
-            if (g_Menu->dbg_crosshair_r != color.x
-                || g_Menu->dbg_crosshair_g != color.y
-                || g_Menu->dbg_crosshair_b != color.z)
-            {
-                g_Menu->dbg_crosshair_r = a;
-                g_Menu->dbg_crosshair_g = b;
-                g_Menu->dbg_crosshair_b = c;
-            }
+            ImColor cBuf{ (float)color.x, (float)color.y, (float)color.z };
+            if (ImColor(g_Menu->dbg_crosshair_color) != ImColor(cBuf))
+                g_Menu->dbg_crosshair_color = ImColor(cBuf);
 
             //  SIZE
             ImGui::Text("CROSSHAIR SIZE:      ");
@@ -314,24 +375,23 @@ namespace ER {
             ImGui::Separator();
         }
 
-        if (ImGui::Toggle("ESP", &bESP)) {
-            if (bESP)
-                g_Console->printdbg("[+] MENU:: ESP; ON\n", TRUE, g_Console->color.green);
-            else if (!bESP)
-                g_Console->printdbg("[+] MENU:: ESP; OFF\n", TRUE, g_Console->color.red);
-        }
+        if (ImGui::Toggle("ESP", &bESP))
+            LogEvent("[+] MENU:: ESP ; ", bESP);
 
-        if (ImGui::Toggle("DRAW ESP SKELETON", &s_draw)) 
-        {
+        if (ImGui::Toggle("DRAW ESP SKELETON", &s_draw)) {
             if (!s_draw)
             {
                 s_drawDistance = 0;
-                g_WorldCharMan->Update();
-                for (int i = 0; i < g_WorldCharMan->arraySIZE - 1; i = i + 1)
+                if (g_WorldCharMan->m_isValid)
                 {
-                    if (g_WorldCharMan->CharFall[i]->DrawSkeleton == 1)
-                        g_WorldCharMan->CharFall[i]->DrawSkeleton = 0;
+                    for (int i = 0; i < g_WorldCharMan->arraySIZE - 1; i = i + 1)
+                    {
+                        if (g_WorldCharMan->CharFall[i]->DrawSkeleton == 1)
+                            g_WorldCharMan->CharFall[i]->DrawSkeleton = 0;
+                    }
                 }
+                else
+                    !s_draw;
             }
         }
         if (s_draw)
@@ -344,66 +404,85 @@ namespace ER {
             ImGui::Spacing();
         }
 
-        if (ImGui::Toggle("DRAW ALL HITBOXES", &m_dbgHitBoxes))
-        {
-            if (m_dbgHitBoxes) {
-                *(int8_t*)(g_GameVariables->m_ModuleBase + 0x3C68EF0 + 0xF) = 1;
-                g_Console->printdbg("[+] MENU:: HIT-BOXES; ON\n", TRUE, g_Console->color.green);
-            }
-            else {
-                *(int8_t*)(g_GameVariables->m_ModuleBase + 0x3C68EF0 + 0xF) = 0;
-                g_Console->printdbg("[+] MENU:: HIT-BOXES; OFF\n", TRUE, g_Console->color.red);
-            }
-        }
+        /// DRAW ALL HIT BOXES
+        //if (ImGui::Toggle("DRAW ALL HITBOXES", &m_dbgHitBoxes))
+        //{
+        //    if (m_dbgHitBoxes) {
+        //        *(int8_t*)(g_GameVariables->m_ModuleBase + g_Menu->ptr_DEBUG_FLAGS + 0xF) = 1;
+        //        g_Console->printdbg("[+] MENU:: HIT-BOXES; ON\n", TRUE, g_Console->color.green);
+        //    }
+        //    else {
+        //        *(int8_t*)(g_GameVariables->m_ModuleBase + g_Menu->ptr_DEBUG_FLAGS + 0xF) = 0;
+        //        g_Console->printdbg("[+] MENU:: HIT-BOXES; OFF\n", TRUE, g_Console->color.red);
+        //    }
+        //}
     }
 
     //  DEBUG
     void Menu::DebugOptions()
     {
-        if (!g_GameDataMan->Valid())
+        if (!g_GameDataMan->Valid()) {
+            ImGui::TextColored(ImColor(255, 96, 96, 255), "[+] GData::ENTITY ARRAY UPDATE ERROR");
             return;
-
-        ///  DEBUG POINTER CHAINS
-        ImGui::Text("DEBUG POINTER CHAINS");
-        ImGui::Spacing();
-        ImGui::Text("WorldCharMan Base: %llX", (uintptr_t)g_WorldCharMan->Base);
-        ImGui::Text("ptr: %llX", (uintptr_t)g_WorldCharMan->Ptr);
-        ImGui::Text("begin: %u", g_WorldCharMan->Begin);
-        ImGui::Text("finish: %u", g_WorldCharMan->Finish);
-        ImGui::Text("size: %d", g_WorldCharMan->arraySIZE);
-        ImGui::Text("count: %d", g_WorldCharMan->count);
-        ImGui::Spacing();
-        ImGui::Text("EntityObjectBase: %llX", (uintptr_t)g_WorldCharMan->EntityObjectBase[0]);
-        ImGui::Text("pEntityObject: %llX", (uintptr_t)g_WorldCharMan->EntityObjectBase[0]->EntObjectPTR);
-        ImGui::Text("CharData: %llX", (uintptr_t)g_WorldCharMan->CharData[0]);
-        ImGui::Text("CharFall: %llX", (uintptr_t)g_WorldCharMan->CharFall[0]);
-        ImGui::Text("CharPhysics: %llX", (uintptr_t)g_WorldCharMan->CharPhysics[0]);
-        ImGui::Separator();
-
-        if (ImGui::Toggle("DRAW ALL SKELETONS", &m_dbgSkeleton)) {
-            if (m_dbgSkeleton)
-                g_WorldCharMan->dbg_SKELETON(TRUE);
-            else
-                g_WorldCharMan->dbg_SKELETON(FALSE);
         }
-        if (ImGui::Toggle("DEBUG ESP", &m_dbgMatrixWnd)) {
-            if (m_dbgMatrixWnd) {
-                g_Console->printdbg("[+] MENU:: ESP; ON\n", TRUE, g_Console->color.green);
-                m_BOXES = TRUE;
-            }
-            else if (!m_dbgMatrixWnd) {
-                g_Console->printdbg("[+] MENU:: ESP; OFF\n", TRUE, g_Console->color.red);
-                m_BOXES = FALSE;
-            }
-        }
-        ImGui::Separator();
 
-        ImGui::Toggle("SHOW CONSOLE", &g_GameVariables->m_ShowConsole);
+        //  DEBUG POINTER CHAIN
+        if (!g_WorldCharMan->Valid())
+        {
+            ImGui::Text("DEBUG POINTER CHAINS");
+            ImGui::Spacing();
+            ImGui::TextColored(ImColor(255, 96, 96, 255), "[+] WData::ENTITY ARRAY UPDATE ERROR");
+            ImGui::Text("WorldCharMan Base: %llX", (uintptr_t)g_WorldCharMan->Base);
+            ImGui::Text("EntityObjectBase: %llX", (uintptr_t)g_WorldCharMan->EntityObjectBase[0]);
+            ImGui::Separator();
+        }
+        else
+        {
+            ///  DEBUG POINTER CHAINS
+            ImGui::Text("DEBUG POINTER CHAINS");
+            ImGui::Spacing();
+            ImGui::Text("WorldCharMan Base: %llX", (uintptr_t)g_WorldCharMan->Base);
+            if (g_WorldCharMan->Ptr != NULL) {
+                ImGui::Text("ptr: %llX", (uintptr_t)g_WorldCharMan->Ptr);
+                ImGui::Text("begin: %u", g_WorldCharMan->Begin);
+                ImGui::Text("finish: %u", g_WorldCharMan->Finish);
+                ImGui::Text("size: %d", g_WorldCharMan->arraySIZE);
+                ImGui::Text("count: %d", g_WorldCharMan->count);
+            }
+            ImGui::Spacing();
+
+            ImGui::Text("EntityObjectBase: %llX", (uintptr_t)g_WorldCharMan->EntityObjectBase[0]);
+            if (g_WorldCharMan->EntityObjectBase[0] != NULL) {
+                ImGui::Text("pEntityObject: %llX", (uintptr_t)g_WorldCharMan->EntityObjectBase[0]->EntObjectPTR);
+                ImGui::Text("CharData: %llX", (uintptr_t)g_WorldCharMan->CharData[0]);
+                ImGui::Text("CharFall: %llX", (uintptr_t)g_WorldCharMan->CharFall[0]);
+                ImGui::Text("CharPhysics: %llX", (uintptr_t)g_WorldCharMan->CharPhysics[0]);
+            }
+            ImGui::Separator();
+        }
+
+        if (ImGui::Toggle("DRAW ALL SKELETONS", &m_dbgSkeleton))
+            g_WorldCharMan->dbg_SKELETON(m_dbgSkeleton);
+
+        if (ImGui::Toggle("DEBUG ESP", &m_dbgMatrixWnd))
+            LogEvent("[+] MENU:: DEBUG ESP; ", m_dbgMatrixWnd);
+
+        ImGui::Separator();
+        ImGui::Toggle("RGB THEME", &dbg_RAINBOW_THEME);
+        ImGui::Spacing();
+        ImGui::Toggle("SHOW CONSOLE | ", &g_GameVariables->m_ShowConsole);
+        ImGui::SameLine();
         ImGui::Checkbox("Verbose Logging", &g_Console->verbose);
+        ImGui::Spacing();
+        ImGui::Toggle("SHOW IMGUI::DEMO WINDOW", &g_GameVariables->m_ShowDemo);
         ImGui::Separator();
 
         if (ImGui::Button("CALL W2S FUNCTION", ImVec2(ImGui::GetWindowContentRegionWidth() - 3, 20)))
             g_Menu->dbgPrintW2S = TRUE;
+
+        if (ImGui::Button("CALL WorldCharMan Update", ImVec2(ImGui::GetWindowContentRegionWidth() - 3, 20)))
+            g_WorldCharMan->Update();
+
         if (ImGui::Button("INITIALIZE STYLE", ImVec2(ImGui::GetWindowContentRegionWidth() - 3, 20)))
             g_Menu->InitStyle();
         ImGui::Separator();
@@ -418,13 +497,22 @@ namespace ER {
         // MAIN WINDOW
         if (g_GameVariables->m_ShowMenu) {
             IM_ASSERT(ImGui::GetCurrentContext() != NULL && "Missing dear imgui context. Refer to examples app!");
-            ImGui::SetNextWindowSize(ImVec2(200, 200), ImGuiCond_Once);
+            if (dbg_RAINBOW_THEME) {
+                ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(g_Menu->dbg_RAINBOW));
+                ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(g_Menu->dbg_RAINBOW));
+                ImGui::PushStyleColor(ImGuiCol_BorderShadow, ImVec4(g_Menu->dbg_RAINBOW));
+            }
             if (!ImGui::Begin("ELDEN RING INTERNAL DEBUG", &g_GameVariables->m_ShowMenu, 96))
             {
                 ImGui::End();
                 return;
             }
-
+            if (dbg_RAINBOW_THEME) {
+                ImGui::PopStyleColor();
+                ImGui::PopStyleColor();
+                ImGui::PopStyleColor();
+            }
+            InitStyle();
             if (ImGui::BeginTabBar("##tabs", ImGuiTabBarFlags_None))
             {
                 if (ImGui::BeginTabItem("MAIN"))
@@ -456,6 +544,7 @@ namespace ER {
                     DebugOptions();
                     ImGui::EndTabItem();
                 }
+
                 ImGui::EndTabBar();
             }
             ImGui::End();
@@ -481,6 +570,8 @@ namespace ER {
                 }
             }
 
+            if (g_WorldCharMan->m_isValid) !m_dbgEntityWnd;
+
             for (int i = 0; i <= g_WorldCharMan->arraySIZE - 1; i = i + 1)
             {
                 ImGui::PushID(i);
@@ -498,7 +589,7 @@ namespace ER {
                     if (ImGui::Button("TELEPORT TO TARGET", ImVec2(ImGui::GetWindowContentRegionWidth() - 3, 20))) {
                         g_WorldCharMan->pCharPhysics->Position = g_WorldCharMan->CharPhysics[i]->Position;
                         g_Console->printdbg("[+] MENU::EntityList; TELEPORT TO TARGET\n", TRUE, g_Console->color.green);
-                        printf("COORDINATES:\nPosX: %f\n PosY: %f\n PosZ: %f\n", g_WorldCharMan->CharPhysics[i]->Position.x,
+                        printf("COORDINATES:\nPosX: %f\nPosY: %f\nPosZ: %f\n", g_WorldCharMan->CharPhysics[i]->Position.x,
                             g_WorldCharMan->CharPhysics[i]->Position.y, g_WorldCharMan->CharPhysics[i]->Position.z);
                     }
                     ImGui::Spacing();
@@ -506,7 +597,7 @@ namespace ER {
                     if (ImGui::Button("TELEPORT TO CROSSHAIR", ImVec2(ImGui::GetWindowContentRegionWidth() - 3, 20))) {
                         g_WorldCharMan->CharPhysics[i]->Position = g_WorldCharMan->pCharPhysics->Position;
                         g_Console->printdbg("[+] MENU::EntityList; TELEPORT TO CROSSHAIR\n", TRUE, g_Console->color.green);
-                        printf("COORDINATES:\nPosX: %f\n PosY: %f\n PosZ: %f\n", g_WorldCharMan->CharPhysics[i]->Position.x,
+                        printf("COORDINATES:\nPosX: %f\nPosY: %f\nPosZ: %f\n", g_WorldCharMan->CharPhysics[i]->Position.x,
                             g_WorldCharMan->CharPhysics[i]->Position.y, g_WorldCharMan->CharPhysics[i]->Position.z);
                     }
                     ImGui::Spacing();
@@ -571,9 +662,20 @@ namespace ER {
             for (int i = 0; i <= 15; i = i + 1)
             {
                 ImGui::PushID(i);
-                std::string a = "MATRIX [" + std::to_string(i) + "]: ";
+                if (i <= 9)
+                {   
+                    std::string a = "MATRIX  [" + std::to_string(i) + "]: ";
+                    ImGui::Text(a.c_str());
+                }
+                else if (i > 9)
+                {
+                    std::string a = "MATRIX [" + std::to_string(i) + "]: ";
+                    ImGui::Text(a.c_str());
+                }
                 std::string b = "##MATRIX [" + std::to_string(i) + "]: ";
-                ImGui::Text(a.c_str());
+                
+                
+                //ImGui::Text(a.c_str());
                 ImGui::SameLine();
                 ImGui::SliderFloat(b.c_str(), &ViewMatrix[i], -30.0f, 30.0f, "%.2f");
                 ImGui::SameLine();
@@ -594,11 +696,18 @@ namespace ER {
                     ViewMatrix[i] = 0;
             }
 
+            ImGui::Separator();
+            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(g_Menu->dbg_RAINBOW));
+            if (ImGui::Button("RAINBOW ESP", ImVec2(ImGui::GetWindowContentRegionWidth() - 3, 20)))
+            {
+                g_Menu->dbg_ENT_RGB = !g_Menu->dbg_ENT_RGB;
+                LogEvent("[+] MENU:: DEBUG ESP WINDOW:: RGB LINES ; ", dbg_ENT_RGB);
+            }
+            ImGui::PopStyleColor();
             ImGui::End();
         }
         else if (!g_GameVariables->m_ShowMenu) {
             !m_dbgMatrixWnd;
-            !m_BOXES;
         }
 
         //  DRAW FPS
@@ -606,8 +715,12 @@ namespace ER {
             g_GameFunctions->FPS();
 
         //  DEBUG DRAW CROSSHAIR
-        if (m_dbgCrosshair)
-            ImGui::GetBackgroundDrawList()->AddCircle(ImGui::GetMainViewport()->GetCenter(), g_Menu->dbg_crosshair_radius, ImColor(g_Menu->dbg_crosshair_r, g_Menu->dbg_crosshair_g, g_Menu->dbg_crosshair_b, g_Menu->dbg_crosshair_a), g_Menu->dbg_crosshair_segments, g_Menu->dbg_crosshair_thickness);
+        if (m_dbgCrosshair) {
+            if (m_RGB_CROSSHAIR)
+                ImGui::GetBackgroundDrawList()->AddCircle(ImGui::GetMainViewport()->GetCenter(), g_Menu->dbg_crosshair_radius, g_Menu->dbg_RAINBOW, g_Menu->dbg_crosshair_segments, g_Menu->dbg_crosshair_thickness);
+            else if (!m_RGB_CROSSHAIR)
+                ImGui::GetBackgroundDrawList()->AddCircle(ImGui::GetMainViewport()->GetCenter(), g_Menu->dbg_crosshair_radius, ImColor(dbg_crosshair_color), g_Menu->dbg_crosshair_segments, g_Menu->dbg_crosshair_thickness);
+        }
 
         //  SHOW DEBUG CONSOLE
         if (g_GameVariables->m_ShowConsole)
@@ -615,43 +728,25 @@ namespace ER {
         else
             ::ShowWindow(GetConsoleWindow(), SW_HIDE);
 
-        //  ESP (only renders for 1 frame currently)
-        if (bESP) {
+        //  ESP
+        if (bESP)
             ESP(s_drawDistance);
-            if (g_WorldCharMan->pCharData->Health == NULL) {
-                bESP = FALSE;
-                g_Console->printdbg("[+] MENU:: ESP; OFF {Health is NULL}\n", TRUE, g_Console->color.red);
-            }
-        }
         
         //  DEBUG ESP
-        if (m_BOXES) {
+        if (m_dbgMatrixWnd)
             dbg_ESP();
-            if (g_WorldCharMan->pCharData->Health == NULL) {
-                m_BOXES = FALSE;
-                g_Console->printdbg("[+] MENU:: ENT WINDOW; OFF {Health is NULL}\n", TRUE, g_Console->color.red);
-            }
-        }
 
         //  SKELTON DRAW
         if (s_draw)
-        {
             g_WorldCharMan->ESP_SKELETON(s_drawDistance);
-            if (g_WorldCharMan->pCharData->Health == NULL) {
-                for (int i = 0; i <= g_WorldCharMan->arraySIZE - 1; i = i + 1) {
-                    if (g_WorldCharMan->CharFall[i]->DrawSkeleton != NULL)
-                        g_WorldCharMan->CharFall[i]->DrawSkeleton = NULL;
-                }
-                s_draw = FALSE;
-                s_drawDistance = NULL;
-                g_Console->printdbg("[+] MENU:: SKELETON; OFF {Health is NULL}\n", TRUE, g_Console->color.red);
-            }
-        }
 
         //  DRAW DISTANCE
         if (s_drawDistance != NULL) {
             std::string text = "Draw Distance: " + std::to_string(s_drawDistance);
-            ImGui::GetBackgroundDrawList()->AddText(ImVec2(20, 15), ImColor(255, 255, 255, 255), text.c_str());
+            if (dbg_RAINBOW_THEME)
+                ImGui::GetBackgroundDrawList()->AddText(ImVec2(20, 15), ImColor(g_Menu->dbg_RAINBOW), text.c_str());
+            else
+                ImGui::GetBackgroundDrawList()->AddText(ImVec2(20, 15), ImColor(255, 255, 255, 255), text.c_str());
         }
 
         //  FREEZE ENTITIES
@@ -668,9 +763,10 @@ namespace ER {
         }
 
         //  CUSTOM FPS LIMIT 
+        //  CREDIT: techiew
         if (c_FPS != f_FPS)
         {
-            uintptr_t RESET_FPS = g_GameVariables->m_ModuleBase + SET_FPS;      //  FPS ADDRESS
+            uintptr_t RESET_FPS = g_GameVariables->m_ModuleBase + ptr_SET_FPS;      //  FPS ADDRESS
             int x = *(int*)RESET_FPS;   //  READ CURRENT FPS VALUE
             char oBytes[sizeof x];      //  CONVERT TO BYTE ARRAY
             std::copy(reinterpret_cast<const char*>(reinterpret_cast<const void*>(&x)), reinterpret_cast<const char*>(reinterpret_cast<const void*>(&x)) + sizeof x, oBytes);
@@ -689,6 +785,9 @@ namespace ER {
             else
                 g_Console->printdbg("[!] MENU:: CUSTOM FPS ; failed\n", TRUE, g_Console->color.green);
         }
+
+        if (g_GameVariables->m_ShowDemo)
+            ImGui::ShowDemoWindow();
     }
 
     //  STYLE
@@ -696,6 +795,12 @@ namespace ER {
     {
         ImGuiStyle& style = ImGui::GetStyle();
         ImVec4* colors = ImGui::GetStyle().Colors;
+
+        if (g_Menu->dbg_RAINBOW_THEME)
+            colors[ImGuiCol_Separator] = g_Menu->dbg_RAINBOW;
+        else
+            colors[ImGuiCol_Separator] = ImVec4(0.28f, 0.28f, 0.28f, 0.90f);
+
         colors[ImGuiCol_Text] = ImVec4(0.75f, 0.75f, 0.29f, 1.00f);
         colors[ImGuiCol_TextDisabled] = ImVec4(0.86f, 0.93f, 0.89f, 0.28f);
         colors[ImGuiCol_TextSelectedBg] = ImVec4(0.27f, 0.00f, 0.63f, 0.43f);
@@ -724,7 +829,7 @@ namespace ER {
         colors[ImGuiCol_Header] = ImVec4(0.00f, 0.00f, 0.00f, 0.52f);
         colors[ImGuiCol_HeaderHovered] = ImVec4(0.00f, 0.00f, 0.00f, 0.36f);
         colors[ImGuiCol_HeaderActive] = ImVec4(0.20f, 0.22f, 0.23f, 0.33f);
-        colors[ImGuiCol_Separator] = ImVec4(0.28f, 0.28f, 0.28f, 0.90f);
+        //colors[ImGuiCol_Separator] = ImVec4(0.28f, 0.28f, 0.28f, 0.90f);
         colors[ImGuiCol_SeparatorHovered] = ImVec4(0.44f, 0.44f, 0.44f, 0.29f);
         colors[ImGuiCol_SeparatorActive] = ImVec4(0.40f, 0.44f, 0.47f, 1.00f);
         colors[ImGuiCol_ResizeGrip] = ImVec4(0.28f, 0.28f, 0.28f, 0.29f);
@@ -775,6 +880,6 @@ namespace ER {
         style.TabRounding = 4;
         m_StyleInit = true;
 
-        g_Console->printdbg("[+] MENU STYLE INITIALIZED\n", TRUE, g_Console->color.green);
+        //g_Console->printdbg("[+] MENU STYLE INITIALIZED\n", TRUE, g_Console->color.green);
     }
 }
