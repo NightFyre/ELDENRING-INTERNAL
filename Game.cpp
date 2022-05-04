@@ -48,9 +48,12 @@ namespace ER {
 	}
 
 	//	Gets distance from Position A to Position B
-	float GameFunctions::GetDistanceToObject(Vector3 POS, Vector3 POS2)
+	float GameFunctions::GetDistanceTo3D_Object(Vector3 POS, Vector3 POS2)
 	{
-		float distance = (POS.x - POS2.x) + (POS.y - POS2.y) + (POS.z - POS2.z);
+		float x = (POS2.x - POS.x);
+		float y = (POS2.y - POS.y);
+		float z = (POS2.z - POS.z);
+		float distance = std::sqrt(x * x + y * y + z * z);
 		return (distance);
 	}
 

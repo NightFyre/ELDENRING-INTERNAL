@@ -15,7 +15,6 @@ namespace ER {
 		return (__int64)g_GameVariables->m_ModuleBase + addr;
 	}
 
-
 	//	MinHook
 	void Hooking::HookInput(uint64_t a1, uint64_t a2)
 	{
