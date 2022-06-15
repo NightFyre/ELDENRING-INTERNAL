@@ -1,4 +1,15 @@
 #include <cmath>
+struct Vector2
+{
+public:
+	float x, y;
+};
+
+struct Vector4
+{
+public:
+	float x, y, z, w;
+};
 
 #pragma pack(push, 1)
 struct Vector3

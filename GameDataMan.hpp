@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.hpp"
 #include "Memory.hpp"
+#include "Console.hpp"
 
 namespace ER {
 
@@ -122,9 +123,9 @@ namespace ER {
 	class GameDataMan
 	{
 	public:
-		uint64_t Base{};
-		uint64_t Ptr{};
-		uint64_t LastPtr{};
+		uintptr_t Base{};
+		uintptr_t Ptr{};
+		uintptr_t LastPtr{};
 		ChrGameData* GameData{}; // 0x8
 		uint32_t PlayTimeMS{}; // 0xA0
 		uint32_t NGPlus{}; // 0x120
@@ -142,7 +143,6 @@ namespace ER {
 
 		bool Valid();
 	};
-
 	inline std::unique_ptr<GameDataMan> g_GameDataMan;
-}
 
+}

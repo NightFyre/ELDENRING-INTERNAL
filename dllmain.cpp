@@ -4,6 +4,8 @@
 #include "Hooking.hpp"
 #include "Menu.hpp"
 #include "GameDataMan.hpp"
+#include "WorldCharMan.hpp"
+#include "Console.hpp"
 
 /// TEMPORARY FUNCTION SPACE
 
@@ -38,7 +40,7 @@ void BackgroundWorker()
     //  Optimizations still need to be made as crashing can and does still occur during load screens and other instances
     //  Nullptrs tend to be the underlying cause.
     using namespace ER;
-    while (g_Running) {
+    while (true) {
         if (g_WorldCharMan->Update())
             g_WorldCharMan->count = NULL;
         std::this_thread::sleep_for(5s);
@@ -97,6 +99,15 @@ void PauseGameplay(uintptr_t addr, bool ACTIVE)
 void MainThread()
 {
     using namespace ER;
+
+    ///  STRUCTS, HOOKS & VARIABLES
+    g_Console = std::make_unique<Console>();
+    g_Console->printdbg("[+] ELDEN RING INTERNAL (PREVIEW)\n", TRUE, g_Console->color.yellow);
+    g_Console->printdbg("[+] BUILD VERSION: alpha-0.0.5\n", TRUE, g_Console->color.yellow);
+    g_Console->printdbg("[+] BUILD DATE: 5/3/22\n", TRUE, g_Console->color.yellow);
+    g_Console->printdbg("[+] Created bv NightFyre & NBOTT42\n\n", TRUE, g_Console->color.yellow);
+    g_Console->printdbg("[!] THIS IS A PREVIEW BUILD\n", TRUE, g_Console->color.red);
+    g_Console->printdbg("[!] PLEASE DON'T INJECT UNTIL YOU HAVE REACHED THE MAIN MENU\n\n", TRUE, g_Console->color.red);
     g_GameVariables = std::make_unique<GameVariables>();
     g_GameFunctions = std::make_unique<GameFunctions>();
     ///  HIDE CONSOLE
@@ -104,6 +115,7 @@ void MainThread()
     //::ShowWindow(GetConsoleWindow(), SW_HIDE);
     //FMVSkip();
     //UnlockFPS();
+
 
     g_Console->printdbg("alpha-0.0.4 CHANGE-LOG:\n- WorldCharMan::Update Function Changed\n- WorldCharMan::Update Call Frequency INCREASED\n- Menu:: Included New Functions\n- Draw Skeleton Distance Updated\n- Freeze Entities Test\n\n", TRUE, g_Console->color.teal);
     g_Console->printdbg("[+] PRESS [INSERT] TO SHOW/HIDE MENU\n\n", FALSE);
@@ -116,9 +128,17 @@ void MainThread()
     g_Menu = std::make_unique<Menu>();
     g_D3DRenderer = std::make_unique<D3DRenderer>();
     g_Hooking = std::make_unique<Hooking>();
-
     g_Hooking->Hook();
+    g_GameDataMan = std::make_unique<GameDataMan>();
+    g_WorldCharMan = std::make_unique<WorldCharMan>();
 
+    //uintptr_t ViewMatrix = g_GameFunctions->p2addy(g_GameVariables->m_ModuleBase + 0x03C04828, { 0x60, 0x60, 0x420 });
+    //printf("ViewMatrixAddress: %llX\n", ViewMatrix);
+
+    //  CREATE WorldCharMan Update Thread
+    std::thread WCMUpdate(BackgroundWorker);
+
+    //  MAIN LOOP
     while (g_Running)
     {
         if (GetAsyncKeyState(VK_INSERT) & 1) {
@@ -136,18 +156,16 @@ void MainThread()
         std::this_thread::yield();
     }
 
+    //  EXIT THREAD
+    WCMUpdate.join();
+    g_Console->Free();
     std::this_thread::sleep_for(500ms);
     FreeLibraryAndExitThread(g_Module, 0);
 }
 
-BOOL APIENTRY DllMain( HMODULE hModule,
-                       DWORD  ul_reason_for_call,
-                       LPVOID lpReserved
-                     )
+BOOL APIENTRY DllMain( HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
 {
-
     using namespace ER;
-
     if (ul_reason_for_call == DLL_PROCESS_ATTACH) {
         DisableThreadLibraryCalls(hModule);
         g_Module = hModule;
@@ -157,4 +175,3 @@ BOOL APIENTRY DllMain( HMODULE hModule,
         g_KillSwitch = TRUE;
     return TRUE;
 }
-

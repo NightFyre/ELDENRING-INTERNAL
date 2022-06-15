@@ -40,7 +40,6 @@ namespace ER
 		static HRESULT APIENTRY HookPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags);
 		static void HookExecuteCommandLists(ID3D12CommandQueue* queue, UINT NumCommandLists, ID3D12CommandList* ppCommandLists);
 		static HRESULT APIENTRY HookResizeTarget(IDXGISwapChain* _this, const DXGI_MODE_DESC* pNewTargetParameters);
-
 		void ResetRenderState();
 
 		bool InitHook();
@@ -57,6 +56,8 @@ namespace ER
 		void Overlay(IDXGISwapChain* pSwapChain);
 
 		static LRESULT WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+		bool WorldToScreen(Vector3 pos, Vector2& screen, float matrix[16], int windowWidth, int windowHeight);
 
 		uint64_t m_OldWndProc{};
 
