@@ -104,3 +104,29 @@ bin/ER Overlay_dbg.ilk
 .vs/EROverlay/v16/ipch/AutoPCH/b10e1e5c855367a/DLLMAIN.ipch
 .vs/EROverlay/v16/ipch/AutoPCH/cc693f757118621f/WORLDCHARMAN.ipch
 .vs/EROverlay/v16/ipch/AutoPCH/fc9763e83f63af3f/CHRMODULES.ipch
+GUI Launcher/x64/Debug/DXWindow.obj
+GUI Launcher/x64/Debug/EldenRin.8da67571.tlog/CL.command.1.tlog
+GUI Launcher/x64/Debug/EldenRin.8da67571.tlog/CL.read.1.tlog
+GUI Launcher/x64/Debug/EldenRin.8da67571.tlog/CL.write.1.tlog
+GUI Launcher/x64/Debug/EldenRin.8da67571.tlog/EldenRing_VisualLauncher.lastbuildstate
+GUI Launcher/x64/Debug/EldenRin.8da67571.tlog/link.command.1.tlog
+GUI Launcher/x64/Debug/EldenRin.8da67571.tlog/link.read.1.tlog
+GUI Launcher/x64/Debug/EldenRin.8da67571.tlog/link.write.1.tlog
+GUI Launcher/x64/Debug/EldenRin.8da67571.tlog/rc.command.1.tlog
+GUI Launcher/x64/Debug/EldenRin.8da67571.tlog/rc.read.1.tlog
+GUI Launcher/x64/Debug/EldenRin.8da67571.tlog/rc.write.1.tlog
+GUI Launcher/x64/Debug/EldenRing_VisualLauncher.log
+GUI Launcher/x64/Debug/EldenRing_VisualLauncher.res
+GUI Launcher/x64/Debug/imgui.obj
+GUI Launcher/x64/Debug/imgui_demo.obj
+GUI Launcher/x64/Debug/imgui_draw.obj
+GUI Launcher/x64/Debug/imgui_impl_dx11.obj
+GUI Launcher/x64/Debug/imgui_impl_win32.obj
+GUI Launcher/x64/Debug/imgui_tables.obj
+GUI Launcher/x64/Debug/imgui_widgets.obj
+GUI Launcher/x64/Debug/Launcher.obj
+GUI Launcher/x64/Debug/Source.obj
+GUI Launcher/x64/Debug/start_protected_game.exe.recipe
+GUI Launcher/x64/Debug/vc142.idb
+GUI Launcher/x64/Debug/vc142.pdb
+.vs/EROverlay/v16/ipch/AutoPCH/a1fb2047e606b980/DXWINDOW.ipch
