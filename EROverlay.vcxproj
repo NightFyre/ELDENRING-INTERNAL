@@ -74,20 +74,22 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>.\bin</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>.\bin</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(SolutionDir)/MinHook/;$(SolutionDir)/MinHook/include;$(IncludePath)</IncludePath>
-    <OutDir>Z:\SteamLibrary\steamapps\common\ELDEN RING\Game\CUSTOM</OutDir>
+    <OutDir>.\bin</OutDir>
     <TargetName>ER Overlay_dbg</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)/MinHook/;$(SolutionDir)/MinHook/include;$(IncludePath)</IncludePath>
-    <OutDir>Z:\SteamLibrary\steamapps\common\ELDEN RING\Game\CUSTOM</OutDir>
+    <OutDir>.\bin</OutDir>
     <TargetName>ER Overlay</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -167,70 +169,60 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="ChrIns.hpp" />
-    <ClInclude Include="ChrModules.hpp" />
-    <ClInclude Include="Common.hpp" />
-    <ClInclude Include="Console.hpp" />
-    <ClInclude Include="D3DRenderer.hpp" />
-    <ClInclude Include="Game.hpp" />
-    <ClInclude Include="GameDataMan.hpp" />
-    <ClInclude Include="GameEnums.hpp" />
-    <ClInclude Include="Hooking.hpp" />
-    <ClInclude Include="ImGui\imconfig.h" />
-    <ClInclude Include="ImGui\imgui.h" />
-    <ClInclude Include="ImGui\imgui_impl_dx10.h" />
-    <ClInclude Include="ImGui\imgui_impl_dx11.h" />
-    <ClInclude Include="ImGui\imgui_impl_dx12.h" />
-    <ClInclude Include="ImGui\imgui_impl_dx9.h" />
-    <ClInclude Include="ImGui\imgui_impl_win32.h" />
-    <ClInclude Include="ImGui\imgui_internal.h" />
-    <ClInclude Include="ImGui\imstb_rectpack.h" />
-    <ClInclude Include="ImGui\imstb_textedit.h" />
-    <ClInclude Include="ImGui\imstb_truetype.h" />
-    <ClInclude Include="Memory.hpp" />
-    <ClInclude Include="Menu.hpp" />
-    <ClInclude Include="Minhook\include\MinHook.h" />
-    <ClInclude Include="Minhook\src\buffer.h" />
-    <ClInclude Include="Minhook\src\HDE\hde32.h" />
-    <ClInclude Include="Minhook\src\HDE\hde64.h" />
-    <ClInclude Include="Minhook\src\HDE\pstdint.h" />
-    <ClInclude Include="Minhook\src\HDE\table32.h" />
-    <ClInclude Include="Minhook\src\HDE\table64.h" />
-    <ClInclude Include="Minhook\src\trampoline.h" />
-    <ClInclude Include="Vector.hpp" />
-    <ClInclude Include="WorldCharMan.hpp" />
+    <ClInclude Include="libs\ImGui\imconfig.h" />
+    <ClInclude Include="libs\ImGui\imgui.h" />
+    <ClInclude Include="libs\ImGui\imgui_impl_dx12.h" />
+    <ClInclude Include="libs\ImGui\imgui_impl_win32.h" />
+    <ClInclude Include="libs\ImGui\imgui_internal.h" />
+    <ClInclude Include="libs\ImGui\imstb_rectpack.h" />
+    <ClInclude Include="libs\ImGui\imstb_textedit.h" />
+    <ClInclude Include="libs\ImGui\imstb_truetype.h" />
+    <ClInclude Include="libs\Minhook\buffer.h" />
+    <ClInclude Include="libs\Minhook\hde32.h" />
+    <ClInclude Include="libs\Minhook\hde64.h" />
+    <ClInclude Include="libs\Minhook\MinHook.h" />
+    <ClInclude Include="libs\Minhook\pstdint.h" />
+    <ClInclude Include="libs\Minhook\table32.h" />
+    <ClInclude Include="libs\Minhook\table64.h" />
+    <ClInclude Include="libs\Minhook\trampoline.h" />
+    <ClInclude Include="MENU\ChrIns.hpp" />
+    <ClInclude Include="MENU\ChrModules.hpp" />
+    <ClInclude Include="MENU\Common.hpp" />
+    <ClInclude Include="MENU\Console.hpp" />
+    <ClInclude Include="MENU\D3DRenderer.hpp" />
+    <ClInclude Include="MENU\Game.hpp" />
+    <ClInclude Include="MENU\GameDataMan.hpp" />
+    <ClInclude Include="MENU\GameEnums.hpp" />
+    <ClInclude Include="MENU\Hooking.hpp" />
+    <ClInclude Include="MENU\Memory.hpp" />
+    <ClInclude Include="MENU\Menu.hpp" />
+    <ClInclude Include="MENU\Vector.hpp" />
+    <ClInclude Include="MENU\WorldCharMan.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ChrIns.cpp" />
-    <ClCompile Include="ChrModules.cpp" />
-    <ClCompile Include="Common.cpp" />
-    <ClCompile Include="Console.cpp" />
-    <ClCompile Include="D3DRenderer.cpp" />
-    <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="GameDataMan.cpp" />
-    <ClCompile Include="Hooking.cpp" />
-    <ClCompile Include="ImGui\imgui.cpp" />
-    <ClCompile Include="ImGui\imgui_demo.cpp" />
-    <ClCompile Include="ImGui\imgui_draw.cpp" />
-    <ClCompile Include="ImGui\imgui_impl_dx10.cpp" />
-    <ClCompile Include="ImGui\imgui_impl_dx11.cpp" />
-    <ClCompile Include="ImGui\imgui_impl_dx12.cpp" />
-    <ClCompile Include="ImGui\imgui_impl_dx9.cpp" />
-    <ClCompile Include="ImGui\imgui_impl_win32.cpp" />
-    <ClCompile Include="ImGui\imgui_tables.cpp" />
-    <ClCompile Include="ImGui\imgui_widgets.cpp" />
-    <ClCompile Include="Menu.cpp" />
-    <ClCompile Include="Minhook\src\buffer.c" />
-    <ClCompile Include="Minhook\src\HDE\hde32.c" />
-    <ClCompile Include="Minhook\src\HDE\hde64.c" />
-    <ClCompile Include="Minhook\src\hook.c" />
-    <ClCompile Include="Minhook\src\trampoline.c" />
-    <ClCompile Include="WorldCharMan.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Minhook\src\.gitkeep" />
-    <None Include="Minhook\src\HDE\.gitkeep" />
+    <ClCompile Include="libs\ImGui\imgui.cpp" />
+    <ClCompile Include="libs\ImGui\imgui_demo.cpp" />
+    <ClCompile Include="libs\ImGui\imgui_draw.cpp" />
+    <ClCompile Include="libs\ImGui\imgui_impl_dx12.cpp" />
+    <ClCompile Include="libs\ImGui\imgui_impl_win32.cpp" />
+    <ClCompile Include="libs\ImGui\imgui_tables.cpp" />
+    <ClCompile Include="libs\ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="libs\Minhook\buffer.c" />
+    <ClCompile Include="libs\Minhook\hde32.c" />
+    <ClCompile Include="libs\Minhook\hde64.c" />
+    <ClCompile Include="libs\Minhook\hook.c" />
+    <ClCompile Include="libs\Minhook\trampoline.c" />
+    <ClCompile Include="MENU\ChrIns.cpp" />
+    <ClCompile Include="MENU\ChrModules.cpp" />
+    <ClCompile Include="MENU\Common.cpp" />
+    <ClCompile Include="MENU\Console.cpp" />
+    <ClCompile Include="MENU\D3DRenderer.cpp" />
+    <ClCompile Include="MENU\dllmain.cpp" />
+    <ClCompile Include="MENU\Game.cpp" />
+    <ClCompile Include="MENU\GameDataMan.cpp" />
+    <ClCompile Include="MENU\Hooking.cpp" />
+    <ClCompile Include="MENU\Menu.cpp" />
+    <ClCompile Include="MENU\WorldCharMan.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
