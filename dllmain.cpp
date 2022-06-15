@@ -7,9 +7,17 @@
 #include "WorldCharMan.hpp"
 #include "Console.hpp"
 
+/// TEMPORARY FUNCTION SPACE
+
 //  RAINBOW THEME OPTION
 float HSV_RAINBOW_SPEED = 0.001;
 static float HSV_RAINBOW_HUE = 0;
+/// <summary>
+/// 
+/// </summary>
+/// <param name="saturation"></param>
+/// <param name="value"></param>
+/// <param name="opacity"></param>
 void SV_RAINBOW(float saturation, float value, float opacity)
 {
     using namespace ER;
@@ -23,50 +31,92 @@ void SV_RAINBOW(float saturation, float value, float opacity)
     }
 }
 
+/// <summary>
+/// SEPERATE THREAD for g_WorldCharMan->Update();
+/// </summary>
 void BackgroundWorker()
 {
+    //  This seperate thread was created for the sole purpose of updating the WorldCharMan Entity Struct
+    //  Optimizations still need to be made as crashing can and does still occur during load screens and other instances
+    //  Nullptrs tend to be the underlying cause.
     using namespace ER;
     while (true) {
-        if (g_WorldCharMan->Update()) {
+        if (g_WorldCharMan->Update())
             g_WorldCharMan->count = NULL;
-        }
         std::this_thread::sleep_for(5s);
         std::this_thread::yield();
     }
 }
 
+/// <summary>
+/// 
+/// </summary>
+void FMVSkip()
+{
+    ///  FMV SKIP NEW TEST
+    //  STATIC ADDRESS!! NEEDS sig function applied!!
+    //  AOB: 48 8B 90 ? ? ? ? 48 85 D2 74 07 C6
+    //  OLD | 0x0A8FB4E
+    using namespace ER;
+    Patch((BYTE*)g_GameVariables->m_ModuleBase + 0x0A8FA5E, (BYTE*)"\xE9\x1C\x00\x00\x00", 5);
+    g_Console->printdbg("[+] FMV's SKIPPED\n", TRUE, g_Console->color.green);
+}
+
+/// <summary>
+/// 
+/// </summary>
+void UnlockFPS()
+{
+    ///  UNLOCK FPS LIMIT 
+    //  STATIC ADDRESS!! NEEDS sig function applied!!
+    //  AOB: C7 ? ? 89 88 88 3C EB ? 89 ? 18 EB ? 89 ? 18 C7 | (Menu.hpp->ptr_SET_FPS)
+    //  AOB2: C7 ? EF 3C 00 00 00 C7 ? F3 01 00 00 00
+    using namespace ER;
+    Patch((BYTE*)g_GameVariables->m_ModuleBase + 0x1944A37, (BYTE*)"\xC7\x45\xEF\x00\x00\x00\x00", 7);  // AOB 2 | OLD 0x1944B27
+    g_Console->printdbg("[+] FPS LIMIT REMOVED\n\n", TRUE, g_Console->color.green);
+}
+
+/// <summary>
+/// 
+/// </summary>
+/// <param name="addr"></param>
+/// <param name="ACTIVE"></param>
+void PauseGameplay(uintptr_t addr, bool ACTIVE)
+{
+    //  STATIC ADDRESS!! NEEDS sig function applied!!
+    //  Pause Game AOB: 0f 84 ? ? ? ? c6 83 ? ? 00 00 00 48 8d ? ? ? ? ? 48 89 ? ? 89
+    //  OLD | 0xA7CDC6
+    if (ACTIVE)
+        Patch((BYTE*)addr + 0x0A7CCD6, (BYTE*)"\x85", 1);
+    else if (!ACTIVE)
+        Patch((BYTE*)addr + 0x0A7CCD6, (BYTE*)"\x84", 1);
+}
+
+/// <summary>
+/// 
+/// </summary>
 void MainThread()
 {
     using namespace ER;
 
-    //  STRUCTS, HOOKS & VARIABLES
+    ///  STRUCTS, HOOKS & VARIABLES
     g_Console = std::make_unique<Console>();
     g_Console->printdbg("[+] ELDEN RING INTERNAL (PREVIEW)\n", TRUE, g_Console->color.yellow);
-    g_Console->printdbg("[+] BUILD VERSION: alpha-0.0.4\n", TRUE, g_Console->color.yellow);
-    g_Console->printdbg("[+] BUILD DATE: 4/18/22\n", TRUE, g_Console->color.yellow);
+    g_Console->printdbg("[+] BUILD VERSION: alpha-0.0.5\n", TRUE, g_Console->color.yellow);
+    g_Console->printdbg("[+] BUILD DATE: 5/3/22\n", TRUE, g_Console->color.yellow);
     g_Console->printdbg("[+] Created bv NightFyre & NBOTT42\n\n", TRUE, g_Console->color.yellow);
     g_Console->printdbg("[!] THIS IS A PREVIEW BUILD\n", TRUE, g_Console->color.red);
-    g_Console->printdbg("[!] PLEASE DON'T INJECT UNTIL YOU HAVE LOADED YOUR SAVE\n\n", TRUE, g_Console->color.red);
+    g_Console->printdbg("[!] PLEASE DON'T INJECT UNTIL YOU HAVE REACHED THE MAIN MENU\n\n", TRUE, g_Console->color.red);
     g_GameVariables = std::make_unique<GameVariables>();
     g_GameFunctions = std::make_unique<GameFunctions>();
-
-    //  HIDE CONSOLE
+    ///  HIDE CONSOLE
     //g_GameVariables->m_ShowConsole = FALSE;
     //::ShowWindow(GetConsoleWindow(), SW_HIDE);
+    FMVSkip();
+    UnlockFPS();
 
-    //  FMV SKIP NEW TEST
-    //  AOB: 48 8B 90 ? ? ? ? 48 85 D2 74 07 C6
-    Patch((BYTE*)g_GameVariables->m_ModuleBase + 0x0A8FB4E, (BYTE*)"\xE9\x1C\x00\x00\x00", 5);
-    g_Console->printdbg("[+] FMV's SKIPPED\n", TRUE, g_Console->color.green);
-
-    //  UNLOCK FPS LIMIT
-    //  AOB: C7 ? ? 89 88 88 3C EB ? 89 ? 18 EB ? 89 ? 18 C7
-    //  AOB2: C7 ? EF 3C 00 00 00 C7 ? F3 01 00 00 00
-    Patch((BYTE*)g_GameVariables->m_ModuleBase + 0x1944B27, (BYTE*)"\xC7\x45\xEF\x00\x00\x00\x00", 7);
-    g_Console->printdbg("[+] FPS LIMIT REMOVED\n\n", TRUE, g_Console->color.green);
-
-    g_Console->printdbg("alpha-0.0.4 CHANGE-LOG:\n- WorldCharMan::Update Function Changed\n- WorldCharMan::Update Call Frequency INCREASED\n- Menu:: Included New Functions\n- Draw Skeleton Updated\n\n", TRUE, g_Console->color.teal);
-    g_Console->printdbg("[+] PRESS [INSERT] TO SHOW/HIDE MENU\n", FALSE);
+    g_Console->printdbg("alpha-0.0.4 CHANGE-LOG:\n- WorldCharMan::Update Function Changed\n- WorldCharMan::Update Call Frequency INCREASED\n- Menu:: Included New Functions\n- Draw Skeleton Distance Updated\n- Freeze Entities Test\n\n", TRUE, g_Console->color.teal);
+    g_Console->printdbg("[+] PRESS [INSERT] TO SHOW/HIDE MENU\n\n", FALSE);
 
     //  WAIT FOR USER INPUT
     while (GetAsyncKeyState(VK_INSERT) == NULL)
@@ -80,7 +130,7 @@ void MainThread()
     g_GameDataMan = std::make_unique<GameDataMan>();
     g_WorldCharMan = std::make_unique<WorldCharMan>();
 
-    //uintptr_t ViewMatrix = g_GameFunctions->p2addy(g_GameVariables->m_ModuleBase + 0x03C61588, { 0x60, 0x60, 0x420 });
+    //uintptr_t ViewMatrix = g_GameFunctions->p2addy(g_GameVariables->m_ModuleBase + 0x03C04828, { 0x60, 0x60, 0x420 });
     //printf("ViewMatrixAddress: %llX\n", ViewMatrix);
 
     //  CREATE WorldCharMan Update Thread
@@ -91,9 +141,7 @@ void MainThread()
     {
         if (GetAsyncKeyState(VK_INSERT) & 1) {
             g_GameVariables->m_ShowMenu = !g_GameVariables->m_ShowMenu;
-            if (g_GameVariables->m_ShowMenu) {
-                //g_Menu->InitStyle();
-            }
+            PauseGameplay(g_GameVariables->m_ModuleBase, g_GameVariables->m_ShowMenu);
         }
 
         if (GetAsyncKeyState(VK_DELETE) & 1) {
@@ -101,8 +149,6 @@ void MainThread()
             g_Running = FALSE;
         }
 
-        //  SLEEPER
-        //if (g_Menu->m_RGB_CROSSHAIR)
         SV_RAINBOW(169, 169, 200);
         std::this_thread::sleep_for(3ms);
         std::this_thread::yield();
@@ -116,12 +162,8 @@ void MainThread()
     std::this_thread::sleep_for(500ms);
 }
 
-BOOL APIENTRY DllMain( HMODULE hModule,
-                       DWORD  ul_reason_for_call,
-                       LPVOID lpReserved
-                     )
+BOOL APIENTRY DllMain( HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
 {
-
     using namespace ER;
     if (ul_reason_for_call == DLL_PROCESS_ATTACH) {
         DisableThreadLibraryCalls(hModule);
@@ -134,4 +176,3 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     }
     return TRUE;
 }
-

@@ -1,11 +1,20 @@
 #pragma once
 #include "Common.hpp"
 #include "ImGui/imgui.h"
-
 //	CLEANING IS REQUIRED
-
-
 namespace ER {
+
+	struct TextPositions {
+		ImVec2 posONE = { 20, 5 };
+		ImVec2 posTWO = { 20, 15 };
+		ImVec2 posTHREE = { 20, 25 };
+		ImVec2 posFIVE = { 20, 35 };
+		ImVec2 posSIX = { 20, 45 };
+		ImVec2 posSEVEN = { 20, 55 };
+		ImVec2 posEIGHT = { 20, 65 };
+		ImVec2 posNINE = { 20, 75 };
+		ImVec2 posTEN = { 20, 85 };
+	};
 
 	class Menu
 	{
@@ -15,7 +24,7 @@ namespace ER {
 		//	QWORDS
 		int ptr_DEBUG_FLAGS = 0x03C0C1C8;	//	DEBUG FLAGS
 		int ptr_NBOTT_W2S = 0x03C04828;		//	NBOTT WorldToScreen qword_ptr
-		int ptr_PLAYER_DATA = 0x039DAD60;	//	Player Data qword_ptr
+		int ptr_PLAYER_DATA = 0x39DAD60;	//	Player Data qword_ptr
 		
 		///	VARIABLES
 		//	MENU SELECTION FLAGS
@@ -29,8 +38,8 @@ namespace ER {
 		bool bESP = FALSE;				//	ESP
 
 		//	STATIC
-		int ptr_SET_FPS = 0xE07F52;			//	FPS
-		int ptr_W2S_FUNCTION = 0x0752890;	//	W2S Function
+		int ptr_SET_FPS = 0xDE8B72;			// FPS	|	AOB + 0x3	|	OLD = E07F4F + 0x3 = 0xE07F52
+		int ptr_W2S_FUNCTION = 0x07527A0;	// 0x0752890;	//	W2S Function
 
 		//	RAINBOW THEME
 		ImColor dbg_RAINBOW{};			//	RAINBOW THEME COLORS
@@ -82,6 +91,8 @@ namespace ER {
 			| (drag_and_drop ? 0 : ImGuiColorEditFlags_NoDragDrop)
 			| (alpha_half_preview ? ImGuiColorEditFlags_AlphaPreviewHalf : (alpha_preview ? ImGuiColorEditFlags_AlphaPreview : 0))
 			| (options_menu ? 0 : ImGuiColorEditFlags_NoOptions);
+
+		TextPositions PrintToScreen{};
 
 		//	INITIALIZE CLASS
 		Menu()  noexcept = default;

@@ -9,6 +9,7 @@
 //	- during load screens
 
 namespace ER {
+
 	WorldCharMan::WorldCharMan()
 	{
 		m_isValid = FALSE;
@@ -33,7 +34,6 @@ namespace ER {
 
 	bool WorldCharMan::Update()
 	{
-
 		g_Console->printdbg("[+] WorldCharMan::Update STARTED\n", TRUE, g_Console->color.yellow);
 
 		auto BasePtr = RPM<uint64_t>(Base) + 0x18F10;
@@ -97,6 +97,7 @@ namespace ER {
 			m_isValid = FALSE;
 			return FALSE;
 		}
+		
 		if ((pChrFall*)RPM<uintptr_t>(pEntityObjectBase->EntObjectPTR + 0x28) == NULL) {
 			m_isValid = FALSE;
 			return FALSE;
@@ -109,8 +110,8 @@ namespace ER {
 		}
 		pCharPhysics = (pChrPhysics*)RPM<uintptr_t>(pEntityObjectBase->EntObjectPTR + 0x68);
 		
-
 		/// LOOP
+		int count = 0;
 		for (int i = 0; i <= arraySIZE - 1; i = i + 1) {
 			EntityObjectBase[i] = (EntObject*)*(uintptr_t*)(RPM<uintptr_t>(Ptr) + i * 8);		//EntityBranch
 
@@ -120,6 +121,13 @@ namespace ER {
 			}
 			CharData[i] = (ChrData*)RPM<uintptr_t>(EntityObjectBase[i]->EntObjectPTR + 0x0);
 			
+			if ((ChrTimeAct*)RPM<uintptr_t>(EntityObjectBase[i]->EntObjectPTR + 0x18) == NULL)	//	Get animation information
+			{
+				m_isValid = FALSE;
+				return FALSE;
+			}
+			CharTimeAct[i] = (ChrTimeAct*)RPM<uintptr_t>(EntityObjectBase[i]->EntObjectPTR + 0x18);
+
 			if ((ChrFall*)RPM<uintptr_t>((uintptr_t)EntityObjectBase[i]->EntObjectPTR + 0x28) == NULL) {
 				m_isValid = FALSE;
 				return FALSE;
@@ -142,6 +150,7 @@ namespace ER {
 				printf("---------------------------------------------\n\n");
 			}
 		}
+		validEnts_count = count;
 		g_Console->printdbg("[+] WorldCharMan::Update FINISHED\n\n", TRUE, g_Console->color.green);
 		m_isValid = TRUE;
 		return TRUE;
@@ -177,6 +186,9 @@ namespace ER {
 			for (int i = 0; i <= g_WorldCharMan->arraySIZE - 1; i = i + 1) {
 				//  HEALTH FLAG
 				if (g_WorldCharMan->CharData[i]->Health != 0) {
+					
+					if (g_WorldCharMan->CharTimeAct[i]->Animation < 0) continue;
+
 					//  DRAW
 					if (g_WorldCharMan->CharFall[i]->DrawSkeleton == 0)
 						g_WorldCharMan->CharFall[i]->DrawSkeleton = 1;
@@ -212,45 +224,34 @@ namespace ER {
 		if (!g_WorldCharMan->m_isValid)
 			return;
 
+		//	FLAG TO TURN OFF ALL SEKELTON DRAWING UPON DYING
 		if (g_WorldCharMan->pCharData->Health == NULL) {
 			for (int i = 0; i <= g_WorldCharMan->arraySIZE - 1; i = i + 1) {
 				if (g_WorldCharMan->CharFall[i]->DrawSkeleton != NULL)
 					g_WorldCharMan->CharFall[i]->DrawSkeleton = NULL;
 			}
 			g_Menu->s_draw = FALSE;
-			g_Menu->s_drawDistance = NULL;
 			g_Console->printdbg("[+] MENU:: SKELETON; OFF {Health is NULL}\n", TRUE, g_Console->color.red);
 			return;
 		}
 
 		for (int i = 0; i <= g_WorldCharMan->arraySIZE - 1; i = i + 1) {
 
-			if ((uintptr_t)g_WorldCharMan->EntityObjectBase[i] == (uintptr_t)g_WorldCharMan->pEntityObjectBase)
-				continue;
+			if ((uintptr_t)g_WorldCharMan->EntityObjectBase[i] == (uintptr_t)g_WorldCharMan->pEntityObjectBase) continue;	//	Player Object check
 
-			if (g_WorldCharMan->CharData[i]->Health != NULL)
+			if (g_WorldCharMan->CharData[i]->Health != NULL)	//	Health Check
 			{
+				if (g_WorldCharMan->CharTimeAct[i]->Animation < 0)  continue;
 
-				if (g_WorldCharMan->CharPhysics[i]->Position.x <= (g_WorldCharMan->pCharPhysics->Position.x + distance) && (g_WorldCharMan->pCharPhysics->Position.x - distance)
-					&& g_WorldCharMan->CharPhysics[i]->Position.y <= (g_WorldCharMan->pCharPhysics->Position.y + 7) && (g_WorldCharMan->pCharPhysics->Position.y - 7)
-					&& g_WorldCharMan->CharPhysics[i]->Position.z <= (g_WorldCharMan->pCharPhysics->Position.z + distance) && (g_WorldCharMan->pCharPhysics->Position.z - distance))
+				if (g_GameFunctions->GetDistanceTo3D_Object(g_WorldCharMan->pCharPhysics->Position, g_WorldCharMan->CharPhysics[i]->Position) <= distance)
 				{
-					if (g_WorldCharMan->CharFall[i]->DrawSkeleton == NULL)
-						g_WorldCharMan->CharFall[i]->DrawSkeleton = 1;
+				    if (g_WorldCharMan->CharFall[i]->DrawSkeleton == NULL)
+				        g_WorldCharMan->CharFall[i]->DrawSkeleton = 1;
 				}
 				else if (g_WorldCharMan->CharFall[i]->DrawSkeleton == 1)
-					g_WorldCharMan->CharFall[i]->DrawSkeleton = NULL;
-
-				//if (GetDistanceToObject(g_WorldCharMan->pCharPhysics->Position, g_WorldCharMan->CharPhysics[i]->Position) > NULL 
-				//    || GetDistanceToObject(g_WorldCharMan->pCharPhysics->Position, g_WorldCharMan->CharPhysics[i]->Position) <= distance)
-				//{
-				//    if (g_WorldCharMan->CharFall[i]->DrawSkeleton == NULL)
-				//        g_WorldCharMan->CharFall[i]->DrawSkeleton = 1;
-				//}
-				//else if (g_WorldCharMan->CharFall[i]->DrawSkeleton == 1)
-				//    g_WorldCharMan->CharFall[i]->DrawSkeleton = NULL;
+				    g_WorldCharMan->CharFall[i]->DrawSkeleton = NULL;
 			}
-			else if (g_WorldCharMan->CharFall[i]->DrawSkeleton != NULL)
+			else if (g_WorldCharMan->CharFall[i]->DrawSkeleton == 1)
 				g_WorldCharMan->CharFall[i]->DrawSkeleton = NULL;
 		}
 	}
@@ -258,7 +259,13 @@ namespace ER {
 	//	FREEZE ENTITIES
 	void WorldCharMan::stallENTS()
 	{
-		//  Obtain entity information
+
+		//psuedo
+		//	Filter entity array (should really become a fucntion at this point . . . )
+		//	- Health
+		//	- Alliance
+
+
 		if (!g_WorldCharMan->m_isValid) return;
 
 		if (!g_Menu->f_TOGGLE) {
@@ -268,9 +275,10 @@ namespace ER {
 			{
 				if (g_WorldCharMan->CharPhysics[i]->Position == g_WorldCharMan->pCharPhysics->Position) continue;
 
+				if (g_WorldCharMan->CharTimeAct[i]->Animation < 0) continue;
 				//  DISTANCE
-				if (g_GameFunctions->GetDistanceToObject(g_WorldCharMan->pCharPhysics->Position, g_WorldCharMan->CharPhysics[i]->Position) == 0
-					|| g_GameFunctions->GetDistanceToObject(g_WorldCharMan->pCharPhysics->Position, g_WorldCharMan->CharPhysics[i]->Position) >= g_Menu->s_drawDistance)
+				if (g_GameFunctions->GetDistanceTo3D_Object(g_WorldCharMan->pCharPhysics->Position, g_WorldCharMan->CharPhysics[i]->Position) == 0
+					|| g_GameFunctions->GetDistanceTo3D_Object(g_WorldCharMan->pCharPhysics->Position, g_WorldCharMan->CharPhysics[i]->Position) >= g_Menu->s_drawDistance)
 					continue;
 
 				// PUSH ENTITY COORDS INTO ARRAY
@@ -299,7 +307,7 @@ namespace ER {
 			//  BEGIN FILTERING ENTITIES
 			if (g_WorldCharMan->CharData[i]->Health == NULL) continue;                                              //  HEALTH CHECK
 			if (g_WorldCharMan->CharPhysics[i]->Position == g_WorldCharMan->pCharPhysics->Position) continue;       //  COMPARE POSITION WITH PLAYER
-			if (g_GameFunctions->GetDistanceToObject(g_WorldCharMan->pCharPhysics->Position, g_WorldCharMan->CharPhysics[i]->Position) > DISTANCE) continue;
+			if (g_GameFunctions->GetDistanceTo3D_Object(g_WorldCharMan->pCharPhysics->Position, g_WorldCharMan->CharPhysics[i]->Position) > DISTANCE) continue;
 
 			//  PUSH ENTITY OBJECT INTO THE ARRAY
 			g_Menu->ents[i] = g_GameFunctions->p2addy((uintptr_t)g_WorldCharMan->EntityObjectBase[i] + 0x190, { 0x68, 0x70 });
@@ -314,7 +322,7 @@ namespace ER {
 			//  POINTER CHAIN BULLSHIT
 			for (int i = 0; i < size - 1; i = i + 1) {
 				//  Get Distance
-				if (g_GameFunctions->GetDistanceToObject(g_WorldCharMan->pCharPhysics->Position, g_Menu->distFREEZE[i]) > DISTANCE)
+				if (g_GameFunctions->GetDistanceTo3D_Object(g_WorldCharMan->pCharPhysics->Position, g_Menu->distFREEZE[i]) > DISTANCE)
 				{
 					//  RELEASE OBJECT
 					g_Menu->ents[i] = NULL;
@@ -350,12 +358,22 @@ namespace ER {
 		for (int i = 0; i <= g_WorldCharMan->arraySIZE - 1; i = i + 1) {
 
 			//  COMPARE OBJECT POINTERS
-			if ((uintptr_t)g_WorldCharMan->EntityObjectBase[i] == (uintptr_t)g_WorldCharMan->pEntityObjectBase)
-				continue;
+			if ((uintptr_t)g_WorldCharMan->EntityObjectBase[i] == (uintptr_t)g_WorldCharMan->pEntityObjectBase) continue;
 
 			//  PLAYER POSITION FILTER
-			if (Vector3(g_WorldCharMan->CharPhysics[i]->Position) == Vector3(g_WorldCharMan->pCharPhysics->Position))
-				continue;
+			if (Vector3(g_WorldCharMan->CharPhysics[i]->Position) == Vector3(g_WorldCharMan->pCharPhysics->Position)) continue;
+
+			//	FRIENDLY CHECK
+			if (g_WorldCharMan->EntityObjectBase[i]->ALLIANCE == g_WorldCharMan->Char_Faction.Friendly) continue;
+
+			//	BOSS CHECK
+			if (g_WorldCharMan->EntityObjectBase[i]->ALLIANCE == g_WorldCharMan->Char_Faction.Boss) continue;
+
+			//	
+			if (g_WorldCharMan->EntityObjectBase[i]->ALLIANCE == g_WorldCharMan->Char_Faction.None) continue;
+			if (g_WorldCharMan->EntityObjectBase[i]->ALLIANCE == g_WorldCharMan->Char_Faction.Decoy) continue;
+
+			//	at this poin the only things left are enemy npc and objects
 
 			if (g_WorldCharMan->CharData[i]->Health != NULL)
 				g_WorldCharMan->CharData[i]->Health = NULL;

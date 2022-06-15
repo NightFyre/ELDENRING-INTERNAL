@@ -4,6 +4,16 @@
 #include "GameDataMan.hpp"
 namespace ER {
 
+	struct Alliance {
+		int None = 0;
+		int Player = 1;
+		int Enemy = 6;
+		int Boss = 7;
+		int Decoy = 10;
+		int Friendly = 26;
+		int Object = 30;
+	};
+
 	//	PLAYER
 	struct pObject {
 		char pad_0000[8];	//0x0000
@@ -59,7 +69,7 @@ namespace ER {
 	};	//Size: 0x0198
 	
 	struct ChrData {
-		char pad_0000[312];	//0x0000
+		char pad_0000[312]; // 0x0000
 		int Health;	//0x0138
 		int MaxHealth;	//0x013C
 		int BaseMaxHealth;	//0x0140
@@ -71,6 +81,11 @@ namespace ER {
 		int MaxStamina;	//0x0158
 		int BaseMaxStamina;	//0x015C
 	};	//Size: 0x0160
+
+	struct ChrTimeAct {
+		char pad_0000[64]; // 0x0000
+		int32_t Animation; // 0x0040
+	};	//Size: 0x0040
 
 	struct ChrPhysics {
 		char pad_0000[84];	//0x0000
@@ -91,6 +106,11 @@ namespace ER {
 		int arraySIZE = 0;
 		bool m_isValid{}; 
 
+		int validEnts_count = 0;		//	WorldCharUpdate
+		int entwndw_count = 0;			//	Menu:: EntityWindow
+		int entwndw_count2 = 0;			//	Menu:: EntityWindow
+
+		Alliance Char_Faction{};
 		uintptr_t Base{};
 		uintptr_t Ptr{};
 		uintptr_t LastPtr{};
@@ -107,9 +127,9 @@ namespace ER {
 
 		EntObject* EntityObjectBase[1000];		// {};
 		ChrData* CharData[1000];				// {};		//	*(uintptr_t*)EntityObjectBase->EntObjectPTR + 0x0;
+		ChrTimeAct* CharTimeAct[1000];			// {};		//	*(uintptr_t*)CharData->CharTimeActModulePtr;
 		ChrPhysics* CharPhysics[1000];			// {};		//	*(uintptr_t*)EntityObjectBase->EntObjectPTR + 0x68;
 		ChrFall* CharFall[1000];				// {};		//	*(uintptr_t*)EntityObjectBase->EntObjectPTR + 0x70;
-
 
 		explicit WorldCharMan();
 		~WorldCharMan() noexcept = default;
