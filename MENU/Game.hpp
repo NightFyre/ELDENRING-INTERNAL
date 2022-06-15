@@ -39,6 +39,10 @@ namespace ER
 		GameFunctions(GameFunctions&&) = delete;
 		GameFunctions& operator=(GameFunctions const&) = delete;
 		GameFunctions& operator=(GameFunctions&&) = delete;
+		
+		void FMVSkip(uintptr_t addr);
+		void UnlockFPS(uintptr_t addr);
+		void PauseGameplay(uintptr_t addr, bool ACTIVE);
 
 		uintptr_t p2addy(uintptr_t PTR, std::vector<unsigned int> OFFSETS);
 		float GetDistanceTo3D_Object(Vector3 POS, Vector3 POS2);

@@ -5,6 +5,29 @@
 
 IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
+//  RAINBOW THEME OPTION
+float HSV_RAINBOW_SPEED = 0.001;
+static float HSV_RAINBOW_HUE = 0;
+/// <summary>
+/// 
+/// </summary>
+/// <param name="saturation"></param>
+/// <param name="value"></param>
+/// <param name="opacity"></param>
+/// // PENDING RELOCATION TO d3drenderer.cpp
+void SV_RAINBOW(float saturation, float value, float opacity)
+{
+	using namespace ER;
+	HSV_RAINBOW_HUE -= HSV_RAINBOW_SPEED;
+	if (HSV_RAINBOW_HUE < -1.f) HSV_RAINBOW_HUE += 1.f;
+	for (int i = 0; i < 860; i++)
+	{
+		float hue = HSV_RAINBOW_HUE + (1.f / (float)860) * i;
+		if (hue < 0.f) hue += 1.f;
+		g_Menu->dbg_RAINBOW = ImColor::HSV(hue, (saturation / 255), (value / 255), (opacity / 255));
+	}
+}
+
 namespace ER 
 {
 
@@ -270,6 +293,8 @@ namespace ER
 			pDevice->Release();
 		}
 
+
+		SV_RAINBOW(169, 169, 200);	//	RGB THEME
 		ImGui_ImplDX12_NewFrame();
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();

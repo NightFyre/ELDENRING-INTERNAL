@@ -13,11 +13,14 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="ImGui">
-      <UniqueIdentifier>{63928717-64ff-4d4b-ba56-54ab14acd77c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GUI">
       <UniqueIdentifier>{e61e5eff-0d97-48bb-a624-aaaa37b12303}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libs">
+      <UniqueIdentifier>{3cad4fc3-187a-470f-a116-ffed124c7038}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libs\ImGui">
+      <UniqueIdentifier>{63928717-64ff-4d4b-ba56-54ab14acd77c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -31,25 +34,25 @@
       <Filter>GUI</Filter>
     </ClCompile>
     <ClCompile Include="..\ImGui\DOCKING\imgui.cpp">
-      <Filter>ImGui</Filter>
+      <Filter>libs\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="..\ImGui\DOCKING\imgui_demo.cpp">
-      <Filter>ImGui</Filter>
+      <Filter>libs\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="..\ImGui\DOCKING\imgui_draw.cpp">
-      <Filter>ImGui</Filter>
+      <Filter>libs\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="..\ImGui\DOCKING\imgui_impl_dx11.cpp">
-      <Filter>ImGui</Filter>
+      <Filter>libs\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="..\ImGui\DOCKING\imgui_impl_win32.cpp">
-      <Filter>ImGui</Filter>
+      <Filter>libs\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="..\ImGui\DOCKING\imgui_tables.cpp">
-      <Filter>ImGui</Filter>
+      <Filter>libs\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="..\ImGui\DOCKING\imgui_widgets.cpp">
-      <Filter>ImGui</Filter>
+      <Filter>libs\ImGui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -66,28 +69,28 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\ImGui\DOCKING\imconfig.h">
-      <Filter>ImGui</Filter>
+      <Filter>libs\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="..\ImGui\DOCKING\imgui.h">
-      <Filter>ImGui</Filter>
+      <Filter>libs\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="..\ImGui\DOCKING\imgui_impl_dx11.h">
-      <Filter>ImGui</Filter>
+      <Filter>libs\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="..\ImGui\DOCKING\imgui_impl_win32.h">
-      <Filter>ImGui</Filter>
+      <Filter>libs\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="..\ImGui\DOCKING\imgui_internal.h">
-      <Filter>ImGui</Filter>
+      <Filter>libs\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="..\ImGui\DOCKING\imstb_rectpack.h">
-      <Filter>ImGui</Filter>
+      <Filter>libs\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="..\ImGui\DOCKING\imstb_textedit.h">
-      <Filter>ImGui</Filter>
+      <Filter>libs\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="..\ImGui\DOCKING\imstb_truetype.h">
-      <Filter>ImGui</Filter>
+      <Filter>libs\ImGui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

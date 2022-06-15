@@ -110,46 +110,46 @@ namespace ER {
 		pCharPhysics = (pChrPhysics*)RPM<uintptr_t>(pEntityObjectBase->EntObjectPTR + 0x68);
 		
 		/// LOOP
-		//int count = 0;
-		//for (int i = 0; i <= arraySIZE - 1; i = i + 1) {
-		//	EntityObjectBase[i] = (EntObject*)*(uintptr_t*)(RPM<uintptr_t>(Ptr) + i * 8);		//EntityBranch
+		int count = 0;
+		for (int i = 0; i <= arraySIZE - 1; i = i + 1) {
+			EntityObjectBase[i] = (EntObject*)*(uintptr_t*)(RPM<uintptr_t>(Ptr) + i * 8);		//EntityBranch
 
-		//	if (EntityObjectBase[i]->EntObjectPTR == NULL) {
-		//		m_isValid = FALSE;
-		//		return FALSE;
-		//	}
-		//	CharData[i] = (ChrData*)RPM<uintptr_t>(EntityObjectBase[i]->EntObjectPTR + 0x0);
-		//	
-		//	if ((ChrTimeAct*)RPM<uintptr_t>(EntityObjectBase[i]->EntObjectPTR + 0x18) == NULL)	//	Get animation information
-		//	{
-		//		m_isValid = FALSE;
-		//		return FALSE;
-		//	}
-		//	CharTimeAct[i] = (ChrTimeAct*)RPM<uintptr_t>(EntityObjectBase[i]->EntObjectPTR + 0x18);
+			if (EntityObjectBase[i]->EntObjectPTR == NULL) {
+				m_isValid = FALSE;
+				return FALSE;
+			}
+			CharData[i] = (ChrData*)RPM<uintptr_t>(EntityObjectBase[i]->EntObjectPTR + 0x0);
+			
+			if ((ChrTimeAct*)RPM<uintptr_t>(EntityObjectBase[i]->EntObjectPTR + 0x18) == NULL)	//	Get animation information
+			{
+				m_isValid = FALSE;
+				return FALSE;
+			}
+			CharTimeAct[i] = (ChrTimeAct*)RPM<uintptr_t>(EntityObjectBase[i]->EntObjectPTR + 0x18);
 
-		//	if ((ChrFall*)RPM<uintptr_t>((uintptr_t)EntityObjectBase[i]->EntObjectPTR + 0x28) == NULL) {
-		//		m_isValid = FALSE;
-		//		return FALSE;
-		//	}
-		//	CharFall[i] = (ChrFall*)RPM<uintptr_t>((uintptr_t)EntityObjectBase[i]->EntObjectPTR + 0x28);
-		//	
-		//	if ((ChrPhysics*)RPM<uintptr_t>((uintptr_t)EntityObjectBase[i]->EntObjectPTR + 0x68) == NULL) {
-		//		m_isValid = FALSE;
-		//		return FALSE;
-		//	}
-		//	CharPhysics[i] = (ChrPhysics*)RPM<uintptr_t>((uintptr_t)EntityObjectBase[i]->EntObjectPTR + 0x68);
-		//	count++;
+			if ((ChrFall*)RPM<uintptr_t>((uintptr_t)EntityObjectBase[i]->EntObjectPTR + 0x28) == NULL) {
+				m_isValid = FALSE;
+				return FALSE;
+			}
+			CharFall[i] = (ChrFall*)RPM<uintptr_t>((uintptr_t)EntityObjectBase[i]->EntObjectPTR + 0x28);
+			
+			if ((ChrPhysics*)RPM<uintptr_t>((uintptr_t)EntityObjectBase[i]->EntObjectPTR + 0x68) == NULL) {
+				m_isValid = FALSE;
+				return FALSE;
+			}
+			CharPhysics[i] = (ChrPhysics*)RPM<uintptr_t>((uintptr_t)EntityObjectBase[i]->EntObjectPTR + 0x68);
+			count++;
 
-		//	//	VERBOSE CONSOLE LOG
-		//	if (g_Console->verbose) {
-		//		printf("EntityObjectBase: %p\n", EntityObjectBase);
-		//		printf("CharData: %p\n", CharData[i]);
-		//		printf("CharFall: %p\n", CharFall[i]);
-		//		printf("CharPhsyics: %p\n", CharPhysics[i]);
-		//		printf("---------------------------------------------\n\n");
-		//	}
-		//}
-		//validEnts_count = count;
+			//	VERBOSE CONSOLE LOG
+			if (g_Console->verbose) {
+				printf("EntityObjectBase: %p\n", EntityObjectBase);
+				printf("CharData: %p\n", CharData[i]);
+				printf("CharFall: %p\n", CharFall[i]);
+				printf("CharPhsyics: %p\n", CharPhysics[i]);
+				printf("---------------------------------------------\n\n");
+			}
+		}
+		validEnts_count = count;
 		g_Console->printdbg("[+] WorldCharMan::Update FINISHED\n\n", TRUE, g_Console->color.green);
 		m_isValid = TRUE;
 		return TRUE;

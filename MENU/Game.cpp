@@ -1,5 +1,6 @@
 #include "Game.hpp"
 #include "Menu.hpp"
+#include "Console.hpp"
 
 namespace ER {
 
@@ -33,6 +34,50 @@ namespace ER {
 	GameFunctions::GameFunctions()
 	{
 		return;
+	}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	void GameFunctions::FMVSkip(uintptr_t addr)
+	{
+		///  FMV SKIP NEW TEST
+		//  STATIC ADDRESS!! NEEDS sig function applied!!
+		//  AOB: 48 8B 90 ? ? ? ? 48 85 D2 74 07 C6
+		//  OLD | 0x0A8FA5E | 0x0A8FB4E
+		using namespace ER;
+		Patch((BYTE*)addr + 0x0A9415E, (BYTE*)"\xE9\x1C\x00\x00\x00", 5);
+		g_Console->printdbg("[+] FMV's SKIPPED\n", TRUE, g_Console->color.green);
+	}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	void GameFunctions::UnlockFPS(uintptr_t addr)
+	{
+		///  UNLOCK FPS LIMIT 
+		//  STATIC ADDRESS!! NEEDS sig function applied!!
+		//  AOB: C7 ? ? 89 88 88 3C EB ? 89 ? 18 EB ? 89 ? 18 C7 | (Menu.hpp->ptr_SET_FPS)
+		//  AOB2: C7 ? EF 3C 00 00 00 C7 ? F3 01 00 00 00   |   OLD 0x1944A37
+		using namespace ER;
+		Patch((BYTE*)addr + 0x194CCC7, (BYTE*)"\xC7\x45\xEF\x00\x00\x00\x00", 7);  // AOB 2 | OLD 0x1944B27
+		g_Console->printdbg("[+] FPS LIMIT REMOVED\n\n", TRUE, g_Console->color.green);
+	}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="addr"></param>
+	/// <param name="ACTIVE"></param>
+	void GameFunctions::PauseGameplay(uintptr_t addr, bool ACTIVE)
+	{
+		//  STATIC ADDRESS!! NEEDS sig function applied!!
+		//  Pause Game AOB: 0f 84 ? ? ? ? c6 83 ? ? 00 00 00 48 8d ? ? ? ? ? 48 89 ? ? 89 (Add 1byte)
+		//  OLD | 0A7CCD6 | 0xA7CDC6
+		if (ACTIVE)
+			Patch((BYTE*)addr + 0x0A81336, (BYTE*)"\x85", 1);
+		else if (!ACTIVE)
+			Patch((BYTE*)addr + 0x0A81336, (BYTE*)"\x84", 1);
 	}
 
 	//	Gets PTR address by resolving a pointer chain

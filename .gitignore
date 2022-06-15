@@ -99,3 +99,8 @@ x64/Release/ER Overlay.tlog/unsuccessfulbuild
 .vs/EROverlay/v16/Solution.VC.db-shm
 .vs/EROverlay/v16/Solution.VC.db-wal
 bin/ER Overlay_dbg.ilk
+.vs/EROverlay/v16/ipch/AutoPCH/6932d6778dbf8588/MENU.ipch
+.vs/EROverlay/v16/ipch/AutoPCH/b04ca97a82d74d3f/D3DRENDERER.ipch
+.vs/EROverlay/v16/ipch/AutoPCH/b10e1e5c855367a/DLLMAIN.ipch
+.vs/EROverlay/v16/ipch/AutoPCH/cc693f757118621f/WORLDCHARMAN.ipch
+.vs/EROverlay/v16/ipch/AutoPCH/fc9763e83f63af3f/CHRMODULES.ipch
