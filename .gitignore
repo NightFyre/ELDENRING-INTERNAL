@@ -84,3 +84,5 @@ x64/Debug/buffer.obj
 .vs/EROverlay/v16/ipch/AutoPCH/81ee2cefe089ec38/D3DRENDERER.ipch
 .vs/EROverlay/v16/ipch/AutoPCH/b5146228b2938587/CHRINS.ipch
 .vs/EROverlay/v16/ipch/AutoPCH/d484be6ec392cac2/CHRMODULES.ipch
+x64/Release/ER Overlay.tlog/unsuccessfulbuild
+.vs/EROverlay/v16/ipch/AutoPCH/27b9e62b372246f9/MENU.ipch

@@ -40,7 +40,7 @@ void BackgroundWorker()
     //  Optimizations still need to be made as crashing can and does still occur during load screens and other instances
     //  Nullptrs tend to be the underlying cause.
     using namespace ER;
-    while (true) {
+    while (g_Running) {
         if (g_WorldCharMan->Update())
             g_WorldCharMan->count = NULL;
         std::this_thread::sleep_for(5s);
@@ -115,7 +115,6 @@ void MainThread()
     //::ShowWindow(GetConsoleWindow(), SW_HIDE);
     //FMVSkip();
     //UnlockFPS();
-
 
     g_Console->printdbg("alpha-0.0.4 CHANGE-LOG:\n- WorldCharMan::Update Function Changed\n- WorldCharMan::Update Call Frequency INCREASED\n- Menu:: Included New Functions\n- Draw Skeleton Distance Updated\n- Freeze Entities Test\n\n", TRUE, g_Console->color.teal);
     g_Console->printdbg("[+] PRESS [INSERT] TO SHOW/HIDE MENU\n\n", FALSE);

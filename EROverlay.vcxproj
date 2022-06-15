@@ -206,7 +206,6 @@
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="D3DRenderer.cpp" />
-    <ClCompile Include="data\npcnames.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameDataMan.cpp" />
