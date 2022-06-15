@@ -13,12 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Resource Files\ImGui">
-      <UniqueIdentifier>{3fa9af8c-a2f6-415a-bf94-47526b6aa25a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\MinHook">
-      <UniqueIdentifier>{8f9452df-f1d6-4cdd-9d6f-1662adac1043}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Menu">
       <UniqueIdentifier>{e3b40fb2-c17d-4152-99f7-df5708561c28}</UniqueIdentifier>
     </Filter>
@@ -31,191 +25,174 @@
     <Filter Include="Source Files\Game">
       <UniqueIdentifier>{e37f2d3e-a33a-4992-9b66-4a121c08e887}</UniqueIdentifier>
     </Filter>
+    <Filter Include="libs">
+      <UniqueIdentifier>{0ce44510-1c9a-46a7-9260-3ab4e6dc6432}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libs\MinHook">
+      <UniqueIdentifier>{8f9452df-f1d6-4cdd-9d6f-1662adac1043}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libs\ImGui">
+      <UniqueIdentifier>{3fa9af8c-a2f6-415a-bf94-47526b6aa25a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Common.hpp">
+    <ClInclude Include="libs\ImGui\imconfig.h">
+      <Filter>libs\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\ImGui\imgui.h">
+      <Filter>libs\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\ImGui\imgui_impl_dx12.h">
+      <Filter>libs\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\ImGui\imgui_impl_win32.h">
+      <Filter>libs\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\ImGui\imgui_internal.h">
+      <Filter>libs\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\ImGui\imstb_rectpack.h">
+      <Filter>libs\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\ImGui\imstb_textedit.h">
+      <Filter>libs\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\ImGui\imstb_truetype.h">
+      <Filter>libs\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\Minhook\buffer.h">
+      <Filter>libs\MinHook</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\Minhook\hde32.h">
+      <Filter>libs\MinHook</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\Minhook\hde64.h">
+      <Filter>libs\MinHook</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\Minhook\MinHook.h">
+      <Filter>libs\MinHook</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\Minhook\pstdint.h">
+      <Filter>libs\MinHook</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\Minhook\table32.h">
+      <Filter>libs\MinHook</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\Minhook\table64.h">
+      <Filter>libs\MinHook</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\Minhook\trampoline.h">
+      <Filter>libs\MinHook</Filter>
+    </ClInclude>
+    <ClInclude Include="MENU\ChrIns.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Game.hpp">
+    <ClInclude Include="MENU\ChrModules.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hooking.hpp">
+    <ClInclude Include="MENU\Common.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ImGui\imconfig.h">
-      <Filter>Resource Files\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGui\imgui.h">
-      <Filter>Resource Files\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGui\imgui_impl_dx9.h">
-      <Filter>Resource Files\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGui\imgui_impl_dx10.h">
-      <Filter>Resource Files\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGui\imgui_impl_dx11.h">
-      <Filter>Resource Files\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGui\imgui_impl_dx12.h">
-      <Filter>Resource Files\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGui\imgui_impl_win32.h">
-      <Filter>Resource Files\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGui\imgui_internal.h">
-      <Filter>Resource Files\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGui\imstb_rectpack.h">
-      <Filter>Resource Files\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGui\imstb_textedit.h">
-      <Filter>Resource Files\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGui\imstb_truetype.h">
-      <Filter>Resource Files\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="Minhook\include\MinHook.h">
-      <Filter>Resource Files\MinHook</Filter>
-    </ClInclude>
-    <ClInclude Include="Minhook\src\buffer.h">
-      <Filter>Resource Files\MinHook</Filter>
-    </ClInclude>
-    <ClInclude Include="Minhook\src\trampoline.h">
-      <Filter>Resource Files\MinHook</Filter>
-    </ClInclude>
-    <ClInclude Include="Minhook\src\HDE\hde32.h">
-      <Filter>Resource Files\MinHook</Filter>
-    </ClInclude>
-    <ClInclude Include="Minhook\src\HDE\hde64.h">
-      <Filter>Resource Files\MinHook</Filter>
-    </ClInclude>
-    <ClInclude Include="Minhook\src\HDE\pstdint.h">
-      <Filter>Resource Files\MinHook</Filter>
-    </ClInclude>
-    <ClInclude Include="Minhook\src\HDE\table32.h">
-      <Filter>Resource Files\MinHook</Filter>
-    </ClInclude>
-    <ClInclude Include="Minhook\src\HDE\table64.h">
-      <Filter>Resource Files\MinHook</Filter>
-    </ClInclude>
-    <ClInclude Include="Memory.hpp">
+    <ClInclude Include="MENU\Game.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="D3DRenderer.hpp">
-      <Filter>Header Files\Menu</Filter>
+    <ClInclude Include="MENU\Hooking.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Menu.hpp">
-      <Filter>Header Files\Menu</Filter>
+    <ClInclude Include="MENU\Memory.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GameDataMan.hpp">
+    <ClInclude Include="MENU\Vector.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MENU\GameDataMan.hpp">
       <Filter>Header Files\Game</Filter>
     </ClInclude>
-    <ClInclude Include="GameEnums.hpp">
+    <ClInclude Include="MENU\GameEnums.hpp">
       <Filter>Header Files\Game</Filter>
     </ClInclude>
-    <ClInclude Include="ChrIns.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="MENU\WorldCharMan.hpp">
+      <Filter>Header Files\Game</Filter>
     </ClInclude>
-    <ClInclude Include="ChrModules.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Vector.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Console.hpp">
+    <ClInclude Include="MENU\Console.hpp">
       <Filter>Header Files\Menu</Filter>
     </ClInclude>
-    <ClInclude Include="WorldCharMan.hpp">
-      <Filter>Header Files\Game</Filter>
+    <ClInclude Include="MENU\D3DRenderer.hpp">
+      <Filter>Header Files\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="MENU\Menu.hpp">
+      <Filter>Header Files\Menu</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="dllmain.cpp">
+    <ClCompile Include="libs\ImGui\imgui.cpp">
+      <Filter>libs\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="libs\ImGui\imgui_demo.cpp">
+      <Filter>libs\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="libs\ImGui\imgui_draw.cpp">
+      <Filter>libs\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="libs\ImGui\imgui_impl_dx12.cpp">
+      <Filter>libs\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="libs\ImGui\imgui_impl_win32.cpp">
+      <Filter>libs\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="libs\ImGui\imgui_tables.cpp">
+      <Filter>libs\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="libs\ImGui\imgui_widgets.cpp">
+      <Filter>libs\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="libs\Minhook\buffer.c">
+      <Filter>libs\MinHook</Filter>
+    </ClCompile>
+    <ClCompile Include="libs\Minhook\hde32.c">
+      <Filter>libs\MinHook</Filter>
+    </ClCompile>
+    <ClCompile Include="libs\Minhook\hde64.c">
+      <Filter>libs\MinHook</Filter>
+    </ClCompile>
+    <ClCompile Include="libs\Minhook\hook.c">
+      <Filter>libs\MinHook</Filter>
+    </ClCompile>
+    <ClCompile Include="libs\Minhook\trampoline.c">
+      <Filter>libs\MinHook</Filter>
+    </ClCompile>
+    <ClCompile Include="MENU\ChrIns.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Common.cpp">
+    <ClCompile Include="MENU\ChrModules.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Game.cpp">
+    <ClCompile Include="MENU\Common.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Hooking.cpp">
+    <ClCompile Include="MENU\dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ImGui\imgui.cpp">
-      <Filter>Resource Files\ImGui</Filter>
+    <ClCompile Include="MENU\Game.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ImGui\imgui_demo.cpp">
-      <Filter>Resource Files\ImGui</Filter>
+    <ClCompile Include="MENU\Hooking.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ImGui\imgui_draw.cpp">
-      <Filter>Resource Files\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGui\imgui_impl_dx9.cpp">
-      <Filter>Resource Files\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGui\imgui_impl_dx10.cpp">
-      <Filter>Resource Files\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGui\imgui_impl_dx11.cpp">
-      <Filter>Resource Files\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGui\imgui_impl_dx12.cpp">
-      <Filter>Resource Files\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGui\imgui_impl_win32.cpp">
-      <Filter>Resource Files\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGui\imgui_tables.cpp">
-      <Filter>Resource Files\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGui\imgui_widgets.cpp">
-      <Filter>Resource Files\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="Minhook\src\buffer.c">
-      <Filter>Resource Files\MinHook</Filter>
-    </ClCompile>
-    <ClCompile Include="Minhook\src\hook.c">
-      <Filter>Resource Files\MinHook</Filter>
-    </ClCompile>
-    <ClCompile Include="Minhook\src\trampoline.c">
-      <Filter>Resource Files\MinHook</Filter>
-    </ClCompile>
-    <ClCompile Include="Minhook\src\HDE\hde32.c">
-      <Filter>Resource Files\MinHook</Filter>
-    </ClCompile>
-    <ClCompile Include="Minhook\src\HDE\hde64.c">
-      <Filter>Resource Files\MinHook</Filter>
-    </ClCompile>
-    <ClCompile Include="D3DRenderer.cpp">
+    <ClCompile Include="MENU\Console.cpp">
       <Filter>Source Files\Menu</Filter>
     </ClCompile>
-    <ClCompile Include="Menu.cpp">
+    <ClCompile Include="MENU\D3DRenderer.cpp">
       <Filter>Source Files\Menu</Filter>
     </ClCompile>
-    <ClCompile Include="GameDataMan.cpp">
+    <ClCompile Include="MENU\Menu.cpp">
+      <Filter>Source Files\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="MENU\GameDataMan.cpp">
       <Filter>Source Files\Game</Filter>
     </ClCompile>
-    <ClCompile Include="ChrIns.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ChrModules.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="WorldCharMan.cpp">
+    <ClCompile Include="MENU\WorldCharMan.cpp">
       <Filter>Source Files\Game</Filter>
     </ClCompile>
-    <ClCompile Include="Console.cpp">
-      <Filter>Source Files\Menu</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Minhook\src\.gitkeep">
-      <Filter>Resource Files\MinHook</Filter>
-    </None>
-    <None Include="Minhook\src\HDE\.gitkeep">
-      <Filter>Resource Files\MinHook</Filter>
-    </None>
   </ItemGroup>
 </Project>

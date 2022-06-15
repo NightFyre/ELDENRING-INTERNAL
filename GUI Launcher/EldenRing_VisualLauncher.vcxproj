@@ -72,21 +72,25 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>..\bin</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(DXSDK_DIR)Lib\x86;$(LibraryPath)</LibraryPath>
+    <OutDir>..\bin</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <TargetName>start_protected_game</TargetName>
+    <OutDir>..\bin</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(DXSDK_DIR)Lib\x64;$(LibraryPath)</LibraryPath>
     <TargetName>start_protected_game</TargetName>
+    <OutDir>..\bin</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -147,26 +151,26 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\ImGui\DOCKING\imgui.cpp" />
-    <ClCompile Include="..\ImGui\DOCKING\imgui_demo.cpp" />
-    <ClCompile Include="..\ImGui\DOCKING\imgui_draw.cpp" />
-    <ClCompile Include="..\ImGui\DOCKING\imgui_impl_dx11.cpp" />
-    <ClCompile Include="..\ImGui\DOCKING\imgui_impl_win32.cpp" />
-    <ClCompile Include="..\ImGui\DOCKING\imgui_tables.cpp" />
-    <ClCompile Include="..\ImGui\DOCKING\imgui_widgets.cpp" />
+    <ClCompile Include="..\libs\ImGui\DOCKING\imgui.cpp" />
+    <ClCompile Include="..\libs\ImGui\DOCKING\imgui_demo.cpp" />
+    <ClCompile Include="..\libs\ImGui\DOCKING\imgui_draw.cpp" />
+    <ClCompile Include="..\libs\ImGui\DOCKING\imgui_impl_dx11.cpp" />
+    <ClCompile Include="..\libs\ImGui\DOCKING\imgui_impl_win32.cpp" />
+    <ClCompile Include="..\libs\ImGui\DOCKING\imgui_tables.cpp" />
+    <ClCompile Include="..\libs\ImGui\DOCKING\imgui_widgets.cpp" />
     <ClCompile Include="DXWindow.cpp" />
     <ClCompile Include="Launcher.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\ImGui\DOCKING\imconfig.h" />
-    <ClInclude Include="..\ImGui\DOCKING\imgui.h" />
-    <ClInclude Include="..\ImGui\DOCKING\imgui_impl_dx11.h" />
-    <ClInclude Include="..\ImGui\DOCKING\imgui_impl_win32.h" />
-    <ClInclude Include="..\ImGui\DOCKING\imgui_internal.h" />
-    <ClInclude Include="..\ImGui\DOCKING\imstb_rectpack.h" />
-    <ClInclude Include="..\ImGui\DOCKING\imstb_textedit.h" />
-    <ClInclude Include="..\ImGui\DOCKING\imstb_truetype.h" />
+    <ClInclude Include="..\libs\ImGui\DOCKING\imconfig.h" />
+    <ClInclude Include="..\libs\ImGui\DOCKING\imgui.h" />
+    <ClInclude Include="..\libs\ImGui\DOCKING\imgui_impl_dx11.h" />
+    <ClInclude Include="..\libs\ImGui\DOCKING\imgui_impl_win32.h" />
+    <ClInclude Include="..\libs\ImGui\DOCKING\imgui_internal.h" />
+    <ClInclude Include="..\libs\ImGui\DOCKING\imstb_rectpack.h" />
+    <ClInclude Include="..\libs\ImGui\DOCKING\imstb_textedit.h" />
+    <ClInclude Include="..\libs\ImGui\DOCKING\imstb_truetype.h" />
     <ClInclude Include="DXWindow.hpp" />
     <ClInclude Include="helper.hpp" />
     <ClInclude Include="Launcher.hpp" />
