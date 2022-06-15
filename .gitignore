@@ -130,3 +130,5 @@ GUI Launcher/x64/Debug/start_protected_game.exe.recipe
 GUI Launcher/x64/Debug/vc142.idb
 GUI Launcher/x64/Debug/vc142.pdb
 .vs/EROverlay/v16/ipch/AutoPCH/a1fb2047e606b980/DXWINDOW.ipch
+.vs/EROverlay/v16/ipch/AutoPCH/e793358e897a5461/SOURCE.ipch
+.vs/EROverlay/v16/ipch/AutoPCH/4e01f2504491ac8c/LAUNCHER.ipch
