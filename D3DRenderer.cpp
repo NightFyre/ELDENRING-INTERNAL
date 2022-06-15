@@ -324,6 +324,13 @@ namespace ER
 
     HRESULT APIENTRY D3DRenderer::HookPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags)
     {
+		if (g_KillSwitch) {
+			g_Hooking->Unhook();
+			g_D3DRenderer->oPresent(pSwapChain, SyncInterval, Flags);
+			g_Running = FALSE;
+			return 0;
+
+		}
 		g_D3DRenderer->Overlay(pSwapChain);
 		return g_D3DRenderer->oPresent(pSwapChain, SyncInterval, Flags);
 

@@ -46,6 +46,7 @@ void BackgroundWorker()
         std::this_thread::sleep_for(5s);
         std::this_thread::yield();
     }
+    return;
 }
 
 /// <summary>
@@ -112,8 +113,9 @@ void MainThread()
     ///  HIDE CONSOLE
     //g_GameVariables->m_ShowConsole = FALSE;
     //::ShowWindow(GetConsoleWindow(), SW_HIDE);
-    FMVSkip();
-    UnlockFPS();
+    //FMVSkip();
+    //UnlockFPS();
+
 
     g_Console->printdbg("alpha-0.0.4 CHANGE-LOG:\n- WorldCharMan::Update Function Changed\n- WorldCharMan::Update Call Frequency INCREASED\n- Menu:: Included New Functions\n- Draw Skeleton Distance Updated\n- Freeze Entities Test\n\n", TRUE, g_Console->color.teal);
     g_Console->printdbg("[+] PRESS [INSERT] TO SHOW/HIDE MENU\n\n", FALSE);
@@ -141,7 +143,7 @@ void MainThread()
     {
         if (GetAsyncKeyState(VK_INSERT) & 1) {
             g_GameVariables->m_ShowMenu = !g_GameVariables->m_ShowMenu;
-            PauseGameplay(g_GameVariables->m_ModuleBase, g_GameVariables->m_ShowMenu);
+            //PauseGameplay(g_GameVariables->m_ModuleBase, g_GameVariables->m_ShowMenu);
         }
 
         if (GetAsyncKeyState(VK_DELETE) & 1) {
@@ -158,8 +160,7 @@ void MainThread()
     WCMUpdate.join();
     g_Console->Free();
     std::this_thread::sleep_for(500ms);
-    g_Hooking->Unhook();
-    std::this_thread::sleep_for(500ms);
+    FreeLibraryAndExitThread(g_Module, 0);
 }
 
 BOOL APIENTRY DllMain( HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
@@ -168,11 +169,9 @@ BOOL APIENTRY DllMain( HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpRese
     if (ul_reason_for_call == DLL_PROCESS_ATTACH) {
         DisableThreadLibraryCalls(hModule);
         g_Module = hModule;
-        _beginthread((_beginthread_proc_type)MainThread, 0, NULL);
+        CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)MainThread, g_Module, NULL, NULL);
     }
-    else if (ul_reason_for_call == DLL_PROCESS_DETACH) {
-        g_Hooking->Unhook();
-        FreeLibraryAndExitThread(hModule, TRUE);
-    }
+    else if (ul_reason_for_call == DLL_PROCESS_DETACH)
+        g_KillSwitch = TRUE;
     return TRUE;
 }

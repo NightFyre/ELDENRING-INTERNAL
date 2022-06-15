@@ -67,7 +67,8 @@ namespace ER {
 	namespace fs = std::filesystem;
 
 	inline HMODULE g_Module{};
-	inline std::atomic_bool g_Running = true;
+	inline std::atomic_bool g_Running = TRUE;
+	inline std::atomic_bool g_KillSwitch = FALSE;
 
 	template<typename T> inline T RPM(uint64_t lpBaseAddress)
 	{

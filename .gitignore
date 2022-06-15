@@ -1,0 +1,86 @@
+
+x64/Release/WorldCharMan.obj
+x64/Release/vc142.pdb
+x64/Release/trampoline.obj
+x64/Release/Menu.obj
+x64/Release/imgui_widgets.obj
+x64/Release/imgui_tables.obj
+x64/Release/imgui_impl_win32.obj
+x64/Release/imgui_impl_dx9.obj
+x64/Release/imgui_impl_dx12.obj
+x64/Release/imgui_impl_dx11.obj
+x64/Release/imgui_impl_dx10.obj
+x64/Release/imgui_draw.obj
+x64/Release/imgui_demo.obj
+x64/Release/imgui.obj
+x64/Release/Hooking.obj
+x64/Release/hook.obj
+x64/Release/hde64.obj
+x64/Release/hde32.obj
+x64/Release/GameDataMan.obj
+x64/Release/Game.obj
+x64/Release/EROverlay.vcxproj.FileListAbsolute.txt
+x64/Release/EROverlay.log
+x64/Release/ER Overlay.tlog/link.write.1.tlog
+x64/Release/ER Overlay.tlog/link.read.1.tlog
+x64/Release/ER Overlay.tlog/link.command.1.tlog
+x64/Release/ER Overlay.tlog/ER Overlay.lastbuildstate
+x64/Release/ER Overlay.tlog/CL.write.1.tlog
+x64/Release/ER Overlay.tlog/CL.read.1.tlog
+x64/Release/ER Overlay.tlog/CL.command.1.tlog
+x64/Release/ER Overlay.ipdb
+x64/Release/ER Overlay.iobj
+x64/Release/ER Overlay.dll.recipe
+x64/Release/ER Overlay.Build.CppClean.log
+x64/Release/dllmain.obj
+x64/Release/D3DRenderer.obj
+x64/Release/Console.obj
+x64/Release/Common.obj
+x64/Release/ChrModules.obj
+x64/Release/ChrIns.obj
+x64/Release/buffer.obj
+x64/Debug/WorldCharMan.obj
+x64/Debug/vc142.pdb
+x64/Debug/vc142.idb
+x64/Debug/trampoline.obj
+x64/Debug/Menu.obj
+x64/Debug/imgui_widgets.obj
+x64/Debug/imgui_tables.obj
+x64/Debug/imgui_impl_win32.obj
+x64/Debug/imgui_impl_dx9.obj
+x64/Debug/imgui_impl_dx12.obj
+x64/Debug/imgui_impl_dx11.obj
+x64/Debug/imgui_impl_dx10.obj
+x64/Debug/imgui_draw.obj
+x64/Debug/imgui_demo.obj
+x64/Debug/imgui.obj
+x64/Debug/Hooking.obj
+x64/Debug/hook.obj
+x64/Debug/hde64.obj
+x64/Debug/hde32.obj
+x64/Debug/GameDataMan.obj
+x64/Debug/Game.obj
+x64/Debug/EROverlay.log
+x64/Debug/ER Overlay_dbg.dll.recipe
+x64/Debug/ER Overlay.tlog/link.write.1.tlog
+x64/Debug/ER Overlay.tlog/link.read.1.tlog
+x64/Debug/ER Overlay.tlog/link.command.1.tlog
+x64/Debug/ER Overlay.tlog/ER Overlay.lastbuildstate
+x64/Debug/ER Overlay.tlog/CL.write.1.tlog
+x64/Debug/ER Overlay.tlog/CL.read.1.tlog
+x64/Debug/ER Overlay.tlog/CL.command.1.tlog
+x64/Debug/dllmain.obj
+x64/Debug/D3DRenderer.obj
+x64/Debug/Console.obj
+x64/Debug/Common.obj
+x64/Debug/ChrModules.obj
+x64/Debug/ChrIns.obj
+x64/Debug/buffer.obj
+.vs/EROverlay/v16/.suo
+.vs/EROverlay/v16/Browse.VC.db
+.vs/EROverlay/v16/Browse.VC.db-shm
+.vs/EROverlay/v16/Browse.VC.db-wal
+.vs/EROverlay/v16/Browse.VC.opendb
+.vs/EROverlay/v16/ipch/AutoPCH/81ee2cefe089ec38/D3DRENDERER.ipch
+.vs/EROverlay/v16/ipch/AutoPCH/b5146228b2938587/CHRINS.ipch
+.vs/EROverlay/v16/ipch/AutoPCH/d484be6ec392cac2/CHRMODULES.ipch
