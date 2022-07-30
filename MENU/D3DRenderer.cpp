@@ -543,7 +543,7 @@ namespace ER
 		NDC.z = clipCoords.z / clipCoords.w;
 
 		screen.x = (windowWidth / 2 * NDC.x) + (NDC.x + windowWidth / 2);
-		screen.y = (windowHeight / 2 * NDC.y) + (NDC.y + windowHeight / 2);
+		screen.y = -(windowHeight / 2 * NDC.y) + (NDC.y + windowHeight / 2);
 		return true;
 	}
 }

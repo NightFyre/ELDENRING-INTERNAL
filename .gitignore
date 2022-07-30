@@ -132,3 +132,21 @@ GUI Launcher/x64/Debug/vc142.pdb
 .vs/EROverlay/v16/ipch/AutoPCH/a1fb2047e606b980/DXWINDOW.ipch
 .vs/EROverlay/v16/ipch/AutoPCH/e793358e897a5461/SOURCE.ipch
 .vs/EROverlay/v16/ipch/AutoPCH/4e01f2504491ac8c/LAUNCHER.ipch
+bin/ER Overlay.dll
+bin/ER Overlay.pdb
+bin/start_protected_game.exe
+bin/start_protected_game.ilk
+bin/start_protected_game.pdb
+bin/start_protected_game.exe
+bin/start_protected_game.ilk
+bin/start_protected_game.pdb
+bin/start_protected_game.pdb
+bin/start_protected_game.ilk
+bin/start_protected_game.exe
+bin/ER Overlay_dbg.dll
+bin/ER Overlay_dbg.pdb
+bin/start_protected_game.exe
+bin/start_protected_game.ilk
+bin/start_protected_game.pdb
+GUI Launcher/x64/Release/EldenRing_VisualLauncher.vcxproj.FileListAbsolute.txt
+GUI Launcher/x64/Release/start_protected_game.Build.CppClean.log

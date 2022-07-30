@@ -34,6 +34,7 @@ namespace ER {
     }
 
     //  LINE + NAME ESP
+    int count = 0;
     void ESP(float distance)
     {
         //  Update Entity Info
@@ -50,11 +51,13 @@ namespace ER {
         }
 
         ///  Filter Entity Results
-        int count = 0;
         Vector2 vecScreen;
-        uintptr_t ViewMatrix = g_GameFunctions->p2addy(g_GameVariables->m_ModuleBase + g_Menu->ptr_NBOTT_W2S, { 0x60, 0x60, 0x420 });
         //uintptr_t ViewMatrix = g_Hooking->TRUE_W2S;     //CRASH AT MAIN MENU
-        Vector2 pos = { ImGui::GetMainViewport()->GetCenter().x, ImGui::GetMainViewport()->GetCenter().y };
+        uintptr_t ViewMatrix = g_GameFunctions->p2addy(g_GameVariables->m_ModuleBase + g_Menu->ptr_NBOTT_W2S, { 0x60, 0x60, 0x420 });
+        Vector2 Size = { ImGui::GetMainViewport()->Size.x, ImGui::GetMainViewport()->Size.y };
+        Vector2 pos = { (Size.x / 2), (Size.y / 2) };
+        ImVec2 DrawPosition = { pos.x, 0 };
+
         memcpy(&g_Menu->Matrix, (BYTE*)ViewMatrix, sizeof(g_Menu->Matrix));
         for (int i = 0; i <= g_WorldCharMan->arraySIZE - 1; i = i + 1) {
 
@@ -76,10 +79,11 @@ namespace ER {
                 continue;
             }
 
-            ///  DRAW SKELETON 
-            //DISTANCE
+            float DistanceToEntity = g_GameFunctions->GetDistanceTo3D_Object(g_WorldCharMan->CharPhysics[i]->Position, g_WorldCharMan->pCharPhysics->Position);
+
+            ///  DRAW SKELETON DISTANCE
             if (distance != NULL) {
-                if (g_GameFunctions->GetDistanceTo3D_Object(g_WorldCharMan->CharPhysics[i]->Position, g_WorldCharMan->pCharPhysics->Position) <= distance)
+                if (DistanceToEntity <= distance)
                 {
                     if (g_WorldCharMan->CharFall[i]->DrawSkeleton == NULL)
                         g_WorldCharMan->CharFall[i]->DrawSkeleton = 1;
@@ -88,14 +92,16 @@ namespace ER {
                     g_WorldCharMan->CharFall[i]->DrawSkeleton = NULL;
             }
               
-            if (g_D3DRenderer->WorldToScreen(g_WorldCharMan->CharPhysics[i]->Position, vecScreen, g_Menu->Matrix, ImGui::GetWindowWidth(), ImGui::GetWindowHeight())) {
-                ImGui::GetBackgroundDrawList()->AddText(ImVec2(vecScreen.x, vecScreen.y), ImColor(255, 0, 0, 255), std::to_string(g_GameFunctions->GetDistanceTo3D_Object(g_WorldCharMan->CharPhysics[i]->Position, g_WorldCharMan->pCharPhysics->Position)).c_str());
-                //ImGui::GetBackgroundDrawList()->AddText(ImVec2(vecScreen.x, vecScreen.y), ImColor(255, 0, 0, 255), std::to_string(count).c_str());
-                ImGui::GetBackgroundDrawList()->AddLine(ImVec2(pos.x, pos.y + 960), ImVec2(vecScreen.x, vecScreen.y), ImColor(255, 255, 255), 0.3f);
+            std::string EntityCount = "ENTITIES: " + std::to_string(g_WorldCharMan->count);
+            std::string EntityDistance = std::to_string(g_GameFunctions->GetDistanceTo3D_Object(g_WorldCharMan->CharPhysics[i]->Position, g_WorldCharMan->pCharPhysics->Position));
+            if (g_D3DRenderer->WorldToScreen(g_WorldCharMan->CharPhysics[i]->Position, vecScreen, g_Menu->Matrix, Size.x, Size.y)) {
+                ImGui::GetBackgroundDrawList()->AddText(ImVec2(5, 5), ImColor(255, 0, 0, 255), EntityCount.c_str());
+                ImGui::GetBackgroundDrawList()->AddText(ImVec2(vecScreen.x, vecScreen.y), ImColor(255, 0, 0, 255), EntityDistance.c_str());
+                ImGui::GetBackgroundDrawList()->AddLine(DrawPosition, ImVec2(vecScreen.x, vecScreen.y), ImColor(255, 255, 255), 0.3f);
                 count++;
             }
         }
-        g_WorldCharMan->count = NULL;
+        g_WorldCharMan->count = count;
         count = NULL;
     }
 
