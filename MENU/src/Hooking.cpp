@@ -1,10 +1,10 @@
-#include "Hooking.hpp"
-#include "D3DRenderer.hpp"
-#include "Memory.hpp"
-#include "Menu.hpp"
+#include "../include/Hooking.hpp"
+#include "../include/D3DRenderer.hpp"
+#include "../include/Memory.hpp"
+#include "../include/Menu.hpp"
 
 // TEST
-#include "WorldCharMan.hpp"
+#include "../include/WorldCharMan.hpp"
 namespace ER {
 
 	//	Get Function Address

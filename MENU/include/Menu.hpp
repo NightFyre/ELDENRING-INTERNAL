@@ -102,7 +102,6 @@ namespace ER {
 		Menu& operator=(Menu&&) = delete;
 
 		//	FORWARD DECLARE FUNCTIONS
-		void InitStyle();
 		void Draw();
 		void AboutTab();
 		void CharacterStats();

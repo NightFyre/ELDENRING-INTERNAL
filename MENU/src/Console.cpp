@@ -1,18 +1,22 @@
-﻿#include "Console.hpp"
+﻿#include "../include/Console.hpp"
 FILE* stream;
 HANDLE fConsole; 
 
 namespace ER {
 
 	Console::Console() {
-		Init();
+		return;
 	}
 
-	void Console::Init() {
+	void Console::InitializeConsole(const char* ConsoleName) {
 		AllocConsole();
-		freopen_s(&stream, "CONOUT$", "w", stdout);
-		fConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-		SetConsoleTitleA("ELDEN RING DEBUG CONSOLE");
+		g_Handle = GetStdHandle(STD_OUTPUT_HANDLE);
+		g_hWnd = GetConsoleWindow();
+		freopen_s(&stream_in, "CONIN$", "r", stdin);
+		freopen_s(&stream_out, "CONOUT$", "w", stdout);
+		freopen_s(&stream_error, "CONOUT$", "w", stderr);
+		SetConsoleTitleA(ConsoleName);
+		ShowWindow(g_hWnd, SW_SHOW);
 
 		///	TITLE FOR RELEASE BUILD
 //		std::cout << R"(                                                                  
@@ -38,21 +42,44 @@ namespace ER {
 		//printdbg("[+] Created bv NightFyre & NBOTT42\n", TRUE, color.yellow);
 		//printdbg("[!] PLEASE DONT INJECT UNTIL YOU HAVE LOADED YOUR SAVE\n", TRUE, color.red);
 		//printdbg("[+] PRESS [INSERT] TO INJECT MENU\n", FALSE);
-
-		return;
 	}
 
-	void Console::printdbg(const char* Text, bool err, int color)
+	void Console::printdbg(const char* Text, Color Color, ...)
 	{
-		if (err) {
-			SetConsoleTextAttribute(fConsole, color);
-			printf(Text);
-			SetConsoleTextAttribute(fConsole, 15);
+		SetConsoleTextAttribute(g_Handle, Color);
+		va_list arg;
+		va_start(arg, Color);
+		vfprintf(stream_out, Text, arg);
+		va_end(arg);
+		SetConsoleTextAttribute(g_Handle, Color::DEFAULT);
+	}
+
+	void Console::scandbg(const char* Text, ...)
+	{
+		va_list arg;
+		va_start(arg, Text);
+		vfscanf(stream_in, Text, arg);
+		va_end(arg);
+	}
+
+	//  LOG EVENT FUNCTION
+	//  ONLY USE FOR ON|OFF DEBUG PRINTS
+	//<EXAMPLE>
+	//  TEXT: "[+] MENU:: ESP ; "
+	//  FLAG: bESP
+	//</EXAMPLE>
+	//  OUTPUT: [+] MENU:: ESP ; [<FLAG RESULT>]
+	void Console::LogEvent(std::string TEXT, bool FLAG)
+	{
+		std::string output;
+		Color color;
+		switch (FLAG) {
+		case (TRUE):	output = " [ON]\n"; color = Color::green;
+		case (FALSE):	output = " [OFF]\n"; color = Color::red;
 		}
-		else {
-			printf(Text);
-		}
-		return;
+		std::string append = TEXT + output;
+		g_Console->printdbg(append.c_str(), color);
+
 	}
 
 	void Console::Free()

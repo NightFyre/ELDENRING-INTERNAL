@@ -1,11 +1,11 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
-#include "Common.hpp"
-#include "D3DRenderer.hpp"
-#include "Hooking.hpp"
-#include "Menu.hpp"
-#include "GameDataMan.hpp"
-#include "WorldCharMan.hpp"
-#include "Console.hpp"
+#include "include/Common.hpp"
+#include "include/D3DRenderer.hpp"
+#include "include/Hooking.hpp"
+#include "include/Menu.hpp"
+#include "include/GameDataMan.hpp"
+#include "include/WorldCharMan.hpp"
+#include "include/Console.hpp"
 
 /// TEMPORARY FUNCTION SPACE, All functions here will be placed elsewhere eventually. I do not like having dllmain being so cluttered.
 
@@ -36,12 +36,13 @@ void MainThread()
 
     ///  STRUCTS, HOOKS & VARIABLES
     g_Console = std::make_unique<Console>();
-    g_Console->printdbg("[+] ELDEN RING INTERNAL (PREVIEW)\n", TRUE, g_Console->color.yellow);
-    g_Console->printdbg("[+] BUILD VERSION: alpha-0.0.5\n", TRUE, g_Console->color.yellow);
-    g_Console->printdbg("[+] BUILD DATE: 5/3/22\n", TRUE, g_Console->color.yellow);
-    g_Console->printdbg("[+] Created bv NightFyre & NBOTT42\n\n", TRUE, g_Console->color.yellow);
-    g_Console->printdbg("[!] THIS IS A PREVIEW BUILD\n", TRUE, g_Console->color.red);
-    g_Console->printdbg("[!] PLEASE DON'T INJECT UNTIL YOU HAVE REACHED THE MAIN MENU\n\n", TRUE, g_Console->color.red);
+    g_Console->InitializeConsole("ELDEN RING INTERNAL - DEBUG");
+    g_Console->printdbg("[+] ELDEN RING INTERNAL (PREVIEW)\n", Console::Color::yellow);
+    g_Console->printdbg("[+] BUILD VERSION: alpha-0.0.5\n", Console::Color::yellow);
+    g_Console->printdbg("[+] BUILD DATE: 5/3/22\n", Console::Color::yellow);
+    g_Console->printdbg("[+] Created bv NightFyre & NBOTT42\n\n", Console::Color::yellow);
+    g_Console->printdbg("[!] THIS IS A PREVIEW BUILD\n", Console::Color::red);
+    g_Console->printdbg("[!] PLEASE DON'T INJECT UNTIL YOU HAVE REACHED THE MAIN MENU\n\n", Console::Color::red);
     g_GameVariables = std::make_unique<GameVariables>();
     g_GameFunctions = std::make_unique<GameFunctions>();
     ///  HIDE CONSOLE
@@ -50,8 +51,8 @@ void MainThread()
     g_GameFunctions->FMVSkip(g_GameVariables->m_ModuleBase);
     g_GameFunctions->UnlockFPS(g_GameVariables->m_ModuleBase);
 
-    g_Console->printdbg("alpha-0.0.4 CHANGE-LOG:\n- WorldCharMan::Update Function Changed\n- WorldCharMan::Update Call Frequency INCREASED\n- Menu:: Included New Functions\n- Draw Skeleton Distance Updated\n- Freeze Entities Test\n\n", TRUE, g_Console->color.teal);
-    g_Console->printdbg("[+] PRESS [INSERT] TO SHOW/HIDE MENU\n\n", FALSE);
+    g_Console->printdbg("alpha-0.0.4 CHANGE-LOG:\n- WorldCharMan::Update Function Changed\n- WorldCharMan::Update Call Frequency INCREASED\n- Menu:: Included New Functions\n- Draw Skeleton Distance Updated\n- Freeze Entities Test\n\n", Console::Color::teal);
+    g_Console->printdbg("[+] PRESS [INSERT] TO SHOW/HIDE MENU\n\n", Console::Color::DEFAULT);
 
     //  WAIT FOR USER INPUT
     while (GetAsyncKeyState(VK_INSERT) == NULL)
@@ -60,6 +61,7 @@ void MainThread()
 
     g_Menu = std::make_unique<Menu>();
     g_D3DRenderer = std::make_unique<D3DRenderer>();
+    g_Styles = std::make_unique<Styles>();
     g_Hooking = std::make_unique<Hooking>();
     g_Hooking->Hook();
     g_GameDataMan = std::make_unique<GameDataMan>();

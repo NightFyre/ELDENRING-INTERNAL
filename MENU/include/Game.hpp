@@ -40,13 +40,20 @@ namespace ER
 		GameFunctions& operator=(GameFunctions const&) = delete;
 		GameFunctions& operator=(GameFunctions&&) = delete;
 		
+		bool m_BARRIER = FALSE;
+		float m_BARRIER_DISTANCE = 0;
+
 		void FMVSkip(uintptr_t addr);
 		void UnlockFPS(uintptr_t addr);
 		void PauseGameplay(uintptr_t addr, bool ACTIVE);
-
-		uintptr_t p2addy(uintptr_t PTR, std::vector<unsigned int> OFFSETS);
 		float GetDistanceTo3D_Object(Vector3 POS, Vector3 POS2);
 		void FPS();
+		void ESP(float distance);
+		void dbg_ESP();
+		void Barrier(float distance);
+
+		//	Memory Functions (needs to be moved elsewhere)
+		uintptr_t p2addy(uintptr_t PTR, std::vector<unsigned int> OFFSETS);
 		bool Replace(uintptr_t address, std::vector<uint16_t> originalBytes, std::vector<uint8_t> newBytes);
 	};
 

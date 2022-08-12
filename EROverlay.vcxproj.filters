@@ -13,18 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\Menu">
-      <UniqueIdentifier>{e3b40fb2-c17d-4152-99f7-df5708561c28}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Menu">
-      <UniqueIdentifier>{b1f78caa-272c-4c25-851a-a186b3451a65}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Game">
-      <UniqueIdentifier>{b0e61e58-05a4-44f5-9c0e-9bf5c2d45327}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Game">
-      <UniqueIdentifier>{e37f2d3e-a33a-4992-9b66-4a121c08e887}</UniqueIdentifier>
-    </Filter>
     <Filter Include="libs">
       <UniqueIdentifier>{0ce44510-1c9a-46a7-9260-3ab4e6dc6432}</UniqueIdentifier>
     </Filter>
@@ -33,6 +21,9 @@
     </Filter>
     <Filter Include="libs\ImGui">
       <UniqueIdentifier>{3fa9af8c-a2f6-415a-bf94-47526b6aa25a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tools">
+      <UniqueIdentifier>{cbaa35a2-129e-40f5-8c82-75280eb6470f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -84,44 +75,47 @@
     <ClInclude Include="libs\Minhook\trampoline.h">
       <Filter>libs\MinHook</Filter>
     </ClInclude>
-    <ClInclude Include="MENU\ChrIns.hpp">
+    <ClInclude Include="MENU\include\ChrIns.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MENU\ChrModules.hpp">
+    <ClInclude Include="MENU\include\ChrModules.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MENU\Common.hpp">
+    <ClInclude Include="MENU\include\Common.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MENU\Game.hpp">
+    <ClInclude Include="MENU\include\Console.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MENU\Hooking.hpp">
+    <ClInclude Include="MENU\include\D3DRenderer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MENU\Memory.hpp">
+    <ClInclude Include="MENU\include\framework.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MENU\Vector.hpp">
+    <ClInclude Include="MENU\include\Game.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MENU\GameDataMan.hpp">
-      <Filter>Header Files\Game</Filter>
+    <ClInclude Include="MENU\include\GameDataMan.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MENU\GameEnums.hpp">
-      <Filter>Header Files\Game</Filter>
+    <ClInclude Include="MENU\include\GameEnums.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MENU\WorldCharMan.hpp">
-      <Filter>Header Files\Game</Filter>
+    <ClInclude Include="MENU\include\Hooking.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MENU\Console.hpp">
-      <Filter>Header Files\Menu</Filter>
+    <ClInclude Include="MENU\include\Memory.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MENU\D3DRenderer.hpp">
-      <Filter>Header Files\Menu</Filter>
+    <ClInclude Include="MENU\include\Menu.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MENU\Menu.hpp">
-      <Filter>Header Files\Menu</Filter>
+    <ClInclude Include="MENU\include\WorldCharMan.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MENU\include\Tools\Vector.hpp">
+      <Filter>Header Files\Tools</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -161,38 +155,38 @@
     <ClCompile Include="libs\Minhook\trampoline.c">
       <Filter>libs\MinHook</Filter>
     </ClCompile>
-    <ClCompile Include="MENU\ChrIns.cpp">
+    <ClCompile Include="MENU\src\GameDataMan.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MENU\ChrModules.cpp">
+    <ClCompile Include="MENU\src\WorldCharMan.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MENU\Common.cpp">
+    <ClCompile Include="MENU\src\Menu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MENU\src\ChrIns.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MENU\src\ChrModules.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MENU\src\Common.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MENU\src\Console.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MENU\src\D3DRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MENU\src\Game.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MENU\src\Hooking.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MENU\dllmain.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MENU\Game.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MENU\Hooking.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MENU\Console.cpp">
-      <Filter>Source Files\Menu</Filter>
-    </ClCompile>
-    <ClCompile Include="MENU\D3DRenderer.cpp">
-      <Filter>Source Files\Menu</Filter>
-    </ClCompile>
-    <ClCompile Include="MENU\Menu.cpp">
-      <Filter>Source Files\Menu</Filter>
-    </ClCompile>
-    <ClCompile Include="MENU\GameDataMan.cpp">
-      <Filter>Source Files\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="MENU\WorldCharMan.cpp">
-      <Filter>Source Files\Game</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

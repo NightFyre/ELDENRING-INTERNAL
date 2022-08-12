@@ -150,3 +150,53 @@ bin/start_protected_game.ilk
 bin/start_protected_game.pdb
 GUI Launcher/x64/Release/EldenRing_VisualLauncher.vcxproj.FileListAbsolute.txt
 GUI Launcher/x64/Release/start_protected_game.Build.CppClean.log
+.vs/EROverlay/v16/ipch/AutoPCH/371b67d08d7de4ef/GAME.ipch
+.vs/EROverlay/v16/ipch/AutoPCH/5ab8c4ebe87a0c55/D3DRENDERER.ipch
+.vs/EROverlay/v16/ipch/AutoPCH/63d956695ea70af2/IMGUI.ipch
+.vs/EROverlay/v16/ipch/AutoPCH/67bdb4e8dd80a662/LAUNCHER.ipch
+.vs/EROverlay/v16/ipch/AutoPCH/82d2ae7b06489d38/HOOKING.ipch
+.vs/EROverlay/v16/ipch/AutoPCH/84872afd592e679a/MENU.ipch
+.vs/EROverlay/v16/ipch/AutoPCH/a3e9716b8e5cf833/SOURCE.ipch
+.vs/EROverlay/v16/ipch/AutoPCH/c9f23e972a5043d2/DXWINDOW.ipch
+.vs/EROverlay/v16/ipch/AutoPCH/d37fe55b14c719e8/DLLMAIN.ipch
+.vs/EROverlay/v16/ipch/AutoPCH/d5919c6803f39d0d/CHRMODULES.ipch
+.vs/EROverlay/v16/ipch/AutoPCH/dcd4c2588d4f7b00/CHRINS.ipch
+.vs/EROverlay/v16/ipch/AutoPCH/e07f1e1f0414bde0/COMMON.ipch
+GUI Launcher/x64/Release/DXWindow.obj
+GUI Launcher/x64/Release/EldenRin.8da67571.tlog/CL.command.1.tlog
+GUI Launcher/x64/Release/EldenRin.8da67571.tlog/CL.read.1.tlog
+GUI Launcher/x64/Release/EldenRin.8da67571.tlog/CL.write.1.tlog
+GUI Launcher/x64/Release/EldenRin.8da67571.tlog/EldenRing_VisualLauncher.lastbuildstate
+GUI Launcher/x64/Release/EldenRin.8da67571.tlog/link.command.1.tlog
+GUI Launcher/x64/Release/EldenRin.8da67571.tlog/link.read.1.tlog
+GUI Launcher/x64/Release/EldenRin.8da67571.tlog/link.write.1.tlog
+GUI Launcher/x64/Release/EldenRin.8da67571.tlog/rc.command.1.tlog
+GUI Launcher/x64/Release/EldenRin.8da67571.tlog/rc.read.1.tlog
+GUI Launcher/x64/Release/EldenRin.8da67571.tlog/rc.write.1.tlog
+GUI Launcher/x64/Release/EldenRing_VisualLauncher.log
+GUI Launcher/x64/Release/EldenRing_VisualLauncher.res
+GUI Launcher/x64/Release/imgui.obj
+GUI Launcher/x64/Release/imgui_demo.obj
+GUI Launcher/x64/Release/imgui_draw.obj
+GUI Launcher/x64/Release/imgui_impl_dx11.obj
+GUI Launcher/x64/Release/imgui_impl_win32.obj
+GUI Launcher/x64/Release/imgui_tables.obj
+GUI Launcher/x64/Release/imgui_widgets.obj
+GUI Launcher/x64/Release/Launcher.obj
+GUI Launcher/x64/Release/Source.obj
+GUI Launcher/x64/Release/start_protected_game.exe.recipe
+GUI Launcher/x64/Release/start_protected_game.iobj
+GUI Launcher/x64/Release/start_protected_game.ipdb
+GUI Launcher/x64/Release/vc142.pdb
+.vs/EROverlay/v16/ipch/AutoPCH/ef2011a0b541096a/CHRINS.ipch
+.vs/EROverlay/v16/ipch/AutoPCH/e17f06e293b1227/WORLDCHARMAN.ipch
+.vs/EROverlay/v16/ipch/AutoPCH/c7c62ed1c3b7822a/COMMON.ipch
+.vs/EROverlay/v16/ipch/AutoPCH/bc6f00520c6bdcaa/CONSOLE.ipch
+.vs/EROverlay/v16/ipch/AutoPCH/a6ceb409bbda5eb7/CHRMODULES.ipch
+.vs/EROverlay/v16/ipch/AutoPCH/86d924e3e269a05/IMGUI_DRAW.ipch
+.vs/EROverlay/v16/ipch/AutoPCH/82d7fab17f04340a/HOOKING.ipch
+.vs/EROverlay/v16/ipch/AutoPCH/6585800768359e37/D3DRENDERER.ipch
+.vs/EROverlay/v16/ipch/AutoPCH/4bb70600bf7c49a0/MENU.ipch
+.vs/EROverlay/v16/ipch/AutoPCH/340c2e206f5565e5/GAME.ipch
+.vs/EROverlay/v16/ipch/AutoPCH/1e6856ee5de55ec4/FRAMEWORK.ipch
+.vs/EROverlay/v16/ipch/AutoPCH/1c22d8ba7cd37f39/GAMEDATAMAN.ipch

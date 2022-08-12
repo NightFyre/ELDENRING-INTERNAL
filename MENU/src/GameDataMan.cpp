@@ -1,4 +1,4 @@
-#include "GameDataMan.hpp"
+#include "../include/GameDataMan.hpp"
 
 namespace ER {
 
@@ -9,13 +9,13 @@ namespace ER {
 
 	void GameDataMan::Init()
 	{
-		g_Console->printdbg("[+] GameDataMan::Init STARTED\n", TRUE, g_Console->color.yellow);
+		g_Console->printdbg("[+] GameDataMan::Init STARTED\n", Console::Color::yellow);
 		if (!Base) // Base should never change.
 		{
 			auto Sig = Signature("48 8B 05 ? ? ? ? 48 85 C0 74 05 48 8B 40 58 C3 C3").Scan().Add(3).Rip().As<uint64_t>();
 
 			if (!Sig) {
-				g_Console->printdbg("[!] GameDataMan::Init - FAILED; {Sig}\n", TRUE, g_Console->color.red);
+				g_Console->printdbg("[!] GameDataMan::Init - FAILED; {Sig}\n", Console::Color::red);
 				return;
 			}
 
@@ -25,21 +25,21 @@ namespace ER {
 		auto BasePtr = RPM<uint64_t>(Base);
 
 		if (!BasePtr) {
-			g_Console->printdbg("[!] GameDataMan::Init - FAILED; {BasePTR}\n", TRUE, g_Console->color.red);
+			g_Console->printdbg("[!] GameDataMan::Init - FAILED; {BasePTR}\n", Console::Color::red);
 			return;
 		}
 
 		Ptr = BasePtr;
 		LastPtr = Ptr;
 
-		g_Console->printdbg("[+] INITIALIZED GameDataMan\n", TRUE, g_Console->color.green);
+		g_Console->printdbg("[+] INITIALIZED GameDataMan\n", Console::Color::green);
 		Update();
 	}
 
 	void GameDataMan::Update()
 	{
 		if (!Base || !Ptr) {
-			g_Console->printdbg("[!] GameDataMan::Update - FAILED; {Base || Ptr}\n\n", TRUE, g_Console->color.red);
+			g_Console->printdbg("[!] GameDataMan::Update - FAILED; {Base || Ptr}\n\n", Console::Color::red);
 			Init();
 			return;
 		}
@@ -47,7 +47,7 @@ namespace ER {
 		if (LastPtr != RPM<uint64_t>(Base)) {
 			Ptr = 0;
 			LastPtr = 0;
-			g_Console->printdbg("[!] GameDataMan::Update - FAILED; {LastPtr}\n\n", TRUE, g_Console->color.red);
+			g_Console->printdbg("[!] GameDataMan::Update - FAILED; {LastPtr}\n\n", Console::Color::red);
 			return;
 		}
 
@@ -56,7 +56,7 @@ namespace ER {
 		GameData = (ChrGameData*)RPM<uint64_t>(Ptr + 0x8);
 		PlayTimeMS = RPM<uint32_t>(Ptr + 0xA0);
 		NGPlus = RPM<uint32_t>(Ptr + 0x120);
-		g_Console->printdbg("[+] GameDataMan::update FINISHED\n\n", TRUE, g_Console->color.green);
+		g_Console->printdbg("[+] GameDataMan::update FINISHED\n\n", Console::Color::green);
 	}
 
 	bool GameDataMan::Valid()
