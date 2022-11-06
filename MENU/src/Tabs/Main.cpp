@@ -25,15 +25,15 @@ void Main::Draw() {
 
 
     ImGui::Text("ELDEN RING INTERNAL (PREVIEW)");
-    ImGui::Text("BUILD VERSION: alpha-0.0.4");
+    ImGui::Text("BUILD VERSION: alpha-0.0.6");
     ImGui::Text("BUILD DATE: 11/6/2022");
-    ImGui::Text("GAME VERSION: 1.04.1");
+    ImGui::Text("GAME VERSION: 1.0.7");
 
 
     //---------------------------------------------------------------------------------------------------
 
     ImGui::Spacing();
     ImGui::Separator();
-    std::string footer = "NightFyre - NBOTT42 - v0.0.4 | " + g_Console->GetTimeString();
+    std::string footer = g_Menu->m_MenuFooter + g_Console->GetTimeString();
     ImGui::TextCentered(footer.c_str());
 }

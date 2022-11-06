@@ -121,7 +121,7 @@ void Visuals::Draw() {
 
     ImGui::Spacing();
     ImGui::Separator();
-    std::string footer = "NightFyre - NBOTT42 - v0.0.4 | " + g_Console->GetTimeString();
+    std::string footer = g_Menu->m_MenuFooter + g_Console->GetTimeString();
     ImGui::TextCentered(footer.c_str());
 }
 

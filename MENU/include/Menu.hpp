@@ -24,6 +24,8 @@ namespace ER {
 	class Menu
 	{
 	public:
+		const char* m_MenuFooter = "NightFyre - NBOTT42 - v0.0.6 | ";
+
 		///	VARIABLES
 		//	MENU SELECTION FLAGS
 		bool debugDRAW = FALSE;			//	ESP

@@ -223,3 +223,6 @@ bin/ER Overlay_dbg.pdb
 bin/ER Overlay_dbg.dll
 bin/ER Overlay_dbg.pdb
 .vs/EROverlay/v16/ipch/AutoPCH/19a2111efc1b822f/GAME.ipch
+*.ipch
+bin/ER Overlay_dbg.dll
+bin/ER Overlay_dbg.pdb

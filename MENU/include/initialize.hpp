@@ -41,24 +41,21 @@ void init()
     ///  STRUCTS, HOOKS & VARIABLES
     g_Console = std::make_unique<Console>();
     g_Console->InitializeConsole("ELDEN RING INTERNAL - DEBUG");
+    
     g_Console->printdbg("[+] ELDEN RING INTERNAL (PREVIEW)\n", Console::Colors::yellow);
-    g_Console->printdbg("[+] BUILD VERSION: alpha-0.0.5\n", Console::Colors::yellow);
-    g_Console->printdbg("[+] BUILD DATE: 5/3/22\n", Console::Colors::yellow);
-    g_Console->printdbg("[+] Created bv NightFyre & NBOTT42\n\n", Console::Colors::yellow);
+    g_Console->printdbg("[+] BUILD VERSION: alpha-0.0.6\n", Console::Colors::yellow);
+    g_Console->printdbg("[+] BUILD DATE: %s\n", Console::Colors::yellow, g_Console->GetTimeString().c_str());
+    g_Console->printdbg("[+] Created by Team Hexington\n\n", Console::Colors::yellow);
     g_Console->printdbg("[!] THIS IS A PREVIEW BUILD\n", Console::Colors::red);
     g_Console->printdbg("[!] PLEASE DON'T INJECT UNTIL YOU HAVE REACHED THE MAIN MENU\n\n", Console::Colors::red);
+    
     g_GameVariables = std::make_unique<GameVariables>();
     g_GameFunctions = std::make_unique<GameFunctions>();
 
-    ///  HIDE CONSOLE
-    //g_GameVariables->m_ShowConsole = FALSE;
-    //::ShowWindow(GetConsoleWindow(), SW_HIDE);
+    g_Console->printdbg("[+] PRESS [INSERT] TO SHOW/HIDE MENU\n\n", Console::Colors::DEFAULT);
 
     g_GameFunctions->FMVSkip(g_GameVariables->m_ModuleBase);
     g_GameFunctions->UnlockFPS(g_GameVariables->m_ModuleBase);
-
-    g_Console->printdbg("alpha-0.0.4 CHANGE-LOG:\n- WorldCharMan::Update Function Changed\n- WorldCharMan::Update Call Frequency INCREASED\n- Menu:: Included New Functions\n- Draw Skeleton Distance Updated\n- Freeze Entities Test\n\n", Console::Colors::teal);
-    g_Console->printdbg("[+] PRESS [INSERT] TO SHOW/HIDE MENU\n\n", Console::Colors::DEFAULT);
 
     //  WAIT FOR USER INPUT
     while (GetAsyncKeyState(VK_INSERT) == NULL)
