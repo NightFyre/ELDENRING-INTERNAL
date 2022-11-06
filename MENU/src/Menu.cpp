@@ -399,7 +399,7 @@ namespace ER {
         //  CREDIT: techiew
         if (c_FPS != f_FPS)
         {
-            uintptr_t RESET_FPS = g_GameVariables->m_ModuleBase + ptr_SET_FPS;      //  FPS ADDRESS
+            uintptr_t RESET_FPS = g_GameVariables->m_ModuleBase + g_GameVariables->offsets.ptr_SET_FPS;      //  FPS ADDRESS
             int x = *(int*)RESET_FPS;   //  READ CURRENT FPS VALUE
             char oBytes[sizeof x];      //  CONVERT TO BYTE ARRAY
             std::copy(reinterpret_cast<const char*>(reinterpret_cast<const void*>(&x)), reinterpret_cast<const char*>(reinterpret_cast<const void*>(&x)) + sizeof x, oBytes);

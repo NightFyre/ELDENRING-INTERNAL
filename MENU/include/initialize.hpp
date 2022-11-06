@@ -6,6 +6,7 @@
 #include "include/WorldCharMan.hpp"
 #include "include/Console.hpp"
 using namespace ER;
+void MainThread();
 
 /// <summary>
 /// SEPERATE THREAD for g_WorldCharMan->Update();
@@ -71,6 +72,8 @@ void init()
     g_Hooking->Hook();
     g_GameDataMan = std::make_unique<GameDataMan>();
     g_WorldCharMan = std::make_unique<WorldCharMan>();
+
+    MainThread();
 }
 
 void MainThread()

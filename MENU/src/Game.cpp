@@ -36,48 +36,30 @@ namespace ER {
 		return;
 	}
 
-	/// <summary>
-	/// 
-	/// </summary>
 	void GameFunctions::FMVSkip(uintptr_t addr)
 	{
 		///  FMV SKIP NEW TEST
 		//  STATIC ADDRESS!! NEEDS sig function applied!!
 		//  AOB: 48 8B 90 ? ? ? ? 48 85 D2 74 07 C6
-		//  OLD | 0x0A8FA5E | 0x0A8FB4E
+		//  OLD | 0x0A9415E |	0x0A8FA5E | 0x0A8FB4E
 		using namespace ER;
-		Patch((BYTE*)addr + 0x0A9415E, (BYTE*)"\xE9\x1C\x00\x00\x00", 5);
+		Patch((BYTE*)addr + g_GameVariables->offsets.ptr_FMV_SKIP, (BYTE*)"\xE9\x1C\x00\x00\x00", 5);
 		g_Console->printdbg("[+] FMV's SKIPPED\n", Console::Colors::green);
 	}
 
-	/// <summary>
-	/// 
-	/// </summary>
 	void GameFunctions::UnlockFPS(uintptr_t addr)
 	{
-		///  UNLOCK FPS LIMIT 
-		//  STATIC ADDRESS!! NEEDS sig function applied!!
-		//  AOB: C7 ? ? 89 88 88 3C EB ? 89 ? 18 EB ? 89 ? 18 C7 | (Menu.hpp->ptr_SET_FPS)
-		//  AOB2: C7 ? EF 3C 00 00 00 C7 ? F3 01 00 00 00   |   OLD 0x1944A37
 		using namespace ER;
-		Patch((BYTE*)addr + 0x194CCC7, (BYTE*)"\xC7\x45\xEF\x00\x00\x00\x00", 7);  // AOB 2 | OLD 0x1944B27
+		Patch((BYTE*)addr + g_GameVariables->offsets.ptr_UNLOCK_FPS, (BYTE*)"\xC7\x45\xEF\x00\x00\x00\x00", 7);  // AOB 2 | OLD 0x1944B27
 		g_Console->printdbg("[+] FPS LIMIT REMOVED\n\n", Console::Colors::green);
 	}
 
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="addr"></param>
-	/// <param name="ACTIVE"></param>
 	void GameFunctions::PauseGameplay(uintptr_t addr, bool ACTIVE)
 	{
-		//  STATIC ADDRESS!! NEEDS sig function applied!!
-		//  Pause Game AOB: 0f 84 ? ? ? ? c6 83 ? ? 00 00 00 48 8d ? ? ? ? ? 48 89 ? ? 89 (Add 1byte)
-		//  OLD | 0A7CCD6 | 0xA7CDC6
-		if (ACTIVE)
-			Patch((BYTE*)addr + 0x0A81336, (BYTE*)"\x85", 1);
-		else if (!ACTIVE)
-			Patch((BYTE*)addr + 0x0A81336, (BYTE*)"\x84", 1);
+		switch (ACTIVE) {
+			case (TRUE): Patch((BYTE*)addr + g_GameVariables->offsets.ptr_PAUSE_GAME, (BYTE*)"\x85", 1); break;
+			case (FALSE): Patch((BYTE*)addr + g_GameVariables->offsets.ptr_PAUSE_GAME, (BYTE*)"\x84", 1); break;
+		}	
 	}
 
 	int count = 0;
@@ -98,8 +80,7 @@ namespace ER {
 
 		///  Filter Entity Results
 		Vector2 vecScreen;
-		//uintptr_t ViewMatrix = g_Hooking->TRUE_W2S;     //CRASH AT MAIN MENU
-		uintptr_t ViewMatrix = g_GameFunctions->p2addy(g_GameVariables->m_ModuleBase + g_Menu->ptr_NBOTT_W2S, { 0x60, 0x60, 0x420 });
+		uintptr_t ViewMatrix = g_GameFunctions->p2addy(g_GameVariables->m_ModuleBase + g_GameVariables->offsets.ptr_NBOTT_W2S, { 0x60, 0x60, 0x420 });
 		Vector2 Size = { ImGui::GetMainViewport()->Size.x, ImGui::GetMainViewport()->Size.y };
 		Vector2 pos = { (Size.x / 2), (Size.y / 2) };
 		ImVec2 DrawPosition = { pos.x, 0 };

@@ -35,8 +35,8 @@ namespace ER {
 	{
 		g_Console->printdbg("[+] WorldCharMan::Update STARTED\n", Console::Colors::yellow);
 
-		auto BasePtr = RPM<uint64_t>(Base) + 0x18F10;
-		if (!BasePtr || BasePtr == 0x18F10) {
+		auto BasePtr = RPM<uint64_t>(Base) + 0x1F1B0;
+		if (!BasePtr || BasePtr == 0x1F1B0) {
 			if (!BasePtr)
 				g_Console->printdbg("[!] WorldCharMan::Update - FAILED; {BasePTR}\n\n", Console::Colors::red);
 			else
@@ -71,7 +71,7 @@ namespace ER {
 		}
 
 		// Get Player Data
-		PlayerPTR = (RPM<uintptr_t>(g_GameVariables->m_ModuleBase + g_Menu->ptr_PLAYER_DATA));
+		PlayerPTR = (RPM<uintptr_t>(g_GameVariables->m_ModuleBase + g_GameVariables->offsets.ptr_PLAYER_DATA));
 		if (PlayerPTR == NULL) {
 			g_Console->printdbg("[!] WorldCharMan::Update - FAILED; {PlayerPTR}\n\n", Console::Colors::red);
 			m_isValid = FALSE;

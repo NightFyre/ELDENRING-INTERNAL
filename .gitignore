@@ -209,3 +209,17 @@ x64/Release/Debug.obj
 x64/Release/Entities.obj
 x64/Release/Main.obj
 x64/Release/Visuals.obj
+bin/ER Overlay_dbg.pdb
+bin/ER Overlay_dbg.dll
+.vs/EROverlay/v16/ipch/AutoPCH/2bd19f8f2016b115/WORLDCHARMAN.ipch
+x64/Debug/Character.obj
+x64/Debug/Debug.obj
+x64/Debug/Entities.obj
+x64/Debug/ER Overlay_dbg.ilk
+x64/Debug/Main.obj
+x64/Debug/Visuals.obj
+bin/ER Overlay_dbg.dll
+bin/ER Overlay_dbg.pdb
+bin/ER Overlay_dbg.dll
+bin/ER Overlay_dbg.pdb
+.vs/EROverlay/v16/ipch/AutoPCH/19a2111efc1b822f/GAME.ipch

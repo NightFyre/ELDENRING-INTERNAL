@@ -2,9 +2,38 @@
 #include "Common.hpp"
 namespace ER
 {
+	struct Offsets {
+		///	OFFSETS
+		//	QWORDS
+		int ptr_DEBUG_FLAGS = 0x3C4FB40;			//	OLD 0x03C23F78;	//	0x03C0C1C8;	//	DEBUG FLAGS
+		int ptr_NBOTT_W2S = 0x3C482C8;		//	OLD 0x03C1C6E8;	// 0x03C04828;	//	NBOTT WorldToScreen qword_ptr
+		int ptr_PLAYER_DATA = 0x3A18D80;	//	OLD 0x039F1D70;	//	0x039DAD60 	//	Player Data qword_ptr
+		int ptr_W2S_FUNCTION = 0x0753CE0;	//	OLD 0x07527A0;	//  W2S Function	|	AOB			|	1.0.3 = 0x0752890	
+
+		///  FMV SKIP NEW TEST
+		//  STATIC ADDRESS!! NEEDS sig function applied!!
+		//  AOB: 48 8B 90 ? ? ? ? 48 85 D2 74 07 C6
+		//  OLD | 0x0A9415E |	0x0A8FA5E | 0x0A8FB4E
+		int ptr_FMV_SKIP = 0x0A9970E;
+
+		///  UNLOCK FPS LIMIT 
+		//  STATIC ADDRESS!! NEEDS sig function applied!!
+		//  ptr_SET_FPS: C7 ? ? 89 88 88 3C EB ? 89 ? 18 EB ? 89 ? 18 C7	|	AOB + 0x3	|	1.0.3 = E07F4F + 0x3 = 0xE07F52
+		//  ptr_UNLOCK_FPS: C7 ? EF 3C 00 00 00 C7 ? F3 01 00 00 00			|   OLD 0x1944A37
+		int ptr_SET_FPS = 0x0DFA6C2;	// 0x0DF0952;		//	OLD 0x0DE8B72;	//  FPS				|	AOB + 0x3	|	1.0.3 = E07F4F + 0x3 = 0xE07F52
+		int ptr_UNLOCK_FPS = 0x1958797;
+
+		//  STATIC ADDRESS!! NEEDS sig function applied!!
+		//  Pause Game AOB: 0f 84 ? ? ? ? c6 83 ? ? 00 00 00 48 8d ? ? ? ? ? 48 89 ? ? 89 (Add 1byte)
+		//  OLD | 0x0A81336 | 0x0A7CCD6 | 0xA7CDC6
+		int ptr_PAUSE_GAME = 0x0A868F6;
+	};
+	
 	class GameVariables
 	{
 	public:
+		Offsets offsets;
+
 		explicit GameVariables();
 		~GameVariables() noexcept = default;
 		GameVariables(GameVariables const&) = delete;
