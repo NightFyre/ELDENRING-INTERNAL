@@ -1,5 +1,11 @@
 #pragma once
 #include "Common.hpp"
+#include "Tabs/Main.h"
+#include "Tabs/Character.h"
+#include "Tabs/Entities.h"
+#include "Tabs/Visuals.h"
+#include "Tabs/Debug.h"
+
 //	CLEANING IS REQUIRED
 namespace ER {
 
@@ -18,14 +24,7 @@ namespace ER {
 	class Menu
 	{
 	public:
-
-		///	OFFSETS
-		//	QWORDS
-		int ptr_DEBUG_FLAGS = 0x03C23F78;	//	OLD 0x03C0C1C8;	//	DEBUG FLAGS
-		int ptr_NBOTT_W2S = 0x03C1C6E8;		//  OLD 0x03C04828;	//	NBOTT WorldToScreen qword_ptr
-		int ptr_PLAYER_DATA = 0x039F1D70;	//	OLD 0x039DAD60;	//	Player Data qword_ptr
-		int ptr_SET_FPS = 0x0DF0952;		//	OLD 0x0DE8B72;	//  FPS				|	AOB + 0x3	|	1.0.3 = E07F4F + 0x3 = 0xE07F52
-		int ptr_W2S_FUNCTION = 0x0753CE0;	//	OLD 0x07527A0;	//  W2S Function	|	AOB			|	1.0.3 = 0x0752890	
+		const char* m_MenuFooter = "NightFyre - NBOTT42 - v0.0.6 | ";
 
 		///	VARIABLES
 		//	MENU SELECTION FLAGS
@@ -37,8 +36,6 @@ namespace ER {
 		bool dbg_FPS = FALSE;			//	FPS Flag
 		bool m_dbgFreezeTarget = FALSE;	//	Freeze Target Flag
 		bool bESP = FALSE;				//	ESP
-
-
 
 		//	RAINBOW THEME
 		ImColor dbg_RAINBOW{};			//	RAINBOW THEME COLORS
@@ -102,13 +99,11 @@ namespace ER {
 		Menu& operator=(Menu&&) = delete;
 
 		//	FORWARD DECLARE FUNCTIONS
-		void InitStyle();
 		void Draw();
-		void AboutTab();
-		void CharacterStats();
-		void EntityStats();
-		void Visuals();
-		void DebugOptions();
+		void DrawMenu();
+		void DrawEntityWindow();
+		void DrawMatrixHelper();
+		void bgLoops();
 		
 	private:
 		bool m_StyleInit{};

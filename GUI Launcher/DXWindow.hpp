@@ -32,5 +32,10 @@ namespace ERLauncher {
 		static LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 	};
+
+	class Styles {
+
+	};
 	inline std::unique_ptr<DXWindow> g_DXwndw;
+	inline std::unique_ptr<Styles> g_Styles;
 }

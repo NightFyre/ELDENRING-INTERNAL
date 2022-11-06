@@ -78,5 +78,18 @@ namespace ER
 		_FrameContext* m_FrameContext{};
 	};
 
+	class Styles {
+	public:
+
+		explicit Styles() = default;
+		Styles(Styles const&) = delete;
+		Styles(Styles&&) = delete;
+		Styles& operator=(Styles const&) = delete;
+		Styles& operator=(Styles&&) = delete;
+
+		void InitStyle();
+
+	};
 	inline std::unique_ptr<D3DRenderer> g_D3DRenderer;
+	inline std::unique_ptr<Styles> g_Styles;
 }
