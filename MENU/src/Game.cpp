@@ -47,7 +47,7 @@ namespace ER {
 		//  OLD | 0x0A8FA5E | 0x0A8FB4E
 		using namespace ER;
 		Patch((BYTE*)addr + 0x0A9415E, (BYTE*)"\xE9\x1C\x00\x00\x00", 5);
-		g_Console->printdbg("[+] FMV's SKIPPED\n", Console::Color::green);
+		g_Console->printdbg("[+] FMV's SKIPPED\n", Console::Colors::green);
 	}
 
 	/// <summary>
@@ -61,7 +61,7 @@ namespace ER {
 		//  AOB2: C7 ? EF 3C 00 00 00 C7 ? F3 01 00 00 00   |   OLD 0x1944A37
 		using namespace ER;
 		Patch((BYTE*)addr + 0x194CCC7, (BYTE*)"\xC7\x45\xEF\x00\x00\x00\x00", 7);  // AOB 2 | OLD 0x1944B27
-		g_Console->printdbg("[+] FPS LIMIT REMOVED\n\n", Console::Color::green);
+		g_Console->printdbg("[+] FPS LIMIT REMOVED\n\n", Console::Colors::green);
 	}
 
 	/// <summary>
@@ -86,13 +86,13 @@ namespace ER {
 		//  Update Entity Info
 		if (!g_WorldCharMan->m_isValid) {
 			g_Menu->bESP = FALSE;
-			g_Console->printdbg("[+] MENU:: ESP; OFF {WorldCharMan::Update ; FAILED}\n", Console::Color::red);
+			g_Console->printdbg("[+] MENU:: ESP; OFF {WorldCharMan::Update ; FAILED}\n", Console::Colors::red);
 			return;
 		}
 
 		if (g_WorldCharMan->pCharData->Health == NULL) {
 			g_Menu->bESP = FALSE;
-			g_Console->printdbg("[+] MENU:: ESP; OFF {Health is NULL}\n", Console::Color::red);
+			g_Console->printdbg("[+] MENU:: ESP; OFF {Health is NULL}\n", Console::Colors::red);
 			return;
 		}
 
@@ -155,13 +155,13 @@ namespace ER {
 	{
 		if (!g_WorldCharMan->m_isValid) {
 			g_Menu->m_dbgMatrixWnd = FALSE;
-			g_Console->printdbg("[+] MENU:: ENT WINDOW; OFF {WorldCharMan::Update ; FAILED}\n", Console::Color::red);
+			g_Console->printdbg("[+] MENU:: ENT WINDOW; OFF {WorldCharMan::Update ; FAILED}\n", Console::Colors::red);
 			return;
 		}
 
 		if (g_WorldCharMan->pCharData->Health == NULL) {
 			g_Menu->m_dbgMatrixWnd = FALSE;
-			g_Console->printdbg("[+] MENU:: ENT WINDOW; OFF {Health is NULL}\n", Console::Color::red);
+			g_Console->printdbg("[+] MENU:: ENT WINDOW; OFF {Health is NULL}\n", Console::Colors::red);
 			return;
 		}
 
@@ -204,13 +204,13 @@ namespace ER {
 	{
 		if (!g_WorldCharMan->m_isValid) {
 			m_BARRIER = FALSE;
-			g_Console->printdbg("[+] MENU:: BARRIER; OFF {WorldCharMan::Update ; FAILED}\n", Console::Color::red);
+			g_Console->printdbg("[+] MENU:: BARRIER; OFF {WorldCharMan::Update ; FAILED}\n", Console::Colors::red);
 			return;
 		}
 
 		if (g_WorldCharMan->pCharData->Health == NULL) {
 			m_BARRIER = FALSE;
-			g_Console->printdbg("[+] MENU:: BARRIER; OFF {Health is NULL}\n", Console::Color::red);
+			g_Console->printdbg("[+] MENU:: BARRIER; OFF {Health is NULL}\n", Console::Colors::red);
 			return;
 		}
 

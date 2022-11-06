@@ -264,6 +264,20 @@ void ImGui::Text(const char* fmt, ...)
     va_end(args);
 }
 
+void ImGui::TextCentered(const char* Text, bool Color, const ImVec4& col, ...)
+{
+    float windowWidth = ImGui::GetWindowSize().x;
+    float textWidth = ImGui::CalcTextSize(Text).x;
+    ImGui::SetCursorPosX((windowWidth - textWidth) * 0.5f);
+    va_list args;
+    va_start(args, Text);
+    if (Color)
+        ImGui::TextColoredV(col, Text, args);
+    else
+        ImGui::TextV(Text, args);
+    va_end(args);
+}
+
 bool ImGui::BitField(const char* label, uint8_t* bits, unsigned* hoverIndex, std::string* hoverTexts)
 {
     unsigned val = *bits;

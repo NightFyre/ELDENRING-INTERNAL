@@ -4,7 +4,7 @@ namespace ER {
 
 	class Console {
 	public:
-		enum Color {
+		enum Colors {
 			dark_blue = 1,
 			dark_green = 2,
 			dark_teal = 3,
@@ -19,7 +19,8 @@ namespace ER {
 			red = 12,
 			pink = 13,
 			yellow = 14,
-			DEFAULT = 15
+			white = 15,
+			DEFAULT = 15,
 		};
 
 		HANDLE g_Handle;
@@ -37,9 +38,10 @@ namespace ER {
 		Console& operator=(Console&&) = delete;
 		
 		void InitializeConsole(const char* ConsoleName);
-		void printdbg(const char* Text, Color Color = DEFAULT, ...);
+		void printdbg(const char* Text, Colors Color, ...);
 		void scandbg(const char* Text, ...);
 		void LogEvent(std::string TEXT, bool FLAG);
+		std::string GetTimeString();
 		void Free();
 	};
 	inline std::unique_ptr<Console> g_Console;

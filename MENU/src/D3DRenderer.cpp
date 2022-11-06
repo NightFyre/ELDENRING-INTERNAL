@@ -8,13 +8,6 @@ IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARA
 //  RAINBOW THEME OPTION
 float HSV_RAINBOW_SPEED = 0.001;
 static float HSV_RAINBOW_HUE = 0;
-/// <summary>
-/// 
-/// </summary>
-/// <param name="saturation"></param>
-/// <param name="value"></param>
-/// <param name="opacity"></param>
-/// // PENDING RELOCATION TO d3drenderer.cpp
 void SV_RAINBOW(float saturation, float value, float opacity)
 {
 	using namespace ER;
@@ -31,12 +24,11 @@ void SV_RAINBOW(float saturation, float value, float opacity)
 namespace ER 
 {
 
-    static uint64_t* MethodsTable = NULL;
-
-
 	//-----------------------------------------------------------------------------------
 	//									    D3DWindow
 	//-----------------------------------------------------------------------------------
+	static uint64_t* MethodsTable = NULL;
+
 	bool D3DRenderer::Hook()
 	{
 		if (InitHook()) {
@@ -304,8 +296,7 @@ namespace ER
 		ImGui::NewFrame();
 		ImGui::GetIO().MouseDrawCursor = g_GameVariables->m_ShowMenu;
 
-		if (g_GameVariables->m_ShowMenu)
-			g_Menu->Draw();
+		g_Menu->Draw();
 
 		ImGui::EndFrame();
 
@@ -527,7 +518,6 @@ namespace ER
 		Unhook();
 	}
 
-
 	//	GUIDED HACKING TEMPLATE
 	bool D3DRenderer::WorldToScreen(Vector3 pos, Vector2& screen, float matrix[16], int windowWidth, int windowHeight)
 	{
@@ -551,7 +541,6 @@ namespace ER
 		screen.y = -(windowHeight / 2 * NDC.y) + (NDC.y + windowHeight / 2);
 		return true;
 	}
-
 
 	//-----------------------------------------------------------------------------------
 	//									    STYLES

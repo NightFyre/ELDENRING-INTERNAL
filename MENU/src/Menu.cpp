@@ -7,369 +7,12 @@
 
 namespace ER {
 
-    //  MAIN MENU TAB
-    void Menu::AboutTab()
-    {
-        ImGui::Text("ELDEN RING INTERNAL (PREVIEW)");
-        ImGui::Text("BUILD VERSION: alpha-0.0.4");
-        ImGui::Text("BUILD DATE: 5/3/2022");
-        ImGui::Text("GAME VERSION: 1.04.1");
-    }
-
-    //  CHAR STATS
-    void Menu::CharacterStats()
-    {
-        if (!g_GameDataMan->Valid()) {
-            ImGui::TextColored(ImColor(255, 96, 96, 255), "[+] GAME DATA UPDATE ERROR");
-            return;
-        }
-
-        if (!g_WorldCharMan->Valid()) {
-            ImGui::TextColored(ImColor(255, 96, 96, 255), "[+] ENTITY UPDATE ERROR");
-            return;
-        }
-
-        if (!g_WorldCharMan->m_isValid) {
-            ImGui::TextColored(ImColor(255, 96, 96, 255), "[+] UPDATE ERROR");
-            return;
-        }
-
-        ImGui::Text("CHARATER ATTRIBUTES");
-        ImGui::Spacing();
-
-        ImGui::Text("Runes:        ");
-        ImGui::SameLine();
-        ImGui::InputInt("##Runes", (int*)&g_GameDataMan->GameData->CurrentRunes);
-
-        ImGui::Text("Level:        ");
-        ImGui::SameLine();
-        ImGui::InputInt("##Level", (int*)&g_GameDataMan->GameData->Level);
-
-        ImGui::Text("Vigor:        ");
-        ImGui::SameLine();
-        ImGui::InputInt("##Vigor", (int*)&g_GameDataMan->GameData->Stats.Vigor);
-
-        ImGui::Text("Mind:         ");
-        ImGui::SameLine();
-        ImGui::InputInt("##Mind", (int*)&g_GameDataMan->GameData->Stats.Mind);
-
-        ImGui::Text("Endurance:    ");
-        ImGui::SameLine();
-        ImGui::InputInt("##Endurance", (int*)&g_GameDataMan->GameData->Stats.Endurance);
-
-        ImGui::Text("Strength:     ");
-        ImGui::SameLine();
-        ImGui::InputInt("##Strength", (int*)&g_GameDataMan->GameData->Stats.Strength);
-
-        ImGui::Text("Dexterity:    ");
-        ImGui::SameLine();
-        ImGui::InputInt("##Dexterity", (int*)&g_GameDataMan->GameData->Stats.Dexterity);
-
-        ImGui::Text("Intelligence: ");
-        ImGui::SameLine();
-        ImGui::InputInt("##Intelligence", (int*)&g_GameDataMan->GameData->Stats.Intelligence);
-
-        ImGui::Text("Faith:        ");
-        ImGui::SameLine();
-        ImGui::InputInt("##Faith", (int*)&g_GameDataMan->GameData->Stats.Faith);
-
-        ImGui::Text("Arcane:       ");
-        ImGui::SameLine();
-        ImGui::InputInt("##Arcane", (int*)&g_GameDataMan->GameData->Stats.Arcane);
-
-        ImGui::Separator();
-        ImGui::Text("CHARACTER STATS");
-        ImGui::Spacing();
-
-
-        ImGui::Text("Health        ");
-        ImGui::SameLine();
-        ImGui::InputInt("##Health", &g_WorldCharMan->pCharData->Health);
-
-        ImGui::Text("Mana          ");
-        ImGui::SameLine();
-        ImGui::InputInt("##Mana", &g_WorldCharMan->pCharData->Mana);
-
-        ImGui::Text("Stamina       ");
-        ImGui::SameLine();
-        ImGui::InputInt("##Stamina", &g_WorldCharMan->pCharData->Stamina);
-
-        ImGui::Text("Azimuth       ");
-        ImGui::SameLine();
-        ImGui::InputFloat("##Azimuth", &g_WorldCharMan->pCharPhysics->Azimuth);
-
-        ImGui::Text("PosX          ");
-        ImGui::SameLine();
-        ImGui::InputFloat("##PosX", &g_WorldCharMan->pCharPhysics->Position.x);
-
-        ImGui::Text("PosY          ");
-        ImGui::SameLine();
-        ImGui::InputFloat("##PosY", &g_WorldCharMan->pCharPhysics->Position.y);
-
-        ImGui::Text("PosZ          ");
-        ImGui::SameLine();
-        ImGui::InputFloat("##PosZ", &g_WorldCharMan->pCharPhysics->Position.z);
-
-    }
-
-    //  ENTITY TAB
-    void Menu::EntityStats()
-    {
-        if (!g_GameDataMan->Valid()) {
-            ImGui::TextColored(ImColor(255, 96, 96, 255), "[+] GAME DATA UPDATE ERROR");
-            return;
-        }
-
-        if (!g_WorldCharMan->Valid()) {
-            ImGui::TextColored(ImColor(255, 96, 96, 255), "[+] ENTITY UPDATE ERROR");
-            return;
-        }
-
-        if (!g_WorldCharMan->m_isValid) {
-            ImGui::TextColored(ImColor(255, 96, 96, 255), "[+] UPDATE ERROR");
-            return;
-        }
-
-        if (ImGui::Button("KILL ALL ENTITIES", ImVec2(ImGui::GetWindowContentRegionWidth() - 3, 20))) {
-            g_Console->printdbg("[+] MENU:: KILL ALL ENTITIES\n", Console::Color::green);
-            g_WorldCharMan->killENTS();
-        }
-        ImGui::Spacing();
-
-        //  Store all entity coords in an array of Vector3 Floats
-        //  Flush data when boolean is false
-        if (ImGui::Button("FREEZE ALL ENTITIES", ImVec2(ImGui::GetWindowContentRegionWidth() - 3, 20))) {
-            g_Console->printdbg("[!] MENU:: FREEZE ALL ENTITIES [BUGGED]\n", Console::Color::dark_yellow);
-            if (!f_TOGGLE)
-                g_WorldCharMan->stallENTS();
-            else if (f_TOGGLE) {
-                //  Flush Entity Info
-                for (int i = 0; i <= 999 - 1; i = i + 1) {
-                    storedPOS[i].x = NULL;
-                    storedPOS[i].y = NULL;
-                    storedPOS[i].z = NULL;
-                }
-                f_TOGGLE = FALSE;
-            }
-        }
-        ImGui::Spacing();
-
-        if (ImGui::Button("TELEPORT ALL TO CROSSHAIR", ImVec2(ImGui::GetWindowContentRegionWidth() - 3, 20))) {
-            g_Console->printdbg("[!] MENU:: TELEPORT ALL TO CROSSHAIR\n", Console::Color::red);
-            if (g_WorldCharMan->m_isValid)
-            {
-                for (int i = 0; i < g_WorldCharMan->arraySIZE - 1; i++) {
-
-                    g_WorldCharMan->CharPhysics[i]->Position = g_WorldCharMan->pCharPhysics->Position;
-                }
-                printf("TELEPORTED: %d ENTITIES\n\n", g_WorldCharMan->arraySIZE);
-            }
-        }
-
-        ImGui::Spacing();
-        ImGui::Separator();
-        ImGui::Spacing();
-
-        ImGui::Toggle("FREEZE CLOSE ENTITIES", &f_TOGGLE);
-        ImGui::Spacing();
-        ImGui::Toggle("Health Drain Barrier", &g_GameFunctions->m_BARRIER);
-        if (g_GameFunctions->m_BARRIER) {
-            ImGui::SameLine();
-            ImGui::Text("  |  DISTANCE: ");
-            ImGui::SameLine();
-            ImGui::SetNextItemWidth(75);
-            ImGui::SliderFloat("##", &g_GameFunctions->m_BARRIER_DISTANCE, 0, 50, "%.2f");
-        }
-        ImGui::Separator();
-
-        if (ImGui::Toggle("DISPLAY ENTITY ARRAY", &m_dbgEntityWnd)) {
-            g_Console->LogEvent("[+] MENU:: ENTITY ARRAY ; ", m_dbgEntityWnd);
-            if (!m_dbgEntityWnd)
-                g_WorldCharMan->count = NULL;
-        }
-    }
-
-    //  VISUALS TAB
-    void Menu::Visuals()
-    {
-        ImGui::Toggle("DRAW FPS", &dbg_FPS);
-        ImGui::Toggle("CUSTOM FPS: ", &b_FPS);
-        if (b_FPS) {
-            dbg_FPS = TRUE;
-            ImGui::SameLine();
-            ImGui::SetNextItemWidth(50);
-            ImGui::InputFloat("##", &f_FPS, 0, 999);
-            ImGui::SameLine();
-            if (ImGui::Button("+"))
-                f_FPS = f_FPS + 1;
-            ImGui::SameLine();
-            if (ImGui::Button("-"))
-                f_FPS = f_FPS - 1;
-            ImGui::SameLine();
-            if (ImGui::Button("RESET"))
-                f_FPS = 60;
-        }
-
-        if (ImGui::Toggle("DRAW CROSSHAIR", &m_dbgCrosshair)) g_Console->LogEvent("[+] MENU:: CROSSHAIR ;", m_dbgCrosshair);
-        if (m_dbgCrosshair)
-        {
-            ImGui::Toggle("RGB Crosshair", &m_RGB_CROSSHAIR);
-
-            //  CROSSHAIR COLOR
-            ImGui::Text("CROSSHAIR COLOR");
-            ImGui::SameLine();
-            ImGui::ColorEdit4("CUSTOM##3", (float*)&color, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | misc_flags);
-            ImColor cBuf{ (float)color.x, (float)color.y, (float)color.z };
-            if (ImColor(g_Menu->dbg_crosshair_color) != ImColor(cBuf))
-                g_Menu->dbg_crosshair_color = ImColor(cBuf);
-
-            //  SIZE
-            ImGui::Text("CROSSHAIR SIZE:      ");
-            ImGui::SameLine();
-            ImGui::SetNextItemWidth(75);
-            ImGui::SliderFloat("##SIZE ", &g_Menu->dbg_crosshair_radius, 1, 100, "%.2f");
-            ImGui::Spacing();
-
-            ImGui::Text("CROSSHAIR SEGMENTS:  ");
-            ImGui::SameLine();
-            ImGui::SetNextItemWidth(75);
-            ImGui::SliderInt("##SIZE2 ", &g_Menu->dbg_crosshair_segments, 0, 12, "%.2f");
-            ImGui::Spacing();
-
-            ImGui::Text("CROSSHAIR THICKNESS: ");
-            ImGui::SameLine();
-            ImGui::SetNextItemWidth(75);
-            ImGui::SliderFloat("##SIZE3 ", &g_Menu->dbg_crosshair_thickness, 0, 10, "%.2f");
-            ImGui::Separator();
-        }
-
-        if (ImGui::Toggle("ESP", &bESP)) {
-            g_Console->LogEvent("[+] MENU:: ESP ; ", bESP);
-            if (!bESP && !s_draw && g_WorldCharMan->m_isValid)
-            {
-                for (int i = 0; i < g_WorldCharMan->arraySIZE - 1; i = i + 1)
-                {
-                    if (g_WorldCharMan->CharFall[i]->DrawSkeleton == 1)
-                        g_WorldCharMan->CharFall[i]->DrawSkeleton = 0;
-                }
-            }
-        }
-
-        if (ImGui::Toggle("DRAW ESP SKELETON", &s_draw)) {
-            g_Console->LogEvent("[+] MENU:: ESP SKELETON ; ", s_draw);
-            if (!s_draw && !bESP && g_WorldCharMan->m_isValid)
-            {
-                for (int i = 0; i < g_WorldCharMan->arraySIZE - 1; i = i + 1)
-                {
-                    if (g_WorldCharMan->CharFall[i]->DrawSkeleton == 1)
-                        g_WorldCharMan->CharFall[i]->DrawSkeleton = 0;
-                }
-            }
-        }
-
-        ImGui::Text("SKELETON DRAW DISTANCE: ");
-        ImGui::SameLine();
-        ImGui::SetNextItemWidth(150);
-        ImGui::SliderFloat("##DISTANCE: ", &s_drawDistance, 0, 100, "%.1f");
-
-        /// DRAW ALL HIT BOXES
-        //if (ImGui::Toggle("DRAW ALL HITBOXES", &m_dbgHitBoxes))
-        //{
-        //    if (m_dbgHitBoxes) {
-        //        *(int8_t*)(g_GameVariables->m_ModuleBase + g_Menu->ptr_DEBUG_FLAGS + 0xF) = 1;
-        //        g_Console->printdbg("[+] MENU:: HIT-BOXES; ON\n", TRUE, g_Console->color.green);
-        //    }
-        //    else {
-        //        *(int8_t*)(g_GameVariables->m_ModuleBase + g_Menu->ptr_DEBUG_FLAGS + 0xF) = 0;
-        //        g_Console->printdbg("[+] MENU:: HIT-BOXES; OFF\n", TRUE, g_Console->color.red);
-        //    }
-        //}
-    }
-
-    //  DEBUG
-    void Menu::DebugOptions()
-    {
-        if (!g_GameDataMan->Valid()) {
-            ImGui::TextColored(ImColor(255, 96, 96, 255), "[+] GData::ENTITY ARRAY UPDATE ERROR");
-            return;
-        }
-
-        //  DEBUG POINTER CHAIN
-        if (!g_WorldCharMan->Valid())
-        {
-            ImGui::Text("DEBUG POINTER CHAINS");
-            ImGui::Spacing();
-            ImGui::TextColored(ImColor(255, 96, 96, 255), "[+] WData::ENTITY ARRAY UPDATE ERROR");
-            ImGui::Text("WorldCharMan Base: %llX", (uintptr_t)g_WorldCharMan->Base);
-            ImGui::Text("EntityObjectBase: %llX", (uintptr_t)g_WorldCharMan->EntityObjectBase[0]);
-            ImGui::Separator();
-        }
-        else
-        {
-            ///  DEBUG POINTER CHAINS
-            ImGui::Text("DEBUG POINTER CHAINS");
-            ImGui::Spacing();
-            ImGui::Text("WorldCharMan Base: %llX", (uintptr_t)g_WorldCharMan->Base);
-            if (g_WorldCharMan->Ptr != NULL) {
-                ImGui::Text("ptr: %llX", (uintptr_t)g_WorldCharMan->Ptr);
-                ImGui::Text("begin: %u", g_WorldCharMan->Begin);
-                ImGui::Text("finish: %u", g_WorldCharMan->Finish);
-                ImGui::Text("size: %d", g_WorldCharMan->arraySIZE);
-                ImGui::Text("count: %d", g_WorldCharMan->count);
-            }
-            ImGui::Spacing();
-
-            ImGui::Text("EntityObjectBase: %llX", (uintptr_t)g_WorldCharMan->EntityObjectBase[0]);
-            if (g_WorldCharMan->EntityObjectBase[0] != NULL) {
-                ImGui::Text("pEntityObject: %llX", (uintptr_t)g_WorldCharMan->EntityObjectBase[0]->EntObjectPTR);
-                ImGui::Text("CharData: %llX", (uintptr_t)g_WorldCharMan->CharData[0]);
-                ImGui::Text("CharFall: %llX", (uintptr_t)g_WorldCharMan->CharFall[0]);
-                ImGui::Text("CharPhysics: %llX", (uintptr_t)g_WorldCharMan->CharPhysics[0]);
-            }
-            ImGui::Separator();
-        }
-
-        if (ImGui::Toggle("DRAW ALL SKELETONS", &m_dbgSkeleton))
-            g_WorldCharMan->dbg_SKELETON(m_dbgSkeleton);
-        if (m_dbgSkeleton) {
-            ImGui::SameLine();
-            std::string paired = (" | " + std::to_string(g_WorldCharMan->validEnts_count));
-            ImGui::Text(paired.c_str());
-        }
-
-        if (ImGui::Toggle("DEBUG ESP", &m_dbgMatrixWnd))
-            g_Console->LogEvent("[+] MENU:: DEBUG ESP; ", m_dbgMatrixWnd);
-
-        ImGui::Separator();
-        ImGui::Toggle("RGB THEME", &dbg_RAINBOW_THEME);
-        ImGui::Spacing();
-        ImGui::Toggle("SHOW CONSOLE | ", &g_GameVariables->m_ShowConsole);
-        ImGui::SameLine();
-        ImGui::Checkbox("Verbose Logging", &g_Console->verbose);
-        ImGui::Spacing();
-        //ImGui::Toggle("SHOW IMGUI::DEMO WINDOW", &g_GameVariables->m_ShowDemo);
-        ImGui::Separator();
-
-        if (ImGui::Button("CALL W2S FUNCTION", ImVec2(ImGui::GetWindowContentRegionWidth() - 3, 20)))
-            g_Menu->dbgPrintW2S = TRUE;
-
-        if (ImGui::Button("CALL WorldCharMan Update", ImVec2(ImGui::GetWindowContentRegionWidth() - 3, 20)))
-            g_WorldCharMan->Update();
-
-        if (ImGui::Button("INITIALIZE STYLE", ImVec2(ImGui::GetWindowContentRegionWidth() - 3, 20)))
-            g_Styles->InitStyle();
-        ImGui::Separator();
-        if (ImGui::Button("UNLOAD DLL")) g_KillSwitch = TRUE;
-        ImGui::Spacing();
-        if (ImGui::Button("QUIT GAME", ImVec2(ImGui::GetWindowContentRegionWidth() - 3, 20)))
-            TerminateProcess(g_GameVariables->m_GameHandle, EXIT_SUCCESS);
-    }
-
     //  MAIN MENU LOOP
     void Menu::Draw()
     {
         // MAIN WINDOW
         if (g_GameVariables->m_ShowMenu) {
+
             IM_ASSERT(ImGui::GetCurrentContext() != NULL && "Missing dear imgui context. Refer to examples app!");
             if (dbg_RAINBOW_THEME) {
                 ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(g_Menu->dbg_RAINBOW));
@@ -386,146 +29,160 @@ namespace ER {
                 ImGui::PopStyleColor();
                 ImGui::PopStyleColor();
             }
+
+            // STYLE
             g_Styles->InitStyle();
-            if (ImGui::BeginTabBar("##tabs", ImGuiTabBarFlags_None))
-            {
-                if (ImGui::BeginTabItem("MAIN"))
-                {
-                    AboutTab();
-                    ImGui::EndTabItem();
-                }
 
-                if (ImGui::BeginTabItem("PLAYER"))
-                {
-                    CharacterStats();
-                    ImGui::EndTabItem();
-                }
-
-                if (ImGui::BeginTabItem("ENTITY OPTIONS"))
-                {
-                    EntityStats();
-                    ImGui::EndTabItem();
-                }
-
-                if (ImGui::BeginTabItem("VISUALS"))
-                {
-                    Visuals();
-                    ImGui::EndTabItem();
-                }
-
-                if (ImGui::BeginTabItem("DEBUG"))
-                {
-                    DebugOptions();
-                    ImGui::EndTabItem();
-                }
-
-                ImGui::EndTabBar();
-            }
+            DrawMenu();
             ImGui::End();
+
+            //  IMGUI DEMO WINDOW
+            if (g_GameVariables->m_ShowDemo)
+                ImGui::ShowDemoWindow();
+
+            //  ENTITY WINDOW
+            if (m_dbgEntityWnd)
+                DrawEntityWindow();
+
+            //  DBG MATRIX WINDOW
+            if (m_dbgMatrixWnd)
+                DrawMatrixHelper();
+        }
+        else {
+            if (m_dbgEntityWnd)
+                m_dbgEntityWnd = FALSE;
+
+            if (m_dbgMatrixWnd)
+                m_dbgMatrixWnd = FALSE;
         }
 
-        //  ENTITY ARRAY WINDOW
-        if (m_dbgEntityWnd && g_GameVariables->m_ShowMenu)
+        // OTHER DRAWING THINGS
         {
-            int count = 0;
-            std::string grace = "GRACE SIGHT ";
-            std::string entity = "ENTITY OBJECT ";
-            std::string empty_space = "   ";
-            ImGui::SetNextWindowSize(ImVec2(200, 200), ImGuiCond_Once);
-            if (!ImGui::Begin("ENTITY ARRAY", &m_dbgEntityWnd, 96)) {
+            //  DRAW FPS
+            if (dbg_FPS)
+                g_GameFunctions->FPS();
 
-                //  HANDLE EXCEPTION
-                if (!g_GameDataMan->Valid()) {
-                    ImGui::End();
-                    m_dbgEntityWnd = FALSE;
-                    return;
-                }
-
-                if (!g_WorldCharMan->Valid()) {
-                    ImGui::End();
-                    m_dbgEntityWnd = FALSE;
-                    return;
-                }
+            //  DEBUG DRAW CROSSHAIR
+            if (m_dbgCrosshair) {
+                if (m_RGB_CROSSHAIR)
+                    ImGui::GetBackgroundDrawList()->AddCircle(ImGui::GetMainViewport()->GetCenter(), g_Menu->dbg_crosshair_radius, g_Menu->dbg_RAINBOW, g_Menu->dbg_crosshair_segments, g_Menu->dbg_crosshair_thickness);
+                else if (!m_RGB_CROSSHAIR)
+                    ImGui::GetBackgroundDrawList()->AddCircle(ImGui::GetMainViewport()->GetCenter(), g_Menu->dbg_crosshair_radius, ImColor(dbg_crosshair_color), g_Menu->dbg_crosshair_segments, g_Menu->dbg_crosshair_thickness);
             }
-            if (g_WorldCharMan->m_isValid) !m_dbgEntityWnd;
 
-            ImGui::Text("GRACE SIGHTS: ");
-            ImGui::SameLine();
-            ImGui::Text(std::to_string(g_WorldCharMan->entwndw_count).c_str());
-            ImGui::Text("ENTITIES: ");
-            ImGui::SameLine();
-            ImGui::Text(std::to_string(g_WorldCharMan->entwndw_count2).c_str());
-            ImGui::Separator();
-            ImGui::Spacing();
+            //  DRAW DISTANCE
+            if (s_drawDistance != NULL) {
+                std::string text = "Draw Distance: " + std::to_string(s_drawDistance);
+                if (dbg_RAINBOW_THEME)
+                    ImGui::GetBackgroundDrawList()->AddText(ImVec2(20, 15), ImColor(g_Menu->dbg_RAINBOW), text.c_str());
+                else
+                    ImGui::GetBackgroundDrawList()->AddText(ImVec2(20, 15), ImColor(255, 255, 255, 255), text.c_str());
+            }
+        }
 
-            //  Grace Locations ??
-            if (ImGui::CollapsingHeader("GRACE LOCATIONS"))
+        // ESP STUFF
+        {
+            //  ESP
+            if (bESP)
+                g_GameFunctions->ESP(s_drawDistance);
+
+            //  DEBUG ESP
+            if (m_dbgMatrixWnd)
+                g_GameFunctions->dbg_ESP();
+
+            //  DISTANCE BASED SKELTON DRAW (visuals tab)
+            if (s_draw)
+                g_WorldCharMan->ESP_SKELETON(s_drawDistance);
+        }
+    }
+
+    void Menu::DrawMenu()
+    {
+        if (ImGui::BeginTabBar("##tabs", ImGuiTabBarFlags_None))
+        {
+            if (ImGui::BeginTabItem("MAIN"))
             {
-                ImGui::Spacing();
-                for (int i = 0; i <= g_WorldCharMan->arraySIZE - 1; i = i + 1)
-                {
-                    if (g_WorldCharMan->CharTimeAct[i]->Animation < NULL) continue;
-                    if (g_WorldCharMan->EntityObjectBase[i]->ALLIANCE != g_WorldCharMan->Char_Faction.None) continue;
-                    count++;
-                    std::string OBJECT_TEXT = grace + std::to_string(count) + empty_space;
-
-                    ImGui::PushID(i);
-                    ImGui::SetNextItemWidth(ImGui::GetWindowContentRegionWidth());
-                    if (ImGui::CollapsingHeader((OBJECT_TEXT).c_str()))
-                    {
-                        ImGui::Text("SIGHT OF GRACE INFO");
-                        ImGui::Spacing();
-                        ImGui::Text("LOCAL ID: ");
-                        ImGui::SameLine();
-                        ImGui::Text(std::to_string(g_WorldCharMan->EntityObjectBase[i]->LOCALID).c_str());
-                        ImGui::Text("PARAM ID: ");
-                        ImGui::SameLine();
-                        ImGui::Text(std::to_string(g_WorldCharMan->EntityObjectBase[i]->PARAMID).c_str());
-                        ImGui::Text("ALLIANCE: ");
-                        ImGui::SameLine();
-                        ImGui::Text(std::to_string(g_WorldCharMan->EntityObjectBase[i]->ALLIANCE).c_str());
-                        ImGui::Text("GLOBAL ID: ");
-                        ImGui::SameLine();
-                        ImGui::Text(std::to_string(g_WorldCharMan->EntityObjectBase[i]->GLOBALID).c_str());
-                        ImGui::Text("ANIMATION: ");
-                        ImGui::SameLine();
-                        ImGui::Text(std::to_string(g_WorldCharMan->CharTimeAct[i]->Animation).c_str());
-                        ImGui::Text("DISTANCE: ");
-                        ImGui::SameLine();
-                        ImGui::Text(std::to_string(g_GameFunctions->GetDistanceTo3D_Object(g_WorldCharMan->pCharPhysics->Position, g_WorldCharMan->CharPhysics[i]->Position)).c_str());
-                        if (ImGui::Button("TELEPORT TO GRACE", ImVec2(ImGui::GetWindowContentRegionWidth() - 3, 20))) {
-                            g_WorldCharMan->pCharPhysics->Position = Vector3(g_WorldCharMan->CharPhysics[i]->Position.x, g_WorldCharMan->CharPhysics[i]->Position.y + 2, g_WorldCharMan->CharPhysics[i]->Position.z);
-                            g_Console->printdbg("[+] MENU::EntityList; TELEPORT TO SIGHT OF GRACE\n", Console::Color::green);
-                            printf("COORDINATES:\nPosX: %f\nPosY: %f\nPosZ: %f\n", g_WorldCharMan->CharPhysics[i]->Position.x,
-                                g_WorldCharMan->CharPhysics[i]->Position.y, g_WorldCharMan->CharPhysics[i]->Position.z);
-                        }
-                        ImGui::Spacing();
-                        ImGui::Separator();
-                    }
-                    ImGui::PopID();
-                    ImGui::Spacing();
-                }
+                Tabs::Main::Draw();
+                ImGui::EndTabItem();
             }
-            g_WorldCharMan->entwndw_count = count;
-            count = NULL;
 
-            ImGui::Spacing();
-            ImGui::Separator();
-            ImGui::Spacing();
+            if (ImGui::BeginTabItem("PLAYER"))
+            {
+                Tabs::Character::Draw();
+                ImGui::EndTabItem();
+            }
 
-            //  ENTITIES
+            if (ImGui::BeginTabItem("ENTITY OPTIONS"))
+            {
+                Tabs::Entities::Draw();
+                ImGui::EndTabItem();
+            }
+
+            if (ImGui::BeginTabItem("VISUALS"))
+            {
+                Tabs::Visuals::Draw();
+                ImGui::EndTabItem();
+            }
+
+            if (ImGui::BeginTabItem("DEBUG"))
+            {
+                Tabs::Debug::Draw();
+                ImGui::EndTabItem();
+            }
+
+            ImGui::EndTabBar();
+        }
+    }
+
+    void Menu::DrawEntityWindow()
+    {
+        int count = 0;
+        std::string grace = "GRACE SIGHT ";
+        std::string entity = "ENTITY OBJECT ";
+        std::string empty_space = "   ";
+        ImGui::SetNextWindowSize(ImVec2(200, 200), ImGuiCond_Once);
+        if (!ImGui::Begin("ENTITY ARRAY", &m_dbgEntityWnd, 96)) {
+
+            //  HANDLE EXCEPTION
+            if (!g_GameDataMan->Valid()) {
+                ImGui::End();
+                m_dbgEntityWnd = FALSE;
+                return;
+            }
+
+            if (!g_WorldCharMan->Valid()) {
+                ImGui::End();
+                m_dbgEntityWnd = FALSE;
+                return;
+            }
+        }
+        if (g_WorldCharMan->m_isValid) !m_dbgEntityWnd;
+
+        ImGui::Text("GRACE SIGHTS: ");
+        ImGui::SameLine();
+        ImGui::Text(std::to_string(g_WorldCharMan->entwndw_count).c_str());
+        ImGui::Text("ENTITIES: ");
+        ImGui::SameLine();
+        ImGui::Text(std::to_string(g_WorldCharMan->entwndw_count2).c_str());
+        ImGui::Separator();
+        ImGui::Spacing();
+
+        //  Grace Locations ??
+        if (ImGui::CollapsingHeader("GRACE LOCATIONS"))
+        {
+            ImGui::Spacing();
             for (int i = 0; i <= g_WorldCharMan->arraySIZE - 1; i = i + 1)
             {
                 if (g_WorldCharMan->CharTimeAct[i]->Animation < NULL) continue;
-                if (g_WorldCharMan->EntityObjectBase[i]->ALLIANCE == g_WorldCharMan->Char_Faction.None) continue;
+                if (g_WorldCharMan->EntityObjectBase[i]->ALLIANCE != g_WorldCharMan->Char_Faction.None) continue;
                 count++;
-                std::string OBJECT_TEXT = entity + std::to_string(count) + empty_space;
+                std::string OBJECT_TEXT = grace + std::to_string(count) + empty_space;
 
                 ImGui::PushID(i);
                 ImGui::SetNextItemWidth(ImGui::GetWindowContentRegionWidth());
                 if (ImGui::CollapsingHeader((OBJECT_TEXT).c_str()))
                 {
-                    ImGui::Text("ENTITY INFO");
+                    ImGui::Text("SIGHT OF GRACE INFO");
                     ImGui::Spacing();
                     ImGui::Text("LOCAL ID: ");
                     ImGui::SameLine();
@@ -545,175 +202,183 @@ namespace ER {
                     ImGui::Text("DISTANCE: ");
                     ImGui::SameLine();
                     ImGui::Text(std::to_string(g_GameFunctions->GetDistanceTo3D_Object(g_WorldCharMan->pCharPhysics->Position, g_WorldCharMan->CharPhysics[i]->Position)).c_str());
-                    ImGui::Separator();
-                    if (ImGui::Button("KILL TARGET", ImVec2(ImGui::GetWindowContentRegionWidth() - 3, 20)))
-                        g_WorldCharMan->CharData[i]->Health = 0;
-                    ImGui::Spacing();
-
-                    if (ImGui::Button("TELEPORT TO TARGET", ImVec2(ImGui::GetWindowContentRegionWidth() - 3, 20))) {
-                        g_WorldCharMan->pCharPhysics->Position = g_WorldCharMan->CharPhysics[i]->Position;
-                        g_Console->printdbg("[+] MENU::EntityList; TELEPORT TO TARGET\n", Console::Color::green);
+                    if (ImGui::Button("TELEPORT TO GRACE", ImVec2(ImGui::GetWindowContentRegionWidth() - 3, 20))) {
+                        g_WorldCharMan->pCharPhysics->Position = Vector3(g_WorldCharMan->CharPhysics[i]->Position.x, g_WorldCharMan->CharPhysics[i]->Position.y + 2, g_WorldCharMan->CharPhysics[i]->Position.z);
+                        g_Console->printdbg("[+] MENU::EntityList; TELEPORT TO SIGHT OF GRACE\n", Console::Colors::green);
                         printf("COORDINATES:\nPosX: %f\nPosY: %f\nPosZ: %f\n", g_WorldCharMan->CharPhysics[i]->Position.x,
                             g_WorldCharMan->CharPhysics[i]->Position.y, g_WorldCharMan->CharPhysics[i]->Position.z);
                     }
-                    ImGui::Spacing();
-
-                    if (ImGui::Button("TELEPORT TO CROSSHAIR", ImVec2(ImGui::GetWindowContentRegionWidth() - 3, 20))) {
-                        g_WorldCharMan->CharPhysics[i]->Position = g_WorldCharMan->pCharPhysics->Position;
-                        g_Console->printdbg("[+] MENU::EntityList; TELEPORT TO CROSSHAIR\n", Console::Color::green);
-                        printf("COORDINATES:\nPosX: %f\nPosY: %f\nPosZ: %f\n", g_WorldCharMan->CharPhysics[i]->Position.x,
-                            g_WorldCharMan->CharPhysics[i]->Position.y, g_WorldCharMan->CharPhysics[i]->Position.z);
-                    }
-                    ImGui::Spacing();
-
-                    ImGui::Text("FREEZE TARGET: ");
-                    ImGui::SameLine();
-                    if (ImGui::Toggle("##FREEZE TARGET", &m_dbgFreezeTarget)) {
-                        g_Console->printdbg("[+] MENU::EntityList; FREEZE TARGET {not implemented}\n", Console::Color::red);
-                    }
-                    ImGui::Spacing();
-
-
-                    ImGui::Text("DRAW SKELETON: ");
-                    ImGui::SameLine();
-                    ImGui::Toggle("##DrawSkele", &g_WorldCharMan->CharFall[i]->DrawSkeleton);
-                    ImGui::Spacing();
-
-                    ImGui::Text("HEALTH:  ");
-                    ImGui::SameLine();
-                    ImGui::InputInt("##Health", &g_WorldCharMan->CharData[i]->Health, 1, 10);
-
-                    ImGui::Text("MANA:    ");
-                    ImGui::SameLine();
-                    ImGui::InputInt("##Mana", &g_WorldCharMan->CharData[i]->Mana, 1, 10);
-
-                    ImGui::Text("STAMINA: ");
-                    ImGui::SameLine();
-                    ImGui::InputInt("##Stamina", &g_WorldCharMan->CharData[i]->Stamina, 1, 10);
-
-                    ImGui::Text("PosX:    ");
-                    ImGui::SameLine();
-                    ImGui::InputFloat("##PosX", &g_WorldCharMan->CharPhysics[i]->Position.x, 1.0f, 10.0f);
-
-                    ImGui::Text("PosY:    ");
-                    ImGui::SameLine();
-                    ImGui::InputFloat("##PosY", &g_WorldCharMan->CharPhysics[i]->Position.y, 1.0f, 10.0f);
-
-                    ImGui::Text("PosZ:    ");
-                    ImGui::SameLine();
-                    ImGui::InputFloat("##PosZ", &g_WorldCharMan->CharPhysics[i]->Position.z, 1.0f, 10.0f);
                     ImGui::Spacing();
                     ImGui::Separator();
                 }
                 ImGui::PopID();
                 ImGui::Spacing();
             }
-            g_WorldCharMan->entwndw_count2 = count;
-            ImGui::End();
         }
-        else if (!g_GameVariables->m_ShowMenu) {
-            !m_dbgEntityWnd;
-        }
+        g_WorldCharMan->entwndw_count = count;
+        count = NULL;
 
-        //  DEBUG MATRIX WINDOW
-        if (m_dbgMatrixWnd && g_GameVariables->m_ShowMenu) {
-            ImGui::SetNextWindowSize(ImVec2(200, 200), ImGuiCond_Once);
-            if (!ImGui::Begin("MATRIX FLOATS", &m_dbgMatrixWnd, 96)) {
-                ImGui::End();
-                return;
+        ImGui::Spacing();
+        ImGui::Separator();
+        ImGui::Spacing();
+
+        //  ENTITIES
+        for (int i = 0; i <= g_WorldCharMan->arraySIZE - 1; i = i + 1)
+        {
+            if (g_WorldCharMan->CharTimeAct[i]->Animation < NULL) continue;
+            if (g_WorldCharMan->EntityObjectBase[i]->ALLIANCE == g_WorldCharMan->Char_Faction.None) continue;
+            count++;
+            std::string OBJECT_TEXT = entity + std::to_string(count) + empty_space;
+
+            ImGui::PushID(i);
+            ImGui::SetNextItemWidth(ImGui::GetWindowContentRegionWidth());
+            if (ImGui::CollapsingHeader((OBJECT_TEXT).c_str()))
+            {
+                ImGui::Text("ENTITY INFO");
+                ImGui::Spacing();
+                ImGui::Text("LOCAL ID: ");
+                ImGui::SameLine();
+                ImGui::Text(std::to_string(g_WorldCharMan->EntityObjectBase[i]->LOCALID).c_str());
+                ImGui::Text("PARAM ID: ");
+                ImGui::SameLine();
+                ImGui::Text(std::to_string(g_WorldCharMan->EntityObjectBase[i]->PARAMID).c_str());
+                ImGui::Text("ALLIANCE: ");
+                ImGui::SameLine();
+                ImGui::Text(std::to_string(g_WorldCharMan->EntityObjectBase[i]->ALLIANCE).c_str());
+                ImGui::Text("GLOBAL ID: ");
+                ImGui::SameLine();
+                ImGui::Text(std::to_string(g_WorldCharMan->EntityObjectBase[i]->GLOBALID).c_str());
+                ImGui::Text("ANIMATION: ");
+                ImGui::SameLine();
+                ImGui::Text(std::to_string(g_WorldCharMan->CharTimeAct[i]->Animation).c_str());
+                ImGui::Text("DISTANCE: ");
+                ImGui::SameLine();
+                ImGui::Text(std::to_string(g_GameFunctions->GetDistanceTo3D_Object(g_WorldCharMan->pCharPhysics->Position, g_WorldCharMan->CharPhysics[i]->Position)).c_str());
+                ImGui::Separator();
+                if (ImGui::Button("KILL TARGET", ImVec2(ImGui::GetWindowContentRegionWidth() - 3, 20)))
+                    g_WorldCharMan->CharData[i]->Health = 0;
+                ImGui::Spacing();
+
+                if (ImGui::Button("TELEPORT TO TARGET", ImVec2(ImGui::GetWindowContentRegionWidth() - 3, 20))) {
+                    g_WorldCharMan->pCharPhysics->Position = g_WorldCharMan->CharPhysics[i]->Position;
+                    g_Console->printdbg("[+] MENU::EntityList; TELEPORT TO TARGET\n", Console::Colors::green);
+                    printf("COORDINATES:\nPosX: %f\nPosY: %f\nPosZ: %f\n", g_WorldCharMan->CharPhysics[i]->Position.x,
+                        g_WorldCharMan->CharPhysics[i]->Position.y, g_WorldCharMan->CharPhysics[i]->Position.z);
+                }
+                ImGui::Spacing();
+
+                if (ImGui::Button("TELEPORT TO CROSSHAIR", ImVec2(ImGui::GetWindowContentRegionWidth() - 3, 20))) {
+                    g_WorldCharMan->CharPhysics[i]->Position = g_WorldCharMan->pCharPhysics->Position;
+                    g_Console->printdbg("[+] MENU::EntityList; TELEPORT TO CROSSHAIR\n", Console::Colors::green);
+                    printf("COORDINATES:\nPosX: %f\nPosY: %f\nPosZ: %f\n", g_WorldCharMan->CharPhysics[i]->Position.x,
+                        g_WorldCharMan->CharPhysics[i]->Position.y, g_WorldCharMan->CharPhysics[i]->Position.z);
+                }
+                ImGui::Spacing();
+
+                ImGui::Text("FREEZE TARGET: ");
+                ImGui::SameLine();
+                if (ImGui::Toggle("##FREEZE TARGET", &m_dbgFreezeTarget)) {
+                    g_Console->printdbg("[+] MENU::EntityList; FREEZE TARGET {not implemented}\n", Console::Colors::red);
+                }
+                ImGui::Spacing();
+
+
+                ImGui::Text("DRAW SKELETON: ");
+                ImGui::SameLine();
+                ImGui::Toggle("##DrawSkele", &g_WorldCharMan->CharFall[i]->DrawSkeleton);
+                ImGui::Spacing();
+
+                ImGui::Text("HEALTH:  ");
+                ImGui::SameLine();
+                ImGui::InputInt("##Health", &g_WorldCharMan->CharData[i]->Health, 1, 10);
+
+                ImGui::Text("MANA:    ");
+                ImGui::SameLine();
+                ImGui::InputInt("##Mana", &g_WorldCharMan->CharData[i]->Mana, 1, 10);
+
+                ImGui::Text("STAMINA: ");
+                ImGui::SameLine();
+                ImGui::InputInt("##Stamina", &g_WorldCharMan->CharData[i]->Stamina, 1, 10);
+
+                ImGui::Text("PosX:    ");
+                ImGui::SameLine();
+                ImGui::InputFloat("##PosX", &g_WorldCharMan->CharPhysics[i]->Position.x, 1.0f, 10.0f);
+
+                ImGui::Text("PosY:    ");
+                ImGui::SameLine();
+                ImGui::InputFloat("##PosY", &g_WorldCharMan->CharPhysics[i]->Position.y, 1.0f, 10.0f);
+
+                ImGui::Text("PosZ:    ");
+                ImGui::SameLine();
+                ImGui::InputFloat("##PosZ", &g_WorldCharMan->CharPhysics[i]->Position.z, 1.0f, 10.0f);
+                ImGui::Spacing();
+                ImGui::Separator();
             }
+            ImGui::PopID();
+            ImGui::Spacing();
+        }
+        g_WorldCharMan->entwndw_count2 = count;
+        ImGui::End();
+    }
 
+    void Menu::DrawMatrixHelper()
+    {
+        ImGui::SetNextWindowSize(ImVec2(200, 200), ImGuiCond_Once);
+        if (!ImGui::Begin("MATRIX FLOATS", &m_dbgMatrixWnd, 96)) {
+            ImGui::End();
+            return;
+        }
+
+        for (int i = 0; i <= 15; i = i + 1)
+        {
+            ImGui::PushID(i);
+            if (i <= 9)
+            {
+                std::string a = "MATRIX  [" + std::to_string(i) + "]: ";
+                ImGui::Text(a.c_str());
+            }
+            else if (i > 9)
+            {
+                std::string a = "MATRIX [" + std::to_string(i) + "]: ";
+                ImGui::Text(a.c_str());
+            }
+            std::string b = "##MATRIX [" + std::to_string(i) + "]: ";
+
+
+            //ImGui::Text(a.c_str());
+            ImGui::SameLine();
+            ImGui::SliderFloat(b.c_str(), &ViewMatrix[i], -30.0f, 30.0f, "%.2f");
+            ImGui::SameLine();
+            if (ImGui::Button("+"))
+                ViewMatrix[i] += .10f;
+            ImGui::SameLine();
+            if (ImGui::Button("-"))
+                ViewMatrix[i] -= .10f;
+            ImGui::SameLine();
+            if (ImGui::Button("RESET"))
+                ViewMatrix[i] = 0.0f;
+            ImGui::PopID();
+        }
+
+        if (ImGui::Button("RESET ALL", ImVec2(ImGui::GetWindowContentRegionWidth() - 3, 20)))
+        {
             for (int i = 0; i <= 15; i = i + 1)
-            {
-                ImGui::PushID(i);
-                if (i <= 9)
-                {
-                    std::string a = "MATRIX  [" + std::to_string(i) + "]: ";
-                    ImGui::Text(a.c_str());
-                }
-                else if (i > 9)
-                {
-                    std::string a = "MATRIX [" + std::to_string(i) + "]: ";
-                    ImGui::Text(a.c_str());
-                }
-                std::string b = "##MATRIX [" + std::to_string(i) + "]: ";
-
-
-                //ImGui::Text(a.c_str());
-                ImGui::SameLine();
-                ImGui::SliderFloat(b.c_str(), &ViewMatrix[i], -30.0f, 30.0f, "%.2f");
-                ImGui::SameLine();
-                if (ImGui::Button("+"))
-                    ViewMatrix[i] += .10f;
-                ImGui::SameLine();
-                if (ImGui::Button("-"))
-                    ViewMatrix[i] -= .10f;
-                ImGui::SameLine();
-                if (ImGui::Button("RESET"))
-                    ViewMatrix[i] = 0.0f;
-                ImGui::PopID();
-            }
-
-            if (ImGui::Button("RESET ALL", ImVec2(ImGui::GetWindowContentRegionWidth() - 3, 20)))
-            {
-                for (int i = 0; i <= 15; i = i + 1)
-                    ViewMatrix[i] = 0;
-            }
-
-            ImGui::Separator();
-            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(g_Menu->dbg_RAINBOW));
-            if (ImGui::Button("RAINBOW ESP", ImVec2(ImGui::GetWindowContentRegionWidth() - 3, 20)))
-            {
-                g_Menu->dbg_ENT_RGB = !g_Menu->dbg_ENT_RGB;
-                g_Console->LogEvent("[+] MENU:: DEBUG ESP WINDOW:: RGB LINES ; ", dbg_ENT_RGB);
-            }
-            ImGui::PopStyleColor();
-            ImGui::End();
-        }
-        else if (!g_GameVariables->m_ShowMenu) {
-            !m_dbgMatrixWnd;
+                ViewMatrix[i] = 0;
         }
 
-#pragma region  //  CONSTANT LOOP
-        //  DRAW FPS
-        if (dbg_FPS)
-            g_GameFunctions->FPS();
-
-        //  DEBUG DRAW CROSSHAIR
-        if (m_dbgCrosshair) {
-            if (m_RGB_CROSSHAIR)
-                ImGui::GetBackgroundDrawList()->AddCircle(ImGui::GetMainViewport()->GetCenter(), g_Menu->dbg_crosshair_radius, g_Menu->dbg_RAINBOW, g_Menu->dbg_crosshair_segments, g_Menu->dbg_crosshair_thickness);
-            else if (!m_RGB_CROSSHAIR)
-                ImGui::GetBackgroundDrawList()->AddCircle(ImGui::GetMainViewport()->GetCenter(), g_Menu->dbg_crosshair_radius, ImColor(dbg_crosshair_color), g_Menu->dbg_crosshair_segments, g_Menu->dbg_crosshair_thickness);
+        ImGui::Separator();
+        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(g_Menu->dbg_RAINBOW));
+        if (ImGui::Button("RAINBOW ESP", ImVec2(ImGui::GetWindowContentRegionWidth() - 3, 20)))
+        {
+            g_Menu->dbg_ENT_RGB = !g_Menu->dbg_ENT_RGB;
+            g_Console->LogEvent("[+] MENU:: DEBUG ESP WINDOW:: RGB LINES ; ", dbg_ENT_RGB);
         }
+        ImGui::PopStyleColor();
+        ImGui::End();
+    }
 
-        //  SHOW DEBUG CONSOLE
-        if (g_GameVariables->m_ShowConsole)
-            ::ShowWindow(GetConsoleWindow(), SW_SHOW);
-        else
-            ::ShowWindow(GetConsoleWindow(), SW_HIDE);
-
-        //  ESP
-        if (bESP)
-            g_GameFunctions->ESP(s_drawDistance);
-
-        //  DEBUG ESP
-        if (m_dbgMatrixWnd)
-            g_GameFunctions->dbg_ESP();
-
-        //  DISTANCE BASED SKELTON DRAW (visuals tab)
-        if (s_draw)
-            g_WorldCharMan->ESP_SKELETON(s_drawDistance);
-
-        //  DRAW DISTANCE
-        if (s_drawDistance != NULL) {
-            std::string text = "Draw Distance: " + std::to_string(s_drawDistance);
-            if (dbg_RAINBOW_THEME)
-                ImGui::GetBackgroundDrawList()->AddText(ImVec2(20, 15), ImColor(g_Menu->dbg_RAINBOW), text.c_str());
-            else
-                ImGui::GetBackgroundDrawList()->AddText(ImVec2(20, 15), ImColor(255, 255, 255, 255), text.c_str());
-        }
-
+    void Menu::bgLoops()
+    {
         //  FREEZE ENTITIES
         if (f_TOGGLE)
         {
@@ -723,9 +388,12 @@ namespace ER {
                 f_TOGGLE = FALSE;
                 for (int i = 0; i < sizeof(storedPOS) / sizeof(storedPOS[0]); i = i + 1)
                     storedPOS[i] = Vector3(0, 0, 0);
-                g_Console->printdbg("[+] MENU:: FREEZE ENTITIES; OFF {Health is NULL}\n\n", Console::Color::red);
+                g_Console->printdbg("[+] MENU:: FREEZE ENTITIES; OFF {Health is NULL}\n\n", Console::Colors::red);
             }
         }
+
+        if (g_GameFunctions->m_BARRIER)
+            g_GameFunctions->Barrier(g_GameFunctions->m_BARRIER_DISTANCE);
 
         //  CUSTOM FPS LIMIT 
         //  CREDIT: techiew
@@ -748,15 +416,7 @@ namespace ER {
                 printf("CUSTOM FPS: %f\n", f_FPS);
             }
             else
-                g_Console->printdbg("[!] MENU:: CUSTOM FPS ; failed\n", Console::Color::green);
+                g_Console->printdbg("[!] MENU:: CUSTOM FPS ; failed\n", Console::Colors::green);
         }
-
-        if (g_GameFunctions->m_BARRIER)
-            g_GameFunctions->Barrier(g_GameFunctions->m_BARRIER_DISTANCE);
-
-        if (g_GameVariables->m_ShowDemo)
-            ImGui::ShowDemoWindow();
-
-#pragma endregion
     }
 }

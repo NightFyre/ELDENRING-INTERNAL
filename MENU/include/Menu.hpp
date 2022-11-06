@@ -1,5 +1,11 @@
 #pragma once
 #include "Common.hpp"
+#include "Tabs/Main.h"
+#include "Tabs/Character.h"
+#include "Tabs/Entities.h"
+#include "Tabs/Visuals.h"
+#include "Tabs/Debug.h"
+
 //	CLEANING IS REQUIRED
 namespace ER {
 
@@ -103,11 +109,12 @@ namespace ER {
 
 		//	FORWARD DECLARE FUNCTIONS
 		void Draw();
-		void AboutTab();
-		void CharacterStats();
-		void EntityStats();
-		void Visuals();
-		void DebugOptions();
+
+		void DrawOverlay();
+		void DrawMenu();
+		void DrawEntityWindow();
+		void DrawMatrixHelper();
+		void bgLoops();
 		
 	private:
 		bool m_StyleInit{};

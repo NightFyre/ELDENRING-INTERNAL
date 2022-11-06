@@ -200,3 +200,12 @@ GUI Launcher/x64/Release/vc142.pdb
 .vs/EROverlay/v16/ipch/AutoPCH/340c2e206f5565e5/GAME.ipch
 .vs/EROverlay/v16/ipch/AutoPCH/1e6856ee5de55ec4/FRAMEWORK.ipch
 .vs/EROverlay/v16/ipch/AutoPCH/1c22d8ba7cd37f39/GAMEDATAMAN.ipch
+.vs/EROverlay/v16/ipch/AutoPCH/569c9ff43efb5e38/DEBUG.ipch
+.vs/EROverlay/v16/ipch/AutoPCH/69336acf65f26113/CHARACTER.ipch
+.vs/EROverlay/v16/ipch/AutoPCH/a9b27bca4bb74d68/IMGUI_WIDGETS.ipch
+.vs/EROverlay/v16/ipch/AutoPCH/cd0f6920eaf46240/CHARACTER.ipch
+x64/Release/Character.obj
+x64/Release/Debug.obj
+x64/Release/Entities.obj
+x64/Release/Main.obj
+x64/Release/Visuals.obj

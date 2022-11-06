@@ -195,8 +195,14 @@
     <ClInclude Include="MENU\include\GameDataMan.hpp" />
     <ClInclude Include="MENU\include\GameEnums.hpp" />
     <ClInclude Include="MENU\include\Hooking.hpp" />
+    <ClInclude Include="MENU\include\initialize.hpp" />
     <ClInclude Include="MENU\include\Memory.hpp" />
     <ClInclude Include="MENU\include\Menu.hpp" />
+    <ClInclude Include="MENU\include\Tabs\Character.h" />
+    <ClInclude Include="MENU\include\Tabs\Debug.h" />
+    <ClInclude Include="MENU\include\Tabs\Entities.h" />
+    <ClInclude Include="MENU\include\Tabs\Main.h" />
+    <ClInclude Include="MENU\include\Tabs\Visuals.h" />
     <ClInclude Include="MENU\include\Tools\Vector.hpp" />
     <ClInclude Include="MENU\include\WorldCharMan.hpp" />
   </ItemGroup>
@@ -223,6 +229,11 @@
     <ClCompile Include="MENU\src\GameDataMan.cpp" />
     <ClCompile Include="MENU\src\Hooking.cpp" />
     <ClCompile Include="MENU\src\Menu.cpp" />
+    <ClCompile Include="MENU\src\Tabs\Character.cpp" />
+    <ClCompile Include="MENU\src\Tabs\Debug.cpp" />
+    <ClCompile Include="MENU\src\Tabs\Entities.cpp" />
+    <ClCompile Include="MENU\src\Tabs\Main.cpp" />
+    <ClCompile Include="MENU\src\Tabs\Visuals.cpp" />
     <ClCompile Include="MENU\src\WorldCharMan.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
