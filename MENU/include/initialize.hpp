@@ -61,8 +61,9 @@ void init()
     //  g_GameFunctions->UnlockFPS(g_GameVariables->m_ModuleBase);
 
     //  WAIT FOR USER INPUT
-    //  while (GetAsyncKeyState(VK_INSERT) == NULL)
-    //      Sleep(60);
+
+    while (!GamePadGetKeyState(XINPUT_GAMEPAD_RIGHT_THUMB | XINPUT_GAMEPAD_LEFT_THUMB))
+          Sleep(60);
     //  system("cls");
 
     g_Menu              = std::make_unique<Menu>();
@@ -85,7 +86,7 @@ void MainThread()
     //  MAIN LOOP
     while (g_Running)
     {
-        if (GamePadGetKeyState(XINPUT_GAMEPAD_A | XINPUT_GAMEPAD_B))
+        if (GamePadGetKeyState(XINPUT_GAMEPAD_RIGHT_THUMB | XINPUT_GAMEPAD_LEFT_THUMB))
             g_GameVariables->m_ShowMenu = !g_GameVariables->m_ShowMenu;
 
         if (GetAsyncKeyState(VK_INSERT) & 1) {

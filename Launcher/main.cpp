@@ -220,6 +220,53 @@ void EldenLauncher::UpdateWindow()
     pSwapChain->Present(1, 0); // Present with vsync
 }
 
+
+#include <XInput.h>
+#pragma comment(lib, "XInput.lib")
+bool GamePadGetKeyState(WORD combinationButtons)
+{
+    XINPUT_STATE state;
+    ZeroMemory(&state, sizeof(XINPUT_STATE));
+    DWORD result = XInputGetState(0, &state);
+    if (result == ERROR_SUCCESS)
+    {
+        if ((state.Gamepad.wButtons & combinationButtons) == combinationButtons)
+            return true;
+    }
+    return false;
+}
+void TestButtonInput()
+{
+        bool is_UP_Pressed      = GamePadGetKeyState(XINPUT_GAMEPAD_DPAD_UP);
+        bool is_DOWN_Pressed    = GamePadGetKeyState(XINPUT_GAMEPAD_DPAD_DOWN);
+        bool is_LEFT_Pressed    = GamePadGetKeyState(XINPUT_GAMEPAD_DPAD_LEFT);
+        bool is_RIGHT_Pressed   = GamePadGetKeyState(XINPUT_GAMEPAD_DPAD_RIGHT);
+        bool is_START_Pressed   = GamePadGetKeyState(XINPUT_GAMEPAD_START);
+        bool is_SELECT_Pressed  = GamePadGetKeyState(XINPUT_GAMEPAD_BACK);
+        bool is_L3_Pressed      = GamePadGetKeyState(XINPUT_GAMEPAD_LEFT_THUMB);
+        bool is_R3_Pressed      = GamePadGetKeyState(XINPUT_GAMEPAD_RIGHT_THUMB);
+        bool is_LS_Pressed      = GamePadGetKeyState(XINPUT_GAMEPAD_LEFT_SHOULDER);
+        bool is_RS_Pressed      = GamePadGetKeyState(XINPUT_GAMEPAD_RIGHT_SHOULDER);
+        bool is_A_Pressed       = GamePadGetKeyState(XINPUT_GAMEPAD_A);
+        bool is_B_Pressed       = GamePadGetKeyState(XINPUT_GAMEPAD_B);
+        bool is_X_Pressed       = GamePadGetKeyState(XINPUT_GAMEPAD_X);
+        bool is_Y_Pressed       = GamePadGetKeyState(XINPUT_GAMEPAD_Y);
+        ImGui::Text("UP      :   %s", is_UP_Pressed      ? "[X]" : "[ ]");
+        ImGui::Text("DOWN    :   %s", is_DOWN_Pressed    ? "[X]" : "[ ]");
+        ImGui::Text("LEFT    :   %s", is_LEFT_Pressed    ? "[X]" : "[ ]");
+        ImGui::Text("RIGHT   :   %s", is_RIGHT_Pressed   ? "[X]" : "[ ]");
+        ImGui::Text("START   :   %s", is_START_Pressed   ? "[X]" : "[ ]");
+        ImGui::Text("SELECT  :   %s", is_SELECT_Pressed  ? "[X]" : "[ ]");
+        ImGui::Text("L3      :   %s", is_L3_Pressed      ? "[X]" : "[ ]");
+        ImGui::Text("R3      :   %s", is_R3_Pressed      ? "[X]" : "[ ]");
+        ImGui::Text("LS      :   %s", is_LS_Pressed      ? "[X]" : "[ ]");
+        ImGui::Text("RS      :   %s", is_RS_Pressed      ? "[X]" : "[ ]");
+        ImGui::Text("A       :   %s", is_A_Pressed       ? "[X]" : "[ ]");
+        ImGui::Text("B       :   %s", is_B_Pressed       ? "[X]" : "[ ]");
+        ImGui::Text("X       :   %s", is_X_Pressed       ? "[X]" : "[ ]");
+        ImGui::Text("Y       :   %s", is_Y_Pressed       ? "[X]" : "[ ]");
+}
+
 void EldenLauncher::RenderUI()
 {
     ImGui::SetNextWindowPos({ 0, 0 });
@@ -228,9 +275,9 @@ void EldenLauncher::RenderUI()
     {
         if (ImGui::Button("LAUNCH", ImVec2(ImGui::GetContentRegionAvail().x - 12.f, (ImGui::GetContentRegionAvail().y / 2))))
         {
-            if (!this->_CreateProcess(L"eldenring.exe", L"-eac-nop-loaded", TRUE
-))
+            if (!this->_CreateProcess(L"eldenring.exe", L"-eac-nop-loaded", TRUE))
             {
+                g_Running = FALSE;
                 ImGui::End();
                 return;
             }
@@ -350,7 +397,7 @@ bool EldenLauncher::_CreateProcess(const wchar_t* czPath, const wchar_t* czParam
 
     if (bInject)
     {
-        const char* PATH = "tarnished";
+        const char* PATH = "tarnished.dll";
         this->hProc = OpenProcess(PROCESS_ALL_ACCESS, NULL, this->dwPID);
         void* addr = VirtualAllocEx(this->hProc, 0, MAX_PATH, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
         WriteProcessMemory(this->hProc, addr, PATH, strlen(PATH) + 1, 0);
