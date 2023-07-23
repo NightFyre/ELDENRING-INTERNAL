@@ -1,6 +1,4 @@
 #pragma once
-
-//	Header Garbage
 #include <Windows.h>
 #include <Psapi.h>
 #include <memory>
@@ -8,13 +6,7 @@
 #include <string>
 #include <thread>
 #include <chrono>
-
-
-//	Dx
 #include <d3d11.h>
-#pragma comment(lib,"d3d11.lib")
-
-// DearImGui
 #include <imgui.h>
 #include <imgui_internal.h>
 #include <imgui_impl_win32.h>
@@ -24,29 +16,18 @@
 class EldenLauncher 
 {
 private:
-
-    //  Window
     ID3D11Device*           pd3dDevice{};
     ID3D11DeviceContext*    pd3dDeviceContext{};
     IDXGISwapChain*         pSwapChain{};
     ID3D11RenderTargetView* mainRenderTargetView{};
     WNDCLASSEX              wc{};
     HWND                    hwnd{};
-    ImVec4                  clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
-    //  Process Info
+    ImVec4                  clear_color = ImVec4(0.0f, 0.0f, 0.0f, 0.0f);
     PROCESS_INFORMATION     pInfo;
     STARTUPINFO             sInfo;
     HANDLE                  hProc{};
     uintptr_t               dwModBase{};
     DWORD                   dwPID{};
-
-public:
-    bool                    bLauncherRunning{};
-    bool                    bShowWindow{};
-    bool                    bDemoWindow{};
-    bool                    bINJECT{};
-
 
 public:
     static LRESULT WINAPI   WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -99,7 +80,7 @@ void EldenLauncher::InitializeWindow()
 {
     wc = { sizeof(WNDCLASSEX), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(NULL),
         NULL, NULL, NULL, NULL,
-        _T("Dear ImGui Example Launcher"),
+        _T("Dear ImGui - Elden Ring Launcher"),
         NULL
     };
 
@@ -116,10 +97,11 @@ void EldenLauncher::InitializeWindow()
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGuiStyle& style = ImGui::GetStyle();                      // Initial Style
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;        // Enable Gamepad Controls
     io.IniFilename = NULL;                                      // Disable Ini File
-    ImGuiStyle& style = ImGui::GetStyle();                      // Initial Style
+    ImGui::StyleColorsDark();                                   // 
     ImGui_ImplWin32_Init(hwnd);                                 // 
     ImGui_ImplDX11_Init(pd3dDevice, pd3dDeviceContext);         // 
     this->InitStyle();
@@ -224,7 +206,10 @@ void EldenLauncher::UpdateWindow()
 
     //  RENDER OUR CUSTOM WINDOW HERE
     //  - Passing our boolean to close when done   
+
     RenderUI();
+
+    //  ImGui::ShowStyleEditor();
 
     // Rendering
     ImGui::Render();
@@ -243,14 +228,12 @@ void EldenLauncher::RenderUI()
     {
         if (ImGui::Button("LAUNCH", ImVec2(ImGui::GetContentRegionAvail().x - 12.f, (ImGui::GetContentRegionAvail().y / 2))))
         {
-            if (!_CreateProcess(L"eldenring.exe", L"-eac-nop-loaded", FALSE))
+            if (!this->_CreateProcess(L"eldenring.exe", L"-eac-nop-loaded", TRUE
+))
             {
-                MessageBoxA(NULL, "FAILED TO CREATE PROCESS & INJECT", ERROR, MB_ICONERROR);
                 ImGui::End();
                 return;
             }
-            // _TerminateProcesss();
-            // g_Running = FALSE;
         }
         ImGui::Separator();
         if (ImGui::Button("EXIT", ImVec2(ImGui::GetContentRegionAvail().x - 12.f, ImGui::GetContentRegionAvail().y)))
@@ -350,10 +333,7 @@ void EldenLauncher::InitStyle()
     colors[ImGuiCol_TableRowBgAlt] = ImVec4(1.00f, 1.00f, 1.00f, 0.06f);
     colors[ImGuiCol_TextSelectedBg] = ImVec4(0.20f, 0.22f, 0.23f, 1.00f);
     colors[ImGuiCol_DragDropTarget] = ImVec4(0.33f, 0.67f, 0.86f, 1.00f);
-    colors[ImGuiCol_NavHighlight] = ImVec4(1.00f, 0.00f, 0.00f, 1.00f);
-    colors[ImGuiCol_NavWindowingHighlight] = ImVec4(1.00f, 0.00f, 0.00f, 0.70f);
-    colors[ImGuiCol_NavWindowingDimBg] = ImVec4(1.00f, 0.00f, 0.00f, 0.20f);
-    colors[ImGuiCol_ModalWindowDimBg] = ImVec4(1.00f, 0.00f, 0.00f, 0.35f);
+    colors[ImGuiCol_NavHighlight] = ImVec4(0.75f, 0.75f, 0.29f, 1.00f);
 }
 
 bool EldenLauncher::_CreateProcess(const wchar_t* czPath, const wchar_t* czParams, bool bInject)

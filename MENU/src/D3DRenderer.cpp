@@ -5,22 +5,6 @@
 
 IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-//  RAINBOW THEME OPTION
-float HSV_RAINBOW_SPEED = 0.001;
-static float HSV_RAINBOW_HUE = 0;
-void SV_RAINBOW(float saturation, float value, float opacity)
-{
-	using namespace ER;
-	HSV_RAINBOW_HUE -= HSV_RAINBOW_SPEED;
-	if (HSV_RAINBOW_HUE < -1.f) HSV_RAINBOW_HUE += 1.f;
-	for (int i = 0; i < 860; i++)
-	{
-		float hue = HSV_RAINBOW_HUE + (1.f / (float)860) * i;
-		if (hue < 0.f) hue += 1.f;
-		g_Menu->dbg_RAINBOW = ImColor::HSV(hue, (saturation / 255), (value / 255), (opacity / 255));
-	}
-}
-
 namespace ER 
 {
 
@@ -288,9 +272,6 @@ namespace ER
 
 			pDevice->Release();
 		}
-
-
-		SV_RAINBOW(169, 169, 200);	//	RGB THEME
 		ImGui_ImplDX12_NewFrame();
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
@@ -551,11 +532,39 @@ namespace ER
 		ImGuiStyle& style = ImGui::GetStyle();
 		ImVec4* colors = ImGui::GetStyle().Colors;
 
-		if (g_Menu->dbg_RAINBOW_THEME)
-			colors[ImGuiCol_Separator] = g_Menu->dbg_RAINBOW;
-		else
-			colors[ImGuiCol_Separator] = ImVec4(0.28f, 0.28f, 0.28f, 0.90f);
-
+		//	STYLE PROPERTIES
+		style.TouchExtraPadding = ImVec2(0.00f, 0.00f);
+		style.LogSliderDeadzone = 4;
+		style.Alpha = 1.0f;
+		style.DisabledAlpha = 0.6000000238418579f;
+		style.WindowPadding = ImVec2(16.0f, 16.0f);
+		style.WindowRounding = 4.0f;
+		style.WindowBorderSize = 1.0f;
+		style.WindowMinSize = ImVec2(32.0f, 32.0f);
+		style.WindowTitleAlign = ImVec2(0.0f, 0.5f);
+		style.WindowMenuButtonPosition = ImGuiDir_Left;
+		style.ChildRounding = 4.0f;
+		style.ChildBorderSize = 1.0f;
+		style.PopupRounding = 4.0f;
+		style.PopupBorderSize = 1.0f;
+		style.FramePadding = ImVec2(8.0f, 8.0f);
+		style.FrameRounding = 4.0f;
+		style.FrameBorderSize = 2.0f;
+		style.ItemSpacing = ImVec2(16.0f, 12.0f);
+		style.ItemInnerSpacing = ImVec2(4.0f, 4.0f);
+		style.CellPadding = ImVec2(4.0f, 2.0f);
+		style.IndentSpacing = 21.0f;
+		style.ColumnsMinSpacing = 6.0f;
+		style.ScrollbarSize = 24.0f;
+		style.ScrollbarRounding = 4.0f;
+		style.GrabMinSize = 16.0f;
+		style.GrabRounding = 4.0f;
+		style.TabRounding = 4.0f;
+		style.TabBorderSize = 0.0f;
+		style.TabMinWidthForCloseButton = 0.0f;
+		style.ColorButtonPosition = ImGuiDir_Right;
+		style.ButtonTextAlign = ImVec2(0.5f, 0.5f);
+		style.SelectableTextAlign = ImVec2(0.0f, 0.0f);
 		colors[ImGuiCol_Text] = ImVec4(0.75f, 0.75f, 0.29f, 1.00f);
 		colors[ImGuiCol_TextDisabled] = ImVec4(0.86f, 0.93f, 0.89f, 0.28f);
 		colors[ImGuiCol_TextSelectedBg] = ImVec4(0.27f, 0.00f, 0.63f, 0.43f);
@@ -584,7 +593,6 @@ namespace ER
 		colors[ImGuiCol_Header] = ImVec4(0.00f, 0.00f, 0.00f, 0.52f);
 		colors[ImGuiCol_HeaderHovered] = ImVec4(0.00f, 0.00f, 0.00f, 0.36f);
 		colors[ImGuiCol_HeaderActive] = ImVec4(0.20f, 0.22f, 0.23f, 0.33f);
-		//colors[ImGuiCol_Separator] = ImVec4(0.28f, 0.28f, 0.28f, 0.90f);
 		colors[ImGuiCol_SeparatorHovered] = ImVec4(0.44f, 0.44f, 0.44f, 0.29f);
 		colors[ImGuiCol_SeparatorActive] = ImVec4(0.40f, 0.44f, 0.47f, 1.00f);
 		colors[ImGuiCol_ResizeGrip] = ImVec4(0.28f, 0.28f, 0.28f, 0.29f);
@@ -606,32 +614,6 @@ namespace ER
 		colors[ImGuiCol_TableRowBgAlt] = ImVec4(1.00f, 1.00f, 1.00f, 0.06f);
 		colors[ImGuiCol_TextSelectedBg] = ImVec4(0.20f, 0.22f, 0.23f, 1.00f);
 		colors[ImGuiCol_DragDropTarget] = ImVec4(0.33f, 0.67f, 0.86f, 1.00f);
-		colors[ImGuiCol_NavHighlight] = ImVec4(1.00f, 0.00f, 0.00f, 1.00f);
-		colors[ImGuiCol_NavWindowingHighlight] = ImVec4(1.00f, 0.00f, 0.00f, 0.70f);
-		colors[ImGuiCol_NavWindowingDimBg] = ImVec4(1.00f, 0.00f, 0.00f, 0.20f);
-		colors[ImGuiCol_ModalWindowDimBg] = ImVec4(1.00f, 0.00f, 0.00f, 0.35f);
-		style.WindowTitleAlign = ImVec2(0.5f, 0.5f);
-		style.WindowPadding = ImVec2(8.00f, 8.00f);
-		style.FramePadding = ImVec2(5.00f, 2.00f);
-		style.CellPadding = ImVec2(6.00f, 6.00f);
-		style.ItemSpacing = ImVec2(6.00f, 6.00f);
-		style.ItemInnerSpacing = ImVec2(6.00f, 6.00f);
-		style.TouchExtraPadding = ImVec2(0.00f, 0.00f);
-		style.IndentSpacing = 25;
-		style.ScrollbarSize = 15;
-		style.GrabMinSize = 10;
-		style.WindowBorderSize = 1;
-		style.ChildBorderSize = 1;
-		style.PopupBorderSize = 1;
-		style.FrameBorderSize = 1;
-		style.TabBorderSize = 1;
-		style.WindowRounding = 7;
-		style.ChildRounding = 4;
-		style.FrameRounding = 3;
-		style.PopupRounding = 4;
-		style.ScrollbarRounding = 9;
-		style.GrabRounding = 3;
-		style.LogSliderDeadzone = 4;
-		style.TabRounding = 4;
+		colors[ImGuiCol_NavHighlight] = ImVec4(0.75f, 0.75f, 0.29f, 1.00f);
 	}
 }

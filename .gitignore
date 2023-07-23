@@ -8,8 +8,8 @@ x64/
 lib/
 
 # Exclude External Libraries
-/DearImGui
-/Minhook
+DearImGui/
+Minhook/
 
 # exclude personal settings
 *.sln

@@ -1,6 +1,5 @@
 #include "../include/Game.hpp"
 #include "../include/Menu.hpp"
-#include "../include/Console.hpp"
 #include "../include/WorldCharMan.hpp"
 #include "../include/D3DRenderer.hpp"
 
@@ -8,27 +7,27 @@ namespace ER {
 
 	GameVariables::GameVariables()
 	{
-		m_GamePid = GetCurrentProcessId();
-		m_GameHandle = GetCurrentProcess();
-		m_GameWindow = FindWindow("ELDEN RING™", NULL);
-		m_ModuleBase = (uintptr_t)GetModuleHandle(NULL);
+		m_GamePid		= GetCurrentProcessId();
+		m_GameHandle	= GetCurrentProcess();
+		m_GameWindow	= FindWindow("ELDEN RING™", NULL);
+		m_ModuleBase	= (uintptr_t)GetModuleHandle(NULL);
 
 		RECT TempRect;
 		GetWindowRect(m_GameWindow, &TempRect);
-		m_GameWidth = TempRect.right - TempRect.left;
-		m_GameHeight = TempRect.bottom - TempRect.top;
+		m_GameWidth		= TempRect.right - TempRect.left;
+		m_GameHeight	= TempRect.bottom - TempRect.top;
 
 		char TempTitle[MAX_PATH];
 		GetWindowText(m_GameWindow, TempTitle, sizeof(TempTitle));
-		m_GameTitle = TempTitle;
+		m_GameTitle		= TempTitle;
 
 		char TempClassName[MAX_PATH];
 		GetClassName(m_GameWindow, TempClassName, sizeof(TempClassName));
-		m_ClassName = TempClassName;
+		m_ClassName		= TempClassName;
 
 		char TempPath[MAX_PATH];
 		GetModuleFileNameEx(m_GameHandle, NULL, TempPath, sizeof(TempPath));
-		m_GamePath = TempPath;
+		m_GamePath		= TempPath;
 	}
 
 	GameFunctions::GameFunctions()
@@ -44,14 +43,12 @@ namespace ER {
 		//  OLD | 0x0A9415E |	0x0A8FA5E | 0x0A8FB4E
 		using namespace ER;
 		Patch((BYTE*)addr + g_GameVariables->offsets.ptr_FMV_SKIP, (BYTE*)"\xE9\x1C\x00\x00\x00", 5);
-		g_Console->printdbg("[+] FMV's SKIPPED\n", Console::Colors::green);
 	}
 
 	void GameFunctions::UnlockFPS(uintptr_t addr)
 	{
 		using namespace ER;
 		Patch((BYTE*)addr + g_GameVariables->offsets.ptr_UNLOCK_FPS, (BYTE*)"\xC7\x45\xEF\x00\x00\x00\x00", 7);  // AOB 2 | OLD 0x1944B27
-		g_Console->printdbg("[+] FPS LIMIT REMOVED\n\n", Console::Colors::green);
 	}
 
 	void GameFunctions::PauseGameplay(uintptr_t addr, bool ACTIVE)
@@ -62,136 +59,15 @@ namespace ER {
 		}	
 	}
 
-	int count = 0;
-	void GameFunctions::ESP(float distance)
-	{
-		//  Update Entity Info
-		if (!g_WorldCharMan->m_isValid) {
-			g_Menu->bESP = FALSE;
-			g_Console->printdbg("[+] MENU:: ESP; OFF {WorldCharMan::Update ; FAILED}\n", Console::Colors::red);
-			return;
-		}
-
-		if (g_WorldCharMan->pCharData->Health == NULL) {
-			g_Menu->bESP = FALSE;
-			g_Console->printdbg("[+] MENU:: ESP; OFF {Health is NULL}\n", Console::Colors::red);
-			return;
-		}
-
-		///  Filter Entity Results
-		Vector2 vecScreen;
-		uintptr_t ViewMatrix = g_GameFunctions->p2addy(g_GameVariables->m_ModuleBase + g_GameVariables->offsets.ptr_NBOTT_W2S, { 0x60, 0x60, 0x420 });
-		Vector2 Size = { ImGui::GetMainViewport()->Size.x, ImGui::GetMainViewport()->Size.y };
-		Vector2 pos = { (Size.x / 2), (Size.y / 2) };
-		ImVec2 DrawPosition = { pos.x, 0 };
-
-		memcpy(&g_Menu->Matrix, (BYTE*)ViewMatrix, sizeof(g_Menu->Matrix));
-		for (int i = 0; i <= g_WorldCharMan->arraySIZE - 1; i = i + 1) {
-
-			//  COMPARE WITH PLAYER
-			if ((uintptr_t)g_WorldCharMan->EntityObjectBase[i] == (uintptr_t)g_WorldCharMan->pEntityObjectBase) continue;
-
-			//  POSITION CHECK
-			if (g_WorldCharMan->CharPhysics[i]->Position == g_WorldCharMan->pCharPhysics->Position) continue;
-
-			//  ANIMATION CHECK
-			if (g_WorldCharMan->CharTimeAct[i]->Animation < 0) continue;
-
-			//  HEALTH CHECK
-			if (g_WorldCharMan->CharData[i]->Health == NULL)
-			{
-				//  ADDITIOONAL PATCH TO REVERT SKELETON DRAWING IF ENTITY DIES
-				if (g_WorldCharMan->CharFall[i]->DrawSkeleton == 1)
-					g_WorldCharMan->CharFall[i]->DrawSkeleton = NULL;
-				continue;
-			}
-
-			float DistanceToEntity = g_GameFunctions->GetDistanceTo3D_Object(g_WorldCharMan->CharPhysics[i]->Position, g_WorldCharMan->pCharPhysics->Position);
-
-			///  DRAW SKELETON DISTANCE
-			if (distance != NULL) {
-				if (DistanceToEntity <= distance)
-				{
-					if (g_WorldCharMan->CharFall[i]->DrawSkeleton == NULL)
-						g_WorldCharMan->CharFall[i]->DrawSkeleton = 1;
-				}
-				else if (g_WorldCharMan->CharFall[i]->DrawSkeleton == 1)
-					g_WorldCharMan->CharFall[i]->DrawSkeleton = NULL;
-			}
-
-			std::string EntityCount = "ENTITIES: " + std::to_string(g_WorldCharMan->count);
-			std::string EntityDistance = std::to_string(g_GameFunctions->GetDistanceTo3D_Object(g_WorldCharMan->CharPhysics[i]->Position, g_WorldCharMan->pCharPhysics->Position));
-			if (g_D3DRenderer->WorldToScreen(g_WorldCharMan->CharPhysics[i]->Position, vecScreen, g_Menu->Matrix, Size.x, Size.y)) {
-				ImGui::GetBackgroundDrawList()->AddText(ImVec2(5, 5), ImColor(255, 0, 0, 255), EntityCount.c_str());
-				ImGui::GetBackgroundDrawList()->AddText(ImVec2(vecScreen.x, vecScreen.y), ImColor(255, 0, 0, 255), EntityDistance.c_str());
-				ImGui::GetBackgroundDrawList()->AddLine(DrawPosition, ImVec2(vecScreen.x, vecScreen.y), ImColor(255, 255, 255), 0.3f);
-				count++;
-			}
-		}
-		g_WorldCharMan->count = count;
-		count = NULL;
-	}
-
-	void GameFunctions::dbg_ESP()
-	{
-		if (!g_WorldCharMan->m_isValid) {
-			g_Menu->m_dbgMatrixWnd = FALSE;
-			g_Console->printdbg("[+] MENU:: ENT WINDOW; OFF {WorldCharMan::Update ; FAILED}\n", Console::Colors::red);
-			return;
-		}
-
-		if (g_WorldCharMan->pCharData->Health == NULL) {
-			g_Menu->m_dbgMatrixWnd = FALSE;
-			g_Console->printdbg("[+] MENU:: ENT WINDOW; OFF {Health is NULL}\n", Console::Colors::red);
-			return;
-		}
-
-		///  Filter Entity Results
-		int count = 0;
-		Vector2 vecScreen;
-		Vector2 pos = { ImGui::GetMainViewport()->GetCenter().x, ImGui::GetMainViewport()->GetCenter().y };
-		for (int i = 0; i <= g_WorldCharMan->arraySIZE - 1; i = i + 1) {
-
-			//  COMPARE WITH PLAYER
-			if ((uintptr_t)g_WorldCharMan->EntityObjectBase[i] == (uintptr_t)g_WorldCharMan->pEntityObjectBase)
-				continue;
-
-			//  HEALTH CHECK
-			if (g_WorldCharMan->CharData[i]->Health == NULL)
-				continue;
-
-			//  POSITION CHECK
-			if (g_WorldCharMan->CharPhysics[i]->Position == g_WorldCharMan->pCharPhysics->Position)
-				continue;
-
-			///  DRAW
-			if (g_D3DRenderer->WorldToScreen(g_WorldCharMan->CharPhysics[i]->Position, vecScreen, g_Menu->ViewMatrix, ImGui::GetWindowWidth(), ImGui::GetWindowHeight())) {
-				if (g_Menu->dbg_ENT_RGB) {
-					ImGui::GetBackgroundDrawList()->AddText(ImVec2(vecScreen.x, vecScreen.y), ImColor(g_Menu->dbg_RAINBOW), std::to_string(count).c_str());
-					ImGui::GetBackgroundDrawList()->AddLine(ImVec2(pos.x, pos.y + 960), ImVec2(vecScreen.x, vecScreen.y), ImColor(g_Menu->dbg_RAINBOW), 0.3f);
-				}
-				else {
-					ImGui::GetBackgroundDrawList()->AddText(ImVec2(vecScreen.x, vecScreen.y), ImColor(0, 0, 255, 255), std::to_string(count).c_str());
-					ImGui::GetBackgroundDrawList()->AddLine(ImVec2(pos.x, pos.y + 960), ImVec2(vecScreen.x, vecScreen.y), ImColor(255, 255, 255), 0.3f);
-				}
-				count++;
-			}
-		}
-		g_WorldCharMan->count = NULL;
-		count = NULL;
-	}
-
 	void GameFunctions::Barrier(float distance)
 	{
 		if (!g_WorldCharMan->m_isValid) {
 			m_BARRIER = FALSE;
-			g_Console->printdbg("[+] MENU:: BARRIER; OFF {WorldCharMan::Update ; FAILED}\n", Console::Colors::red);
 			return;
 		}
 
 		if (g_WorldCharMan->pCharData->Health == NULL) {
 			m_BARRIER = FALSE;
-			g_Console->printdbg("[+] MENU:: BARRIER; OFF {Health is NULL}\n", Console::Colors::red);
 			return;
 		}
 
@@ -230,31 +106,6 @@ namespace ER {
 		float z = (POS2.z - POS.z);
 		float distance = std::sqrt(x * x + y * y + z * z);
 		return (distance);
-	}
-
-	//	Gets current game FPS
-	void GameFunctions::FPS()
-	{
-		//  CREDIT: XBOX360LSBEST
-		static bool init = false;
-		static char text[64] = "FPS: unknown";
-		static int frame = 0;
-		static clock_t time = clock();
-		frame++;
-		if (clock() - time >= 1000)
-		{
-			memset(text, 0, sizeof(text));
-			sprintf(text, "FPS: %i\n", frame);
-			frame = 0;
-			time = clock();
-			init = true;
-		}
-
-		if (init && text[0])	//	CASE SWITCH FOR 3rd BOOLEAN
-			if (g_Menu->dbg_RAINBOW_THEME)
-				ImGui::GetBackgroundDrawList()->AddText(ImVec2(20, 5), ImColor(g_Menu->dbg_RAINBOW), text);
-			else if (!g_Menu->dbg_RAINBOW_THEME)
-				ImGui::GetBackgroundDrawList()->AddText(ImVec2(20, 5), ImColor(255, 255, 255, 255), text);
 	}
 
 	//	Gets PTR address by resolving a pointer chain

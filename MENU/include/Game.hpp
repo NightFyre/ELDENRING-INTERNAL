@@ -54,7 +54,7 @@ namespace ER
 		IDXGISwapChain3* m_Swapchain{};
 
 		//	MENU RELATED
-		bool m_ShowMenu{};
+		bool m_ShowMenu = TRUE;
 		bool m_ShowConsole{};
 		bool m_ShowDemo{};
 	};
@@ -76,9 +76,6 @@ namespace ER
 		void UnlockFPS(uintptr_t addr);
 		void PauseGameplay(uintptr_t addr, bool ACTIVE);
 		float GetDistanceTo3D_Object(Vector3 POS, Vector3 POS2);
-		void FPS();
-		void ESP(float distance);
-		void dbg_ESP();
 		void Barrier(float distance);
 
 		//	Memory Functions (needs to be moved elsewhere)

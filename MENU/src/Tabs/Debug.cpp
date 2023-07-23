@@ -17,7 +17,7 @@ void Debug::Draw() {
     //  Initize so that we can set and store ImGui Content Positions
     ImGuiWindow* window = GImGui->CurrentWindow;
     ImVec2 ToolLocation;
-    ImGui::TextCentered("[ABOUT]", TRUE, ImColor(0, 255, 255, 200));
+    ImGui::Text("[ABOUT]", TRUE, ImColor(0, 255, 255, 200));
     ImGui::Spacing();
     ImGui::Separator();
 
@@ -64,43 +64,12 @@ void Debug::Draw() {
         ImGui::Separator();
     }
 
-    if (ImGui::Toggle("DRAW ALL SKELETONS", &g_Menu->m_dbgSkeleton))
-        g_WorldCharMan->dbg_SKELETON(g_Menu->m_dbgSkeleton);
-    if (g_Menu->m_dbgSkeleton) {
-        ImGui::SameLine();
-        std::string paired = (" | " + std::to_string(g_WorldCharMan->validEnts_count));
-        ImGui::Text(paired.c_str());
-    }
-
-    if (ImGui::Toggle("DEBUG ESP", &g_Menu->m_dbgMatrixWnd))
-        g_Console->LogEvent("[+] MENU:: DEBUG ESP; ", g_Menu->m_dbgMatrixWnd);
-
-    ImGui::Separator();
-    ImGui::Toggle("RGB THEME", &g_Menu->dbg_RAINBOW_THEME);
-    ImGui::Spacing();
-    if (ImGui::Toggle("SHOW CONSOLE | ", &g_GameVariables->m_ShowConsole)) {
-        if (g_GameVariables->m_ShowConsole)
-            ShowWindow(GetConsoleWindow(), SW_SHOW);
-        else if (!g_GameVariables->m_ShowConsole)
-            ShowWindow(GetConsoleWindow(), SW_HIDE);
-    }
-    ImGui::SameLine();
-    ImGui::Checkbox("Verbose Logging", &g_Console->verbose);
-    ImGui::Spacing();
-    //ImGui::Toggle("SHOW IMGUI::DEMO WINDOW", &g_GameVariables->m_ShowDemo);
     ImGui::Separator();
 
-    if (ImGui::Button("CALL W2S FUNCTION", ImVec2(ImGui::GetWindowContentRegionWidth() - 3, 20)))
-        g_Menu->dbgPrintW2S = TRUE;
-
-    if (ImGui::Button("CALL WorldCharMan Update", ImVec2(ImGui::GetWindowContentRegionWidth() - 3, 20)))
-        g_WorldCharMan->Update();
-
-    if (ImGui::Button("INITIALIZE STYLE", ImVec2(ImGui::GetWindowContentRegionWidth() - 3, 20)))
-        g_Styles->InitStyle();
-    ImGui::Separator();
     if (ImGui::Button("UNLOAD DLL")) g_KillSwitch = TRUE;
+
     ImGui::Spacing();
+
     if (ImGui::Button("QUIT GAME", ImVec2(ImGui::GetWindowContentRegionWidth() - 3, 20)))
         TerminateProcess(g_GameVariables->m_GameHandle, EXIT_SUCCESS);
 
@@ -109,6 +78,5 @@ void Debug::Draw() {
 
     ImGui::Spacing();
     ImGui::Separator();
-    std::string footer = g_Menu->m_MenuFooter + g_Console->GetTimeString();
-    ImGui::TextCentered(footer.c_str());
+    ImGui::Text(g_Menu->m_MenuFooter);
 }

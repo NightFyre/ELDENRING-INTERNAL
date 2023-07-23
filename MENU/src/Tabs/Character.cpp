@@ -16,7 +16,7 @@ void Character::Draw() {
     //  Initize so that we can set and store ImGui Content Positions
     ImGuiWindow* window = GImGui->CurrentWindow;
     ImVec2 ToolLocation;
-    ImGui::TextCentered("[CHARACTER STATS]", TRUE, ImColor(0, 255, 255, 200));
+    ImGui::Text("[CHARACTER STATS]", TRUE, ImColor(0, 255, 255, 200));
     ImGui::Spacing();
     ImGui::Separator();
 
@@ -119,6 +119,5 @@ void Character::Draw() {
 
     ImGui::Spacing();
     ImGui::Separator();
-    std::string footer = g_Menu->m_MenuFooter + g_Console->GetTimeString();
-    ImGui::TextCentered(footer.c_str());
+    ImGui::Text(g_Menu->m_MenuFooter);
 }

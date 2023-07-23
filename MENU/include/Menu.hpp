@@ -101,8 +101,6 @@ namespace ER {
 		//	FORWARD DECLARE FUNCTIONS
 		void Draw();
 		void DrawMenu();
-		void DrawEntityWindow();
-		void DrawMatrixHelper();
 		void bgLoops();
 		
 	private:

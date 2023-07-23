@@ -1,5 +1,4 @@
 #include "../include/WorldCharMan.hpp"
-#include "../include/Console.hpp"
 #include "../include/Menu.hpp"
 #include "../include/D3DRenderer.hpp"
 
@@ -17,37 +16,28 @@ namespace ER {
 
 	void WorldCharMan::Init()
 	{
-		g_Console->printdbg("[+] WorldCharMan::Init STARTED\n", Console::Colors::yellow);
 		auto Sig = Signature("48 8B 05 ? ? ? ? 48 85 C0 74 0F 48 39 88 ? ? ? ? 75 06 89 B1 5C 03 00 00 0F 28 05 ? ? ? ? 4C 8D 45 E7").Scan().Add(3).Rip().As<uint64_t>();
 
 		if (!Sig) {
-			g_Console->printdbg("[!] WorldCharMan::Init - FAILED; {Sig}\n\n", Console::Colors::red);
 			return;
 		}
 		Base = Sig;
 
-		g_Console->printdbg("[+] WorldCharMan::Init FINISHED\n\n", Console::Colors::green);
 		Update();
 		return;
 	}
 
 	bool WorldCharMan::Update()
 	{
-		g_Console->printdbg("[+] WorldCharMan::Update STARTED\n", Console::Colors::yellow);
 
 		auto BasePtr = RPM<uint64_t>(Base) + 0x1F1B0;
 		if (!BasePtr || BasePtr == 0x1F1B0) {
-			if (!BasePtr)
-				g_Console->printdbg("[!] WorldCharMan::Update - FAILED; {BasePTR}\n\n", Console::Colors::red);
-			else
-				g_Console->printdbg("[!] WorldCharMan::Update - FAILED; {BasePTR = BasePtr Offset}\n\n", Console::Colors::red);
 			m_isValid = FALSE;
 			return FALSE;
 		}
 		Ptr = BasePtr;
 
 		if (!Base || !Ptr) {
-			g_Console->printdbg("[!] WorldCharMan::Update - FAILED; {Base || Ptr}\n\n", Console::Colors::red);
 			count = 0;
 			Init();
 			m_isValid = FALSE;
@@ -55,17 +45,12 @@ namespace ER {
 		}
 		LastPtr = Ptr;
 
-		if (g_Console->verbose) {
-			printf("[+] Base: %llX\n", Base);
-			printf("[+] Ptr: %llX\n", Ptr);
-		}
 
 		//	Establish Size of Array
 		Begin = RPM<uint32_t>(Ptr);	// CAUSES CRASH AT MAIN MENU // FIXED @ LINE 41
 		Finish = RPM<uint32_t>(Ptr + 0x8);
 		arraySIZE = (Finish - Begin) / 8;
 		if (arraySIZE == NULL) {
-			g_Console->printdbg("[!] WorldCharMan::Update - FAILED; {array}\n\n", Console::Colors::red);	// weak point
 			m_isValid = FALSE;
 			return FALSE;
 		}
@@ -73,7 +58,6 @@ namespace ER {
 		// Get Player Data
 		PlayerPTR = (RPM<uintptr_t>(g_GameVariables->m_ModuleBase + g_GameVariables->offsets.ptr_PLAYER_DATA));
 		if (PlayerPTR == NULL) {
-			g_Console->printdbg("[!] WorldCharMan::Update - FAILED; {PlayerPTR}\n\n", Console::Colors::red);
 			m_isValid = FALSE;
 			return FALSE;
 		}
@@ -139,18 +123,8 @@ namespace ER {
 			}
 			CharPhysics[i] = (ChrPhysics*)RPM<uintptr_t>((uintptr_t)EntityObjectBase[i]->EntObjectPTR + 0x68);
 			count++;
-
-			//	VERBOSE CONSOLE LOG
-			if (g_Console->verbose) {
-				printf("EntityObjectBase: %p\n", EntityObjectBase);
-				printf("CharData: %p\n", CharData[i]);
-				printf("CharFall: %p\n", CharFall[i]);
-				printf("CharPhsyics: %p\n", CharPhysics[i]);
-				printf("---------------------------------------------\n\n");
-			}
 		}
 		validEnts_count = count;
-		g_Console->printdbg("[+] WorldCharMan::Update FINISHED\n\n", Console::Colors::green);
 		m_isValid = TRUE;
 		return TRUE;
 	}
@@ -170,89 +144,6 @@ namespace ER {
 		//	return FALSE;
 		//}
 		//Ptr = BasePtr;
-	}
-
-	//  DEBUG DRAW SKELETON (useful for turning all off in case of bug)
-	void WorldCharMan::dbg_SKELETON(bool ENABLED)
-	{
-		if (!g_GameDataMan->Valid()) return;
-
-		if (!g_WorldCharMan->Valid()) return;
-
-		if (!g_WorldCharMan->m_isValid) return;
-
-		if (ENABLED) {
-			for (int i = 0; i <= g_WorldCharMan->arraySIZE - 1; i = i + 1) {
-				//  HEALTH FLAG
-				if (g_WorldCharMan->CharData[i]->Health != 0) {
-					
-					if (g_WorldCharMan->CharTimeAct[i]->Animation < 0) continue;
-
-					//  DRAW
-					if (g_WorldCharMan->CharFall[i]->DrawSkeleton == 0)
-						g_WorldCharMan->CharFall[i]->DrawSkeleton = 1;
-				}
-				else if (g_WorldCharMan->CharFall[i]->DrawSkeleton = 1)
-					g_WorldCharMan->CharFall[i]->DrawSkeleton = 0;
-			}
-			g_Console->printdbg("[+] DRAW ALL SKELETONS : ON\n", Console::Colors::green);
-		}
-		else {
-			for (int i = 0; i <= g_WorldCharMan->arraySIZE - 1; i = i + 1) {
-				if (g_WorldCharMan->CharFall[i]->DrawSkeleton == 1)
-					g_WorldCharMan->CharFall[i]->DrawSkeleton = 0;
-			}
-			g_Console->printdbg("[+] DRAW ALL SKELETONS : OFF\n", Console::Colors::red);
-		}
-		g_WorldCharMan->count = NULL;
-		return;
-	}
-
-	//  DISTANCE BASED ESP SKELETON
-	void WorldCharMan::ESP_SKELETON(float distance)
-	{
-		if (distance == NULL)
-			return;
-
-		if (!g_GameDataMan->Valid())
-			return;
-
-		if (!g_WorldCharMan->Valid())
-			return;
-
-		if (!g_WorldCharMan->m_isValid)
-			return;
-
-		//	FLAG TO TURN OFF ALL SEKELTON DRAWING UPON DYING
-		if (g_WorldCharMan->pCharData->Health == NULL) {
-			for (int i = 0; i <= g_WorldCharMan->arraySIZE - 1; i = i + 1) {
-				if (g_WorldCharMan->CharFall[i]->DrawSkeleton != NULL)
-					g_WorldCharMan->CharFall[i]->DrawSkeleton = NULL;
-			}
-			g_Menu->s_draw = FALSE;
-			g_Console->printdbg("[+] MENU:: SKELETON; OFF {Health is NULL}\n", Console::Colors::red);
-			return;
-		}
-
-		for (int i = 0; i <= g_WorldCharMan->arraySIZE - 1; i = i + 1) {
-
-			if ((uintptr_t)g_WorldCharMan->EntityObjectBase[i] == (uintptr_t)g_WorldCharMan->pEntityObjectBase) continue;	//	Player Object check
-
-			if (g_WorldCharMan->CharData[i]->Health != NULL)	//	Health Check
-			{
-				if (g_WorldCharMan->CharTimeAct[i]->Animation < 0)  continue;
-
-				if (g_GameFunctions->GetDistanceTo3D_Object(g_WorldCharMan->pCharPhysics->Position, g_WorldCharMan->CharPhysics[i]->Position) <= distance)
-				{
-				    if (g_WorldCharMan->CharFall[i]->DrawSkeleton == NULL)
-				        g_WorldCharMan->CharFall[i]->DrawSkeleton = 1;
-				}
-				else if (g_WorldCharMan->CharFall[i]->DrawSkeleton == 1)
-				    g_WorldCharMan->CharFall[i]->DrawSkeleton = NULL;
-			}
-			else if (g_WorldCharMan->CharFall[i]->DrawSkeleton == 1)
-				g_WorldCharMan->CharFall[i]->DrawSkeleton = NULL;
-		}
 	}
 
 	//	FREEZE ENTITIES
@@ -348,7 +239,6 @@ namespace ER {
 	void WorldCharMan::killENTS()
 	{
 		if (!g_GameDataMan->Valid()) {
-			g_Console->printdbg("[+] VALIDATION FAILED : {GameDataMan} . . .\n", Console::Colors::red);
 			return;
 		}
 		if (!g_WorldCharMan->m_isValid) return;

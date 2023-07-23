@@ -1,7 +1,6 @@
 #pragma once
 #include "Common.hpp"
 #include "Memory.hpp"
-#include "Console.hpp"
 
 namespace ER {
 

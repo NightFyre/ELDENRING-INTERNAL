@@ -1,6 +1,5 @@
 #pragma once
 #include "../../include/Tabs/Entities.h"
-#include "../../include/Console.hpp"
 #include "../../include/Menu.hpp"
 #include "../../include/GameDataMan.hpp"
 #include "../../include/WorldCharMan.hpp"
@@ -23,7 +22,7 @@ void Entities::Draw() {
     //  Initize so that we can set and store ImGui Content Positions
     ImGuiWindow* window = GImGui->CurrentWindow;
     ImVec2 ToolLocation;
-    ImGui::TextCentered("[ENTITY STATS]", TRUE, ImColor(0, 255, 255, 200));
+    ImGui::Text("[ENTITY STATS]", TRUE, ImColor(0, 255, 255, 200));
     ImGui::Spacing();
     ImGui::Separator();
 
@@ -46,7 +45,6 @@ void Entities::Draw() {
     }
 
     if (ImGui::Button("KILL ALL ENTITIES", ImVec2(ImGui::GetWindowContentRegionWidth() - 3, 20))) {
-        g_Console->printdbg("[+] MENU:: KILL ALL ENTITIES\n", Console::Colors::green);
         g_WorldCharMan->killENTS();
     }
     ImGui::Spacing();
@@ -54,7 +52,6 @@ void Entities::Draw() {
     //  Store all entity coords in an array of Vector3 Floats
     //  Flush data when boolean is false
     if (ImGui::Button("FREEZE ALL ENTITIES", ImVec2(ImGui::GetWindowContentRegionWidth() - 3, 20))) {
-        g_Console->printdbg("[!] MENU:: FREEZE ALL ENTITIES [BUGGED]\n", Console::Colors::dark_yellow);
         if (!g_Menu->f_TOGGLE)
             g_WorldCharMan->stallENTS();
         else if (g_Menu->f_TOGGLE) {
@@ -70,7 +67,6 @@ void Entities::Draw() {
     ImGui::Spacing();
 
     if (ImGui::Button("TELEPORT ALL TO CROSSHAIR", ImVec2(ImGui::GetWindowContentRegionWidth() - 3, 20))) {
-        g_Console->printdbg("[!] MENU:: TELEPORT ALL TO CROSSHAIR\n", Console::Colors::red);
         if (g_WorldCharMan->m_isValid)
         {
             for (int i = 0; i < g_WorldCharMan->arraySIZE - 1; i++) {
@@ -85,9 +81,9 @@ void Entities::Draw() {
     ImGui::Separator();
     ImGui::Spacing();
 
-    ImGui::Toggle("FREEZE CLOSE ENTITIES", &g_Menu->f_TOGGLE);
+    ImGui::Checkbox("FREEZE CLOSE ENTITIES", &g_Menu->f_TOGGLE);
     ImGui::Spacing();
-    ImGui::Toggle("Health Drain Barrier", &g_GameFunctions->m_BARRIER);
+    ImGui::Checkbox("Health Drain Barrier", &g_GameFunctions->m_BARRIER);
     if (g_GameFunctions->m_BARRIER) {
         ImGui::SameLine();
         ImGui::Text("  |  DISTANCE: ");
@@ -97,8 +93,7 @@ void Entities::Draw() {
     }
     ImGui::Separator();
 
-    if (ImGui::Toggle("DISPLAY ENTITY ARRAY", &g_Menu->m_dbgEntityWnd)) {
-        g_Console->LogEvent("[+] MENU:: ENTITY ARRAY ; ", g_Menu->m_dbgEntityWnd);
+    if (ImGui::Checkbox("DISPLAY ENTITY ARRAY", &g_Menu->m_dbgEntityWnd)) {
         if (!g_Menu->m_dbgEntityWnd)
             g_WorldCharMan->count = NULL;
     }
@@ -108,6 +103,5 @@ void Entities::Draw() {
 
     ImGui::Spacing();
     ImGui::Separator();
-    std::string footer = g_Menu->m_MenuFooter + g_Console->GetTimeString();
-    ImGui::TextCentered(footer.c_str());
+    ImGui::Text(g_Menu->m_MenuFooter);
 }

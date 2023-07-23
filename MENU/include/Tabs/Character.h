@@ -1,8 +1,8 @@
 #pragma once
-#include "../../libs/ImGui/imgui.h"
-#include "../../libs/ImGui/imgui_internal.h"
-#include "../../libs/ImGui/imgui_impl_dx12.h"
-#include "../../libs/ImGui/imgui_impl_win32.h"
+#include <imgui.h>
+#include <imgui_internal.h>
+#include <imgui_impl_dx12.h>
+#include <imgui_impl_win32.h>
 
 namespace ER::Tabs {
     class Character {

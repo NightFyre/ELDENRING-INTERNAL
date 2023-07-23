@@ -54,11 +54,11 @@
 #include <vector>
 
 #include "Tools/Vector.hpp"
-#include "../libs/Minhook/MinHook.h"
-#include "../libs/ImGui/imgui.h"
-#include "../libs/ImGui/imgui_internal.h"
-#include "../libs/ImGui/imgui_impl_dx12.h"
-#include "../libs/ImGui/imgui_impl_win32.h"
+#include <MinHook.h>
+#include <imgui.h>
+#include <imgui_internal.h>
+#include <imgui_impl_dx12.h>
+#include <imgui_impl_win32.h>
 
 extern void Nop(BYTE* dst, unsigned int size);
 extern void Patch(BYTE* dst, BYTE* src, unsigned int size);
