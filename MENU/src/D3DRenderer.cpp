@@ -7,139 +7,248 @@ IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARA
 
 namespace ER 
 {
-
 	//-----------------------------------------------------------------------------------
 	//									    D3DWindow
 	//-----------------------------------------------------------------------------------
-	static uint64_t* MethodsTable = NULL;
+	
+	//	CONSTRUCTOR | DESTRUCTOR
+	DX12_Base::~DX12_Base() { DisableAllHooks(); }
 
-	bool D3DRenderer::Hook()
+	//	FUNCTION HOOKS
+	LRESULT DX12_Base::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
-		if (InitHook()) {
-			CreateHook(54, (void**)&oExecuteCommandLists, HookExecuteCommandLists);
-			CreateHook(140, (void**)&oPresent, HookPresent);
-			CreateHook(146, (void**)&oResizeTarget, HookResizeTarget);
-			return 1;
-		}
-		return 0;
+		if (ImGui::GetCurrentContext())
+			ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam);
+
+		return CallWindowProc((WNDPROC)g_DX12->m_OldWndProc, hWnd, msg, wParam, lParam);
 	}
 
-	void D3DRenderer::Unhook()
+	HRESULT APIENTRY DX12_Base::HookResizeTarget(IDXGISwapChain* _this, const DXGI_MODE_DESC* pNewTargetParameters)
 	{
-		SetWindowLongPtr(g_GameVariables->m_GameWindow, GWLP_WNDPROC, (LONG_PTR)m_OldWndProc);
-		DisableAll();
+		g_DX12->ResetRenderState();
+		return g_DX12->oResizeTarget(_this, pNewTargetParameters);
 	}
 
-    bool D3DRenderer::InitHook()
-    {
-		if (InitWindow() == false) {
-			return false;
+	HRESULT APIENTRY DX12_Base::HookPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags)
+	{
+		if (g_DX12->bKillswitch) 
+		{
+			g_DX12->bKillswitch = TRUE;		// To prevent subsequent iterations , though this should be impossible
+			g_DX12->bRunning	= FALSE;	//	
+			SetWindowLongPtr(g_DX12->m_GameWindow, GWLP_WNDPROC, (LONG_PTR)g_DX12->m_OldWndProc);	//	
+			g_DX12->DisableAllHooks();
+			return g_DX12->oPresent(pSwapChain, SyncInterval, Flags);
 		}
 
-		HMODULE D3D12Module = GetModuleHandle("d3d12.dll");
-		HMODULE DXGIModule = GetModuleHandle("dxgi.dll");
-		if (D3D12Module == NULL || DXGIModule == NULL) {
-			DeleteWindow();
-			return false;
+		//	GetDevice
+		if (!g_DX12->m_Init)
+		{
+			if (!g_DX12->ObtainDevice(pSwapChain))
+				return g_DX12->oPresent(pSwapChain, SyncInterval, Flags);
 		}
 
+		if (g_DX12->m_CommandQueue == nullptr)
+			return g_DX12->oPresent(pSwapChain, SyncInterval, Flags);
+
+		pSwapChain->QueryInterface(IID_PPV_ARGS(&g_DX12->m_Swapchain3));
+		if (g_DX12->m_Swapchain3 == nullptr)
+			return g_DX12->oPresent(pSwapChain, SyncInterval, Flags);
+
+		g_DX12->m_Swapchain3->GetDesc(&g_DX12->m_SwapDesc);
+
+
+		//	Render Overlay
+		if (g_DX12->m_ShowMenu)
+			g_DX12->Overlay();
+
+		//	Flush scene
+		UINT bufferIndex				= g_DX12->m_Swapchain3->GetCurrentBackBufferIndex();
+		D3D12_RESOURCE_BARRIER barrier	= {};
+		barrier.Type					= D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+		barrier.Flags					= D3D12_RESOURCE_BARRIER_FLAG_NONE;
+		barrier.Transition.pResource	= g_DX12->m_BackBuffer[bufferIndex];
+		barrier.Transition.Subresource	= D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		barrier.Transition.StateBefore	= D3D12_RESOURCE_STATE_PRESENT;
+		barrier.Transition.StateAfter	= D3D12_RESOURCE_STATE_RENDER_TARGET;
+		g_DX12->m_CommandAllocator[bufferIndex]->Reset();
+		g_DX12->m_CommandList->Reset(g_DX12->m_CommandAllocator[bufferIndex], NULL);
+		g_DX12->m_CommandList->ResourceBarrier(1, &barrier);
+		g_DX12->m_CommandList->OMSetRenderTargets(1, &g_DX12->m_RenderTargets[bufferIndex], FALSE, NULL);
+		g_DX12->m_CommandList->SetDescriptorHeaps(1, &g_DX12->m_DescriptorHeap);
+
+		if (g_DX12->m_ShowMenu)
+			ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), g_DX12->m_CommandList);
+
+		barrier.Transition.StateBefore	= D3D12_RESOURCE_STATE_RENDER_TARGET;
+		barrier.Transition.StateAfter	= D3D12_RESOURCE_STATE_PRESENT;
+		g_DX12->m_CommandList->ResourceBarrier(1, &barrier);
+		g_DX12->m_CommandList->Close();
+		g_DX12->m_CommandQueue->ExecuteCommandLists(1, (ID3D12CommandList**)&g_DX12->m_CommandList);
+		g_DX12->m_Swapchain3->Release();
+
+		//	jmp back to original execution flow
+		return g_DX12->oPresent(pSwapChain, SyncInterval, Flags);
+	}
+
+	void DX12_Base::HookExecuteCommandLists(ID3D12CommandQueue* queue, UINT NumCommandLists, ID3D12CommandList* ppCommandLists) 
+	{
+		if (!g_DX12->m_CommandQueue)
+			g_DX12->m_CommandQueue = queue;
+		g_DX12->oExecuteCommandLists(queue, NumCommandLists, ppCommandLists);
+	}
+
+	//	CUSTOM FUNCTIONS
+	bool DX12_Base::InitializeWindowContext(const wchar_t* wndwClassName)
+	{
+		this->m_GameWindow	= FindWindow(wndwClassName, NULL);
+		if (this->m_GameWindow == nullptr)
+			return FALSE;
+
+		//	Create Window
+		this->WindowClass.cbSize			= sizeof(WNDCLASSEXA);
+		this->WindowClass.style				= CS_HREDRAW | CS_VREDRAW;
+		this->WindowClass.lpfnWndProc		= DefWindowProc;
+		this->WindowClass.cbClsExtra		= 0;
+		this->WindowClass.cbWndExtra		= 0;
+		this->WindowClass.hInstance			= GetModuleHandle(NULL);
+		this->WindowClass.hIcon				= NULL;
+		this->WindowClass.hCursor			= NULL;
+		this->WindowClass.hbrBackground		= NULL;
+		this->WindowClass.lpszMenuName		= NULL;
+		this->WindowClass.lpszClassName		= "MJ";
+		this->WindowClass.hIconSm			= NULL;
+		RegisterClassExA(&this->WindowClass);
+		this->WindowHwnd = CreateWindowA(this->WindowClass.lpszClassName, "HookWindow", WS_OVERLAPPEDWINDOW, 0, 0, 0, 0, NULL, NULL, this->WindowClass.hInstance, NULL);
+		if (this->WindowHwnd == NULL) 
+		{
+			DestroyWindowContext();
+			return FALSE;
+		}
+
+		// Get DirectX Modules
+		HMODULE D3D12Module = GetModuleHandleA("d3d12.dll");
+		HMODULE DXGIModule	= GetModuleHandleA("dxgi.dll");
+		if (D3D12Module == NULL || DXGIModule == NULL) 
+		{
+			DestroyWindowContext();
+			return FALSE;
+		}
+
+		//	Get DXGI Factory
 		void* CreateDXGIFactory = GetProcAddress(DXGIModule, "CreateDXGIFactory");
-		if (CreateDXGIFactory == NULL) {
-			DeleteWindow();
-			return false;
+		if (CreateDXGIFactory == NULL) 
+		{
+			DestroyWindowContext();
+			return FALSE;
 		}
 
+		//	Call something
 		IDXGIFactory* Factory;
-		if (((long(__stdcall*)(const IID&, void**))(CreateDXGIFactory))(__uuidof(IDXGIFactory), (void**)&Factory) < 0) {
-			DeleteWindow();
-			return false;
+		if (((long(__stdcall*)(const IID&, void**))(CreateDXGIFactory))(__uuidof(IDXGIFactory), (void**)&Factory) < 0) 
+		{
+			DestroyWindowContext();
+			return FALSE;
 		}
 
+		//	Get Adapter
 		IDXGIAdapter* Adapter;
-		if (Factory->EnumAdapters(0, &Adapter) == DXGI_ERROR_NOT_FOUND) {
-			DeleteWindow();
-			return false;
+		if (Factory->EnumAdapters(0, &Adapter) == DXGI_ERROR_NOT_FOUND) 
+		{
+			DestroyWindowContext();
+			return FALSE;
 		}
-
+	
+		//	
 		void* D3D12CreateDevice = GetProcAddress(D3D12Module, "D3D12CreateDevice");
-		if (D3D12CreateDevice == NULL) {
-			DeleteWindow();
-			return false;
+		if (D3D12CreateDevice == NULL) 
+		{
+			DestroyWindowContext();
+			return FALSE;
 		}
 
+		//	Create Device
 		ID3D12Device* Device;
-		if (((long(__stdcall*)(IUnknown*, D3D_FEATURE_LEVEL, const IID&, void**))(D3D12CreateDevice))(Adapter, D3D_FEATURE_LEVEL_11_0, __uuidof(ID3D12Device), (void**)&Device) < 0) {
-			DeleteWindow();
-			return false;
+		if (((long(__stdcall*)(IUnknown*, D3D_FEATURE_LEVEL, const IID&, void**))(D3D12CreateDevice))(Adapter, D3D_FEATURE_LEVEL_11_0, __uuidof(ID3D12Device), (void**)&Device) < 0) 
+		{
+			DestroyWindowContext();
+			return FALSE;
 		}
 
+		//	
 		D3D12_COMMAND_QUEUE_DESC QueueDesc;
-		QueueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
-		QueueDesc.Priority = 0;
-		QueueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
-		QueueDesc.NodeMask = 0;
+		QueueDesc.Type		= D3D12_COMMAND_LIST_TYPE_DIRECT;
+		QueueDesc.Priority	= 0;
+		QueueDesc.Flags		= D3D12_COMMAND_QUEUE_FLAG_NONE;
+		QueueDesc.NodeMask	= 0;
 
+		//	
 		ID3D12CommandQueue* CommandQueue;
-		if (Device->CreateCommandQueue(&QueueDesc, __uuidof(ID3D12CommandQueue), (void**)&CommandQueue) < 0) {
-			DeleteWindow();
-			return false;
+		if (Device->CreateCommandQueue(&QueueDesc, __uuidof(ID3D12CommandQueue), (void**)&CommandQueue) < 0) 
+		{
+			DestroyWindowContext();
+			return FALSE;
 		}
 
+		//	
 		ID3D12CommandAllocator* CommandAllocator;
-		if (Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, __uuidof(ID3D12CommandAllocator), (void**)&CommandAllocator) < 0) {
-			DeleteWindow();
-			return false;
+		if (Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, __uuidof(ID3D12CommandAllocator), (void**)&CommandAllocator) < 0) 
+		{
+			DestroyWindowContext();
+			return FALSE;
 		}
 
+		//	
 		ID3D12GraphicsCommandList* CommandList;
-		if (Device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, CommandAllocator, NULL, __uuidof(ID3D12GraphicsCommandList), (void**)&CommandList) < 0) {
-			DeleteWindow();
-			return false;
+		if (Device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, CommandAllocator, NULL, __uuidof(ID3D12GraphicsCommandList), (void**)&CommandList) < 0) 
+		{
+			DestroyWindowContext();
+			return FALSE;
 		}
 
 		DXGI_RATIONAL RefreshRate;
-		RefreshRate.Numerator = 60;
-		RefreshRate.Denominator = 1;
+		RefreshRate.Numerator		= 60;
+		RefreshRate.Denominator		= 1;
 
 		DXGI_MODE_DESC BufferDesc;
-		BufferDesc.Width = 100;
-		BufferDesc.Height = 100;
-		BufferDesc.RefreshRate = RefreshRate;
-		BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		BufferDesc.Width			= 0;
+		BufferDesc.Height			= 0;
+		BufferDesc.RefreshRate		= RefreshRate;
+		BufferDesc.Format			= DXGI_FORMAT_R8G8B8A8_UNORM;
 		BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-		BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+		BufferDesc.Scaling			= DXGI_MODE_SCALING_UNSPECIFIED;
 
 		DXGI_SAMPLE_DESC SampleDesc;
-		SampleDesc.Count = 1;
-		SampleDesc.Quality = 0;
+		SampleDesc.Count			= 1;
+		SampleDesc.Quality			= 0;
 
 		DXGI_SWAP_CHAIN_DESC SwapChainDesc = {};
-		SwapChainDesc.BufferDesc = BufferDesc;
-		SwapChainDesc.SampleDesc = SampleDesc;
-		SwapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-		SwapChainDesc.BufferCount = 2;
-		SwapChainDesc.OutputWindow = WindowHwnd;
-		SwapChainDesc.Windowed = 1;
-		SwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-		SwapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-
+		SwapChainDesc.BufferDesc	= BufferDesc;
+		SwapChainDesc.SampleDesc	= SampleDesc;
+		SwapChainDesc.BufferUsage	= DXGI_USAGE_RENDER_TARGET_OUTPUT;
+		SwapChainDesc.BufferCount	= 2;
+		SwapChainDesc.OutputWindow	= WindowHwnd;
+		SwapChainDesc.Windowed		= 1;
+		SwapChainDesc.SwapEffect	= DXGI_SWAP_EFFECT_FLIP_DISCARD;
+		SwapChainDesc.Flags			= DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+	
+		//	
 		IDXGISwapChain* SwapChain;
-		if (Factory->CreateSwapChain(CommandQueue, &SwapChainDesc, &SwapChain) < 0) {
-			DeleteWindow();
-			return false;
+		if (Factory->CreateSwapChain(CommandQueue, &SwapChainDesc, &SwapChain) < 0) 
+		{
+			DestroyWindowContext();
+			return FALSE;
 		}
 
-		MethodsTable = (uint64_t*)::calloc(150, sizeof(uint64_t));
-		memcpy(MethodsTable, *(uint64_t**)Device, 44 * sizeof(uint64_t));
-		memcpy(MethodsTable + 44, *(uint64_t**)CommandQueue, 19 * sizeof(uint64_t));
-		memcpy(MethodsTable + 44 + 19, *(uint64_t**)CommandAllocator, 9 * sizeof(uint64_t));
-		memcpy(MethodsTable + 44 + 19 + 9, *(uint64_t**)CommandList, 60 * sizeof(uint64_t));
-		memcpy(MethodsTable + 44 + 19 + 9 + 60, *(uint64_t**)SwapChain, 18 * sizeof(uint64_t));
-		Sleep(1000);
-		
-		//	INIT NOTICE
-		Beep(300, 300);
+		//	
+		this->MethodsTable = (uint64_t*)::calloc(150, sizeof(uint64_t));
+		memcpy(this->MethodsTable, *(uint64_t**)Device, 44 * sizeof(uint64_t));
+		memcpy(this->MethodsTable + 44, *(uint64_t**)CommandQueue, 19 * sizeof(uint64_t));
+		memcpy(this->MethodsTable + 44 + 19, *(uint64_t**)CommandAllocator, 9 * sizeof(uint64_t));
+		memcpy(this->MethodsTable + 44 + 19 + 9, *(uint64_t**)CommandList, 60 * sizeof(uint64_t));
+		memcpy(this->MethodsTable + 44 + 19 + 9 + 60, *(uint64_t**)SwapChain, 18 * sizeof(uint64_t));
+		Sleep(100);
 
+		//	Minhook
 		MH_Initialize();
 		Device->Release();
 		Device = NULL;
@@ -151,376 +260,221 @@ namespace ER
 		CommandList = NULL;
 		SwapChain->Release();
 		SwapChain = NULL;
-		DeleteWindow();
-		return true;
-    }
 
-	void D3DRenderer::Overlay(IDXGISwapChain* pSwapChain)
+		//	Destroy window 
+		DestroyWindow(this->WindowHwnd);
+
+		//	Unregister the class
+		UnregisterClassA(this->WindowClass.lpszClassName, GetModuleHandle(NULL));
+
+		//	Clear the class instance
+		this->WindowClass = WNDCLASSEXA();
+
+		// Hooks
+		EnableAllHooks();
+
+		//	success
+		return TRUE;
+	}
+
+	bool DX12_Base::ObtainDevice(IDXGISwapChain* pSwapChain)
 	{
-		if (m_CommandQueue == nullptr)
-			return;
+		pSwapChain->QueryInterface(IID_PPV_ARGS(&this->m_Swapchain3));
+		if (this->m_Swapchain3 == nullptr)
+			return FALSE;
 
-		ID3D12CommandQueue* pCmdQueue = this->m_CommandQueue;
+		this->m_Swapchain3->GetDesc(&this->m_SwapDesc);
 
-		IDXGISwapChain3* pSwapChain3 = nullptr;
-		DXGI_SWAP_CHAIN_DESC sc_desc;
-		pSwapChain->QueryInterface(IID_PPV_ARGS(&pSwapChain3));
-		if (pSwapChain3 == nullptr)
-			return;
+		UINT			bufferIndex = this->m_Swapchain3->GetCurrentBackBufferIndex();
+		if (this->m_Swapchain3->GetDevice(IID_PPV_ARGS(&this->m_Device)) != S_OK)
+			return FALSE;
 
-		pSwapChain3->GetDesc(&sc_desc);
+		this->m_BuffersCounts = this->m_SwapDesc.BufferCount;
+		this->m_RenderTargets.clear();
 
-		if (!m_Init)
+		D3D12_DESCRIPTOR_HEAP_DESC desc = {};
+		desc.Type			= D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+		desc.NumDescriptors = 1;
+		desc.Flags			= D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+		if (this->m_Device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&this->m_DescriptorHeap)) != S_OK)
 		{
-			UINT bufferIndex = pSwapChain3->GetCurrentBackBufferIndex();
-			ID3D12Device* pDevice;
-			if (pSwapChain3->GetDevice(IID_PPV_ARGS(&pDevice)) != S_OK)
-				return;
-
-			m_BuffersCounts = sc_desc.BufferCount;
-
-			m_RenderTargets.clear();
-
-			{
-				D3D12_DESCRIPTOR_HEAP_DESC desc = {};
-				desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-				desc.NumDescriptors = 1;
-				desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-				if (pDevice->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&m_DescriptorHeap)) != S_OK)
-				{
-					pDevice->Release();
-					pSwapChain3->Release();
-					return;
-				}
-			}
-			{
-				D3D12_DESCRIPTOR_HEAP_DESC desc = {};
-				desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-				desc.NumDescriptors = m_BuffersCounts;
-				desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-				desc.NodeMask = 1;
-				if (pDevice->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&m_rtvDescriptorHeap)) != S_OK)
-				{
-					pDevice->Release();
-					pSwapChain3->Release();
-					m_DescriptorHeap->Release();
-					return;
-				}
-
-				SIZE_T rtvDescriptorSize = pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-				D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = m_rtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
-				m_CommandAllocator = new ID3D12CommandAllocator * [m_BuffersCounts];
-				for (int i = 0; i < m_BuffersCounts; ++i)
-				{
-					m_RenderTargets.push_back(rtvHandle);
-					rtvHandle.ptr += rtvDescriptorSize;
-				}
-			}
-
-			for (UINT i = 0; i < sc_desc.BufferCount; ++i)
-			{
-				if (pDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&m_CommandAllocator[i])) != S_OK)
-				{
-					pDevice->Release();
-					pSwapChain3->Release();
-					m_DescriptorHeap->Release();
-					for (UINT j = 0; j < i; ++j)
-					{
-						m_CommandAllocator[j]->Release();
-					}
-					m_rtvDescriptorHeap->Release();
-					delete[]m_CommandAllocator;
-					return;
-				}
-			}
-
-			if (pDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, m_CommandAllocator[0], NULL, IID_PPV_ARGS(&m_CommandList)) != S_OK ||
-				m_CommandList->Close() != S_OK)
-			{
-				pDevice->Release();
-				pSwapChain3->Release();
-				m_DescriptorHeap->Release();
-				for (UINT i = 0; i < m_BuffersCounts; ++i)
-					m_CommandAllocator[i]->Release();
-				m_rtvDescriptorHeap->Release();
-				delete[]m_CommandAllocator;
-				return;
-			}
-
-			m_BackBuffer = new ID3D12Resource * [m_BuffersCounts];
-			for (UINT i = 0; i < m_BuffersCounts; i++)
-			{
-				pSwapChain3->GetBuffer(i, IID_PPV_ARGS(&m_BackBuffer[i]));
-				pDevice->CreateRenderTargetView(m_BackBuffer[i], NULL, m_RenderTargets[i]);
-			}
-
-			ImGui::CreateContext();
-			ImGuiIO& io = ImGui::GetIO();
-			io.IniFilename = NULL;
-
-			g_GameVariables->m_GameWindow = FindWindow("ELDEN RING™", NULL);
-
-			ImGui_ImplWin32_Init(g_GameVariables->m_GameWindow);
-			ImGui_ImplDX12_Init(pDevice, m_BuffersCounts, DXGI_FORMAT_R8G8B8A8_UNORM, NULL,
-				m_DescriptorHeap->GetCPUDescriptorHandleForHeapStart(),
-				m_DescriptorHeap->GetGPUDescriptorHandleForHeapStart());
-			ImGui_ImplDX12_CreateDeviceObjects();
-			ImGui::GetIO().ImeWindowHandle = g_GameVariables->m_GameWindow;
-			m_OldWndProc = SetWindowLongPtr(g_GameVariables->m_GameWindow, GWLP_WNDPROC, (LONG_PTR)WndProc);
-
-			m_Init = true;
-
-			pDevice->Release();
+			this->m_Device->Release();
+			this->m_Swapchain3->Release();
+			return FALSE;
 		}
+		desc = D3D12_DESCRIPTOR_HEAP_DESC();
+		desc.Type			= D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+		desc.NumDescriptors = this->m_BuffersCounts;
+		desc.Flags			= D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+		desc.NodeMask		= 1;
+		if (this->m_Device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&this->m_rtvDescriptorHeap)) != S_OK)
+		{
+			this->m_Device->Release();
+			this->m_Swapchain3->Release();
+			this->m_DescriptorHeap->Release();
+			return FALSE;
+		}
+
+		SIZE_T						rtvDescriptorSize	= this->m_Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+		D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle			= this->m_rtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+		this->m_CommandAllocator						= new ID3D12CommandAllocator * [this->m_BuffersCounts];
+		for (int i = 0; i < this->m_BuffersCounts; ++i)
+		{
+			this->m_RenderTargets.push_back(rtvHandle);
+			rtvHandle.ptr += rtvDescriptorSize;
+		}
+
+		for (UINT i = 0; i < this->m_SwapDesc.BufferCount; ++i)
+		{
+			if (this->m_Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&this->m_CommandAllocator[i])) != S_OK)
+			{
+				this->m_Device->Release();
+				this->m_Swapchain3->Release();
+				this->m_DescriptorHeap->Release();
+				for (UINT j = 0; j < i; ++j)
+				{
+					this->m_CommandAllocator[j]->Release();
+				}
+				this->m_rtvDescriptorHeap->Release();
+				delete[]this->m_CommandAllocator;
+				return FALSE;
+			}
+		}
+
+		if (this->m_Device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, this->m_CommandAllocator[0], NULL, IID_PPV_ARGS(&this->m_CommandList)) != S_OK || this->m_CommandList->Close() != S_OK)
+		{
+			this->m_Device->Release();
+			this->m_Swapchain3->Release();
+			this->m_DescriptorHeap->Release();
+			for (UINT i = 0; i < this->m_BuffersCounts; ++i)
+				this->m_CommandAllocator[i]->Release();
+			this->m_rtvDescriptorHeap->Release();
+			delete[]this->m_CommandAllocator;
+			return FALSE;
+		}
+
+		this->m_BackBuffer = new ID3D12Resource * [this->m_BuffersCounts];
+		for (UINT i = 0; i < this->m_BuffersCounts; i++)
+		{
+			this->m_Swapchain3->GetBuffer(i, IID_PPV_ARGS(&this->m_BackBuffer[i]));
+			this->m_Device->CreateRenderTargetView(this->m_BackBuffer[i], NULL, this->m_RenderTargets[i]);
+		}
+	
+		//	Finished
+		this->m_OldWndProc				= SetWindowLongPtr(this->m_GameWindow, GWLP_WNDPROC, (LONG_PTR)WndProc);
+		this->m_Init					= TRUE;
+		this->InitializeImGui(this->m_Device);
+	}
+
+	void DX12_Base::InitializeImGui(ID3D12Device* pDevice)
+	{
+		ImGui::CreateContext();
+		ImGuiIO& io = ImGui::GetIO();
+		io.WantCaptureMouse || io.WantTextInput || io.WantCaptureKeyboard;
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+		io.ImeWindowHandle = this->m_GameWindow;
+		io.IniFilename = NULL;
+		ImGui_ImplWin32_Init(this->m_GameWindow);
+		ImGui_ImplDX12_Init(pDevice, this->m_BuffersCounts, DXGI_FORMAT_R8G8B8A8_UNORM, NULL, this->m_DescriptorHeap->GetCPUDescriptorHandleForHeapStart(), this->m_DescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+		ImGui_ImplDX12_CreateDeviceObjects();
+		ImGui::StyleColorsDark();
+		pDevice->Release();
+	}
+
+	static float f = 0.0f;
+	static int counter = 0;
+	static bool bDemoWindow;
+	static bool bStyleEditor;
+	ImVec4 clear_color = ImVec4(0.06f, 0.06f, 0.06f, .94f);
+	void DX12_Base::Overlay()
+	{
+
 		ImGui_ImplDX12_NewFrame();
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
-		ImGui::GetIO().MouseDrawCursor = g_GameVariables->m_ShowMenu;
 
 		g_Menu->Draw();
-
+	
+		ImGui::End();
 		ImGui::EndFrame();
-
-		UINT bufferIndex = pSwapChain3->GetCurrentBackBufferIndex();
-
-		D3D12_RESOURCE_BARRIER barrier = {};
-		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-		barrier.Transition.pResource = m_BackBuffer[bufferIndex];
-		barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
-		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-
-		m_CommandAllocator[bufferIndex]->Reset();
-		m_CommandList->Reset(m_CommandAllocator[bufferIndex], NULL);
-		m_CommandList->ResourceBarrier(1, &barrier);
-		m_CommandList->OMSetRenderTargets(1, &m_RenderTargets[bufferIndex], FALSE, NULL);
-		m_CommandList->SetDescriptorHeaps(1, &m_DescriptorHeap);
-
 		ImGui::Render();
-		ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), m_CommandList);
-
-		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-		m_CommandList->ResourceBarrier(1, &barrier);
-		m_CommandList->Close();
-
-		pCmdQueue->ExecuteCommandLists(1, (ID3D12CommandList**)&m_CommandList);
-
-		pSwapChain3->Release();
 	}
 
-	HRESULT APIENTRY D3DRenderer::HookResizeTarget(IDXGISwapChain* _this, const DXGI_MODE_DESC* pNewTargetParameters)
+	bool DX12_Base::CreateHook(uint16_t Index, void** Original, void* Function)
 	{
-		g_D3DRenderer->ResetRenderState();
-		return g_D3DRenderer->oResizeTarget(_this, pNewTargetParameters);
-	}
-
-	LRESULT D3DRenderer::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
-	{
-		if (ImGui::GetCurrentContext())
-			ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam);
-
-		return CallWindowProc((WNDPROC)g_D3DRenderer->m_OldWndProc, hWnd, msg, wParam, lParam);
-	}
-
-    HRESULT APIENTRY D3DRenderer::HookPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags)
-    {
-		if (g_KillSwitch) {
-			g_Hooking->Unhook();
-			g_D3DRenderer->oPresent(pSwapChain, SyncInterval, Flags);
-			g_Running = FALSE;
-			return 0;
-
-		}
-		g_D3DRenderer->Overlay(pSwapChain);
-		return g_D3DRenderer->oPresent(pSwapChain, SyncInterval, Flags);
-
-    }
-
-	void D3DRenderer::HookExecuteCommandLists(ID3D12CommandQueue* queue, UINT NumCommandLists, ID3D12CommandList* ppCommandLists) {
-		if (!g_D3DRenderer->m_CommandQueue)
-			g_D3DRenderer->m_CommandQueue = queue;
-
-		g_D3DRenderer->oExecuteCommandLists(queue, NumCommandLists, ppCommandLists);
-	}
-
-	bool D3DRenderer::Init(IDXGISwapChain3* swapChain)
-	{
-		m_Swapchain = swapChain;
-		if (SUCCEEDED(m_Swapchain->GetDevice(__uuidof(ID3D12Device), (void**)&m_Device))) {
-
-			DXGI_SWAP_CHAIN_DESC Desc;
-			m_Swapchain->GetDesc(&Desc);
-			Desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-			Desc.OutputWindow = g_GameVariables->m_GameWindow;
-			Desc.Windowed = ((GetWindowLongPtr(g_GameVariables->m_GameWindow, GWL_STYLE) & WS_POPUP) != 0) ? false : true;
-
-			m_BuffersCounts = Desc.BufferCount;
-			m_FrameContext = new _FrameContext[m_BuffersCounts];
-
-			D3D12_DESCRIPTOR_HEAP_DESC DescriptorImGuiRender = {};
-			DescriptorImGuiRender.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-			DescriptorImGuiRender.NumDescriptors = m_BuffersCounts;
-			DescriptorImGuiRender.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-
-			if (m_Device->CreateDescriptorHeap(&DescriptorImGuiRender, IID_PPV_ARGS(&m_DescriptorHeap)) != S_OK)
-				return 0;
-
-			ID3D12CommandAllocator* Allocator;
-			if (m_Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&Allocator)) != S_OK)
-				return 0;
-
-			for (size_t i = 0; i < m_BuffersCounts; i++) {
-				m_FrameContext[i].CommandAllocator = Allocator;
-			}
-
-			if (m_Device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, Allocator, NULL, IID_PPV_ARGS(&m_CommandList)) != S_OK || m_CommandList->Close() != S_OK)
-				return 0;
-
-			D3D12_DESCRIPTOR_HEAP_DESC DescriptorBackBuffers;
-			DescriptorBackBuffers.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-			DescriptorBackBuffers.NumDescriptors = m_BuffersCounts;
-			DescriptorBackBuffers.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-			DescriptorBackBuffers.NodeMask = 1;
-
-			if (m_Device->CreateDescriptorHeap(&DescriptorBackBuffers, IID_PPV_ARGS(&m_rtvDescriptorHeap)) != S_OK)
-				return 0;
-
-			const auto RTVDescriptorSize = m_Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-			D3D12_CPU_DESCRIPTOR_HANDLE RTVHandle = m_rtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
-
-			for (size_t i = 0; i < m_BuffersCounts; i++) {
-				ID3D12Resource* pBackBuffer = nullptr;
-				m_FrameContext[i].DescriptorHandle = RTVHandle;
-				m_Swapchain->GetBuffer(i, IID_PPV_ARGS(&pBackBuffer));
-				m_Device->CreateRenderTargetView(pBackBuffer, nullptr, RTVHandle);
-				m_FrameContext[i].Resource = pBackBuffer;
-				RTVHandle.ptr += RTVDescriptorSize;
-			}
-
-			g_GameVariables->m_GameWindow = FindWindow("ELDEN RING™", NULL);
-			m_OldWndProc = SetWindowLongPtrA(g_GameVariables->m_GameWindow, GWLP_WNDPROC, (LONG_PTR)WndProc);
-
-			ImGui::CreateContext();
-			ImGuiIO& io = ImGui::GetIO(); (void)io;
-			//	ImGui::GetIO().WantCaptureMouse || ImGui::GetIO().WantTextInput || ImGui::GetIO().WantCaptureKeyboard;
-			io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-			io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
-			io.IniFilename = NULL;
-			ImGui_ImplWin32_Init(g_GameVariables->m_GameWindow);
-			ImGui_ImplDX12_Init(m_Device, m_BuffersCounts, DXGI_FORMAT_R8G8B8A8_UNORM, NULL, m_DescriptorHeap->GetCPUDescriptorHandleForHeapStart(), m_DescriptorHeap->GetGPUDescriptorHandleForHeapStart());
-			ImGui_ImplDX12_CreateDeviceObjects();
-			ImGui::GetIO().ImeWindowHandle = g_GameVariables->m_GameWindow;
-			m_Device->Release();
-            return 1;
-		}
-
-        return 0;
-
-	}
-
-	bool D3DRenderer::InitWindow() {
-
-		WindowClass.cbSize = sizeof(WNDCLASSEX);
-		WindowClass.style = CS_HREDRAW | CS_VREDRAW;
-		WindowClass.lpfnWndProc = DefWindowProc;
-		WindowClass.cbClsExtra = 0;
-		WindowClass.cbWndExtra = 0;
-		WindowClass.hInstance = GetModuleHandle(NULL);
-		WindowClass.hIcon = NULL;
-		WindowClass.hCursor = NULL;
-		WindowClass.hbrBackground = NULL;
-		WindowClass.lpszMenuName = NULL;
-		WindowClass.lpszClassName = "MJ";
-		WindowClass.hIconSm = NULL;
-		RegisterClassEx(&WindowClass);
-		WindowHwnd = CreateWindow(WindowClass.lpszClassName, "DirectX Window", WS_OVERLAPPEDWINDOW, 0, 0, 100, 100, NULL, NULL, WindowClass.hInstance, NULL);
-		if (WindowHwnd == NULL) {
+		void* target = reinterpret_cast<void*>(this->MethodsTable[Index]);
+		if (MH_CreateHook(target, Function, Original) != MH_OK || MH_EnableHook(target) != MH_OK)
 			return false;
-		}
 		return true;
+	}    
+
+	void DX12_Base::EnableAllHooks()
+	{
+		CreateHook(54, (void**)&oExecuteCommandLists, HookExecuteCommandLists);
+		CreateHook(140, (void**)&oPresent, HookPresent);
+		CreateHook(146, (void**)&oResizeTarget, HookResizeTarget);
+		MH_EnableHook(MH_ALL_HOOKS);
 	}
 
-	void D3DRenderer::ResetRenderState()
+	void DX12_Base::ResetRenderState()
 	{
-		if (m_Init)
+		if (!this->m_Init)
+			return;
+
+		this->m_DescriptorHeap->Release();
+		for (UINT i = 0; i < m_BuffersCounts; ++i)
 		{
-			m_DescriptorHeap->Release();
-			for (UINT i = 0; i < m_BuffersCounts; ++i)
-			{
-				m_CommandAllocator[i]->Release();
-				m_BackBuffer[i]->Release();
-			}
-			m_rtvDescriptorHeap->Release();
-			delete[]m_CommandAllocator;
-			delete[]m_BackBuffer;
-
-			ImGui_ImplDX12_Shutdown();
-			//Windows_Hook::Inst()->resetRenderState();
-			SetWindowLongPtr(g_GameVariables->m_GameWindow, GWLP_WNDPROC, (LONG_PTR)m_OldWndProc);
-			ImGui_ImplWin32_Shutdown();
-			ImGui::DestroyContext();
-
-			m_Init = false;
+			this->m_CommandAllocator[i]->Release();
+			this->m_BackBuffer[i]->Release();
 		}
+		this->m_rtvDescriptorHeap->Release();
+		delete[]this->m_CommandAllocator;
+		delete[]this->m_BackBuffer;
+		this->DestroyImGuiContext();
+		SetWindowLongPtr(this->m_GameWindow, GWLP_WNDPROC, (LONG_PTR)this->m_OldWndProc);
+		this->m_Init = false;
 	}
 
-	bool D3DRenderer::DeleteWindow() {
-		DestroyWindow(WindowHwnd);
-		UnregisterClass(WindowClass.lpszClassName, WindowClass.hInstance);
-		if (WindowHwnd != NULL) {
-			return false;
-		}
-		return true;
+	void DX12_Base::DestroyWindowContext()
+	{
+		//	A window should only be destroyed if it there
+		if (this->WindowHwnd > NULL)
+			DestroyWindow(this->WindowHwnd);	//	Destroy window 
+
+		//	Unregister the class
+		//	@TODO: While it's generally safe to call UnregisterClass on a class that was never registered after windows XP ... Its still good practice to only call the function on a registered class.
+		//	there will be a future boolean in this class to signify the registration of the window class.
+		UnregisterClassA(this->WindowClass.lpszClassName, GetModuleHandle(NULL));
+
+		//	Clear the class instance
+		WindowClass = WNDCLASSEXA();
 	}
 
-    bool D3DRenderer::CreateHook(uint16_t Index, void** Original, void* Function) {
-        void* target = (void*)MethodsTable[Index];
-        if (MH_CreateHook(target, Function, Original) != MH_OK || MH_EnableHook(target) != MH_OK) {
-            return false;
-        }
-        return true;
-    }
+	void DX12_Base::DestroyImGuiContext()
+	{
+		ImGui_ImplDX12_Shutdown();
+		ImGui_ImplWin32_Shutdown();
+		ImGui::DestroyContext();
+	}
 
-    void D3DRenderer::DisableHook(uint16_t Index) {
-        MH_DisableHook((void*)MethodsTable[Index]);
-    }
+	bool DX12_Base::DisableHook(uint16_t Index)
+	{
+		void* target = reinterpret_cast<void*>(this->MethodsTable[Index]);
+		if (MH_DisableHook(target) != MH_OK || MH_RemoveHook(target) != MH_OK)
+			return FALSE;
+		return TRUE;
+	}
 
-    void D3DRenderer::DisableAll() {
+	void DX12_Base::DisableAllHooks()
+	{
 		DisableHook(MethodsTable[54]);
 		DisableHook(MethodsTable[140]);
 		DisableHook(MethodsTable[146]);
-    }
-
-	D3DRenderer::~D3DRenderer() noexcept
-	{
-		Unhook();
+		MH_RemoveHook(MH_ALL_HOOKS);
 	}
 
-	//	GUIDED HACKING TEMPLATE
-	bool D3DRenderer::WorldToScreen(Vector3 pos, Vector2& screen, float matrix[16], int windowWidth, int windowHeight)
-	{
-		//Matrix-vector Product, multiplying world(eye) coordinates by projection matrix = clipCoords
-		Vector4 clipCoords;
-		clipCoords.x = pos.x * matrix[0] + pos.y * matrix[1] + pos.z * matrix[2] + matrix[3];
-		clipCoords.y = pos.x * matrix[4] + pos.y * matrix[5] + pos.z * matrix[6] + matrix[7];
-		clipCoords.z = pos.x * matrix[8] + pos.y * matrix[9] + pos.z * matrix[10] + matrix[11];
-		clipCoords.w = pos.x * matrix[12] + pos.y * matrix[13] + pos.z * matrix[14] + matrix[15];
-
-		if (clipCoords.w < 0.1f)
-			return false;
-
-		//perspective division, dividing by clip.W = Normalized Device Coordinates
-		Vector3 NDC;
-		NDC.x = clipCoords.x / clipCoords.w;
-		NDC.y = clipCoords.y / clipCoords.w;
-		NDC.z = clipCoords.z / clipCoords.w;
-
-		screen.x = (windowWidth / 2 * NDC.x) + (NDC.x + windowWidth / 2);
-		screen.y = -(windowHeight / 2 * NDC.y) + (NDC.y + windowHeight / 2);
-		return true;
-	}
+	
 
 	//-----------------------------------------------------------------------------------
 	//									    STYLES

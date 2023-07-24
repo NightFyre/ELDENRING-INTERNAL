@@ -24,7 +24,7 @@ namespace ER {
 	class Menu
 	{
 	public:
-		const char* m_MenuFooter = "NightFyre - NBOTT42 - v0.0.6 | ";
+		const char* m_MenuFooter = "ELDEN RING - STEAM DECK";
 
 		///	VARIABLES
 		//	MENU SELECTION FLAGS

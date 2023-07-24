@@ -10,24 +10,21 @@ namespace ER {
     void Menu::Draw()
     {
         // MAIN WINDOW
-        if (g_GameVariables->m_ShowMenu) 
+        IM_ASSERT(ImGui::GetCurrentContext() != NULL && "Missing dear imgui context. Refer to examples app!");
+        if (!ImGui::Begin("ELDEN RING INTERNAL DEBUG", &g_GameVariables->m_ShowMenu, 96))
         {
-            IM_ASSERT(ImGui::GetCurrentContext() != NULL && "Missing dear imgui context. Refer to examples app!");
-            if (!ImGui::Begin("ELDEN RING INTERNAL DEBUG", &g_GameVariables->m_ShowMenu, 96))
-            {
-                ImGui::End();
-                return;
-            }
-            g_Styles->InitStyle();
-
-            DrawMenu();
-
-            //  IMGUI DEMO WINDOW
-            if (g_GameVariables->m_ShowDemo)
-                ImGui::ShowDemoWindow();
-
             ImGui::End();
+            return;
         }
+        g_Styles->InitStyle();
+
+        DrawMenu();
+
+        //  IMGUI DEMO WINDOW
+        if (g_GameVariables->m_ShowDemo)
+            ImGui::ShowDemoWindow();
+
+        ImGui::End();
     }
 
     void Menu::DrawMenu()
@@ -46,11 +43,11 @@ namespace ER {
             //    ImGui::EndTabItem();
             //}
 
-            if (ImGui::BeginTabItem("DEBUG"))
-            {
-                Tabs::Debug::Draw();
-                ImGui::EndTabItem();
-            }
+            //if (ImGui::BeginTabItem("DEBUG"))
+            //{
+            //    Tabs::Debug::Draw();
+            //    ImGui::EndTabItem();
+            //}
 
             ImGui::EndTabBar();
         }

@@ -8,7 +8,6 @@
 #include <XInput.h>
 #pragma comment(lib, "XInput.lib")
 using namespace ER;
-void MainThread();
 
 bool GamePadGetKeyState(WORD combinationButtons)
 {
@@ -23,32 +22,19 @@ bool GamePadGetKeyState(WORD combinationButtons)
     return false;
 }
 
-/// <summary>
-/// SEPERATE THREAD for g_WorldCharMan->Update();
-/// </summary>
-/// // this will remain here
-void UpdateThread()
+void MainThread()
 {
-    //  This seperate thread was created for the sole purpose of updating the WorldCharMan Entity Struct
-    //  Optimizations still need to be made as crashing can and does still occur during load screens and other instances
-    //  Nullptrs tend to be the underlying cause.
-    while (g_Running) {
-        if (g_WorldCharMan->Update())
-            g_WorldCharMan->count = NULL;
-        std::this_thread::sleep_for(5s);
-        std::this_thread::yield();
-    }
-    return;
-}
+    //  MAIN LOOP
+    while (g_DX12->bRunning)
+    {
+        if (GamePadGetKeyState(XINPUT_GAMEPAD_RIGHT_THUMB | XINPUT_GAMEPAD_LEFT_THUMB))
+            g_DX12->m_ShowMenu ^= 1;
 
-void BackgroundWorker()
-{
-    while (g_Running) {
-        g_Menu->bgLoops();
         std::this_thread::sleep_for(1ms);
         std::this_thread::yield();
     }
-    return;
+
+    FreeLibraryAndExitThread(g_Module, 0);
 }
 
 void init()
@@ -57,56 +43,19 @@ void init()
     g_GameVariables     = std::make_unique<GameVariables>();
     g_GameFunctions     = std::make_unique<GameFunctions>();
 
-    //  g_GameFunctions->FMVSkip(g_GameVariables->m_ModuleBase);
-    //  g_GameFunctions->UnlockFPS(g_GameVariables->m_ModuleBase);
-
     //  WAIT FOR USER INPUT
-
     while (!GamePadGetKeyState(XINPUT_GAMEPAD_RIGHT_THUMB | XINPUT_GAMEPAD_LEFT_THUMB))
           Sleep(60);
-    //  system("cls");
 
     g_Menu              = std::make_unique<Menu>();
-    g_D3DRenderer       = std::make_unique<D3DRenderer>();
+    g_DX12              = std::make_unique<DX12_Base>();
+    g_DX12->bRunning    = g_DX12->InitializeWindowContext(L"ELDEN RING™");
+    if (!g_DX12->bRunning)
+        return;
+
     g_Styles            = std::make_unique<Styles>();
     g_Hooking           = std::make_unique<Hooking>();
     g_Hooking->Hook();
-    //  g_GameDataMan   = std::make_unique<GameDataMan>();
-    //  g_WorldCharMan  = std::make_unique<WorldCharMan>();
 
     MainThread();
-}
-
-void MainThread()
-{
-    //  CREATE WorldCharMan Update Thread
-    //  std::thread WCMUpdate(UpdateThread);
-    //  std::thread BGWorker(BackgroundWorker);
-
-    //  MAIN LOOP
-    while (g_Running)
-    {
-        if (GamePadGetKeyState(XINPUT_GAMEPAD_RIGHT_THUMB | XINPUT_GAMEPAD_LEFT_THUMB))
-            g_GameVariables->m_ShowMenu = !g_GameVariables->m_ShowMenu;
-
-        if (GetAsyncKeyState(VK_INSERT) & 1) {
-            g_GameVariables->m_ShowMenu = !g_GameVariables->m_ShowMenu;
-            //  g_GameFunctions->PauseGameplay(g_GameVariables->m_ModuleBase, g_GameVariables->m_ShowMenu);
-        }
-
-        if (GetAsyncKeyState(VK_DELETE) & 1) {
-            g_GameVariables->m_ShowMenu = FALSE;
-            g_Running = FALSE;
-        }
-
-        std::this_thread::sleep_for(3ms);
-        std::this_thread::yield();
-    }
-
-    //  EXIT THREAD
-    //  g_GameFunctions->PauseGameplay(g_GameVariables->m_ModuleBase, FALSE);    //  Due to unhooking requiring the menu being shown ... the game will remain paused unless we revert that here
-    //  BGWorker.join();
-    //  WCMUpdate.join();
-    std::this_thread::sleep_for(500ms);
-    FreeLibraryAndExitThread(g_Module, 0);
 }

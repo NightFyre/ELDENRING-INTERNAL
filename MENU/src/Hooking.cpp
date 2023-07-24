@@ -10,7 +10,7 @@ namespace ER {
 	//	MinHook
 	void Hooking::HookInput(uint64_t a1, uint64_t a2)
 	{
-		if (g_GameVariables->m_ShowMenu)
+		if (g_DX12->m_ShowMenu)
 			return;
 
 		reinterpret_cast<decltype(&HookInput)>(g_Hooking->m_OriginalInputHandler)(a1, a2);
@@ -33,7 +33,6 @@ namespace ER {
 
 	void Hooking::Hook()
 	{
-		g_D3DRenderer->Hook();
 
 		FindHooks();
 
@@ -45,7 +44,7 @@ namespace ER {
 
 	void Hooking::Unhook()
 	{
-		g_D3DRenderer->Unhook();
+		g_DX12->DisableAllHooks();
 		MH_RemoveHook(MH_ALL_HOOKS);
 	}
 }

@@ -6,6 +6,7 @@
 #include <string>
 #include <thread>
 #include <chrono>
+#include <atomic>
 #include <d3d11.h>
 #include <imgui.h>
 #include <imgui_internal.h>
@@ -61,17 +62,21 @@ using namespace				std::chrono_literals;
 int main()
 {
     g_Launcher = std::make_unique<EldenLauncher>();
-    g_Launcher->InitializeWindow();
-
-    while (g_Running)
-    {
-        g_Launcher->UpdateWindow();
-        std::this_thread::sleep_for(1ms);
-        std::this_thread::yield();
-    }
-
-    g_Launcher->_DestroyWindow();
+    if (!g_Launcher->_CreateProcess(L"eldenring.exe", L"-eac-nop-loaded", TRUE))
+        return EXIT_FAILURE;
+    
+    g_Launcher.release();
     return EXIT_SUCCESS;
+
+    //g_Launcher->InitializeWindow();
+    //while (g_Running)
+    //{
+    //    g_Launcher->UpdateWindow();
+    //    std::this_thread::sleep_for(1ms);
+    //    std::this_thread::yield();
+    //}
+    //g_Launcher->_DestroyWindow();
+    //return EXIT_SUCCESS;
 }
 
 
