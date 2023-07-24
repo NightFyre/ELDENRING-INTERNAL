@@ -349,13 +349,6 @@ namespace ER
 	{
 		m_Swapchain = swapChain;
 		if (SUCCEEDED(m_Swapchain->GetDevice(__uuidof(ID3D12Device), (void**)&m_Device))) {
-			ImGui::CreateContext();
-
-			ImGuiIO& io = ImGui::GetIO(); (void)io;
-			ImGui::GetIO().WantCaptureMouse || ImGui::GetIO().WantTextInput || ImGui::GetIO().WantCaptureKeyboard;
-			io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-			io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
-			io.IniFilename = NULL;
 
 			DXGI_SWAP_CHAIN_DESC Desc;
 			m_Swapchain->GetDesc(&Desc);
@@ -409,6 +402,12 @@ namespace ER
 			g_GameVariables->m_GameWindow = FindWindow("ELDEN RING™", NULL);
 			m_OldWndProc = SetWindowLongPtrA(g_GameVariables->m_GameWindow, GWLP_WNDPROC, (LONG_PTR)WndProc);
 
+			ImGui::CreateContext();
+			ImGuiIO& io = ImGui::GetIO(); (void)io;
+			//	ImGui::GetIO().WantCaptureMouse || ImGui::GetIO().WantTextInput || ImGui::GetIO().WantCaptureKeyboard;
+			io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+			io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+			io.IniFilename = NULL;
 			ImGui_ImplWin32_Init(g_GameVariables->m_GameWindow);
 			ImGui_ImplDX12_Init(m_Device, m_BuffersCounts, DXGI_FORMAT_R8G8B8A8_UNORM, NULL, m_DescriptorHeap->GetCPUDescriptorHandleForHeapStart(), m_DescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 			ImGui_ImplDX12_CreateDeviceObjects();
