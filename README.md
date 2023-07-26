@@ -22,3 +22,4 @@
 - [Dear ImGui](https://github.com/ocornut/imgui)  
 - [MinHook](https://github.com/TsudaKageyu/minhook)
 - [DX12 ImGui Internal Hook](https://github.com/NightFyre/DX12-ImGui-Internal-Hook)
+- [Elden Ring SDK - Team Hexinton](https://github.com/NightFyre/EldenRing-SDK)
