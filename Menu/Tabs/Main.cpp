@@ -1,12 +1,13 @@
 #pragma once
-#include "../../include/Tabs/Main.h"
-#include "../../include/D3DRenderer.hpp"
-using namespace ER::Tabs;
+#include "Main.h"
+#include "../D3DRenderer.hpp"
+using namespace ELDEN_RING::Tabs;
 
 /// <summary>
 /// PLAYER OPTIONS
 /// </summary>
-void Main::Reset() {
+void Main::Reset() 
+{
 
 }
 
@@ -24,7 +25,6 @@ void Main::Draw()
     ImGui::Checkbox("INFINITE STAMINA", &g_Menu->bInfiniteStamina);
 
     ImGui::SeparatorText("ABOUT");
-    ImGui::Text("ELDEN RING STEAM DECK");
     ImGui::Text("BUILD VERSION: 0.0.1");
     ImGui::Text("BUILD DATE: 7/23/2023");
     ImGui::Text("GAME VERSION: 1.09.1");

@@ -1,9 +1,7 @@
-#include "../include/D3DRenderer.hpp"
-#include "../include/Hooking.hpp"
+#include "D3DRenderer.hpp"
+#include "Hooking.hpp"
 
-IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
-namespace ER 
+namespace ELDEN_RING
 {
 
 	//-----------------------------------------------------------------------------------

@@ -1,10 +1,9 @@
-#include "../include/Hooking.hpp"
-#include "../include/D3DRenderer.hpp"
-#include "../include/Memory.hpp"
+#include "Hooking.hpp"
+#include "D3DRenderer.hpp"
+#include "Memory.hpp"
 
-// TEST
-#include "../include/WorldCharMan.hpp"
-namespace ER {
+namespace ELDEN_RING 
+{
 
 	//	MinHook
 	void Hooking::HookInput(uint64_t a1, uint64_t a2)

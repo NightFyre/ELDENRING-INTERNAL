@@ -1,7 +1,7 @@
 #include "Common.hpp"
 #include "D3DRenderer.hpp"
 #include "Hooking.hpp"
-using namespace ER;
+using namespace ELDEN_RING;
 
 bool GamePadGetKeyState(WORD combinationButtons)
 {

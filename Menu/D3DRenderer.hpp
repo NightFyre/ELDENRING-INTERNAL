@@ -1,13 +1,12 @@
 #pragma once
 #include "Common.hpp"
 #include "Tabs/Main.h"
-#include "Tabs/Character.h"
-#include "Tabs/Entities.h"
-#include "Tabs/Visuals.h"
-#include "Tabs/Debug.h"
 
-namespace ER
-{	
+IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+namespace ELDEN_RING
+{
+
 	class Menu
 	{
 	public:	//	MEMBERS
@@ -15,7 +14,7 @@ namespace ER
 		float										pos[2];
 		float										maxWidth;
 		float										maxHeight;
-		const char*									title			= "HEXINTON";
+		const char*									title			= "HEXINTON - ELDEN RING";
 		const char*									m_MenuFooter	= "ELDEN RING - STEAM DECK";
 		bool										bShowMenu;
 		bool										bShowDemo;
@@ -26,6 +25,8 @@ namespace ER
 		bool										bInfiniteHealth;
 		bool										bInfiniteMana;
 		bool										bInfiniteStamina;
+		bool										bAutoParry;
+		bool										bPauseGameplay;
 	
 	public:	//	FUNCTIONS
 		void										Draw();

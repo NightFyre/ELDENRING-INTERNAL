@@ -16,6 +16,9 @@
 #include <d3d12.h>
 #pragma comment(lib, "d3d12.lib")
 
+#include <XInput.h>
+#pragma comment(lib, "XInput.lib")
+
 #include <DirectXMath.h>
 
 #include <DirectXPackedVector.h>
@@ -53,17 +56,15 @@
 #include <unordered_map>
 #include <vector>
 
-#include "Tools/Vector.hpp"
+#include "Vector.hpp"
 #include <MinHook.h>
 #include <imgui.h>
 #include <imgui_internal.h>
 #include <imgui_impl_dx12.h>
 #include <imgui_impl_win32.h>
-#include "../../libs/SDK/SDK.h"
-#include <XInput.h>
-#pragma comment(lib, "XInput.lib")
+#include "../libs/SDK/SDK.h"
 
-namespace ER 
+namespace ELDEN_RING
 {
 
 	using namespace std::chrono_literals;
@@ -76,6 +77,3 @@ namespace ER
 	inline std::atomic_bool g_KillSwitch = FALSE;
 	static uint64_t dwGameBase = (uint64_t)GetModuleHandle(NULL);
 }
-
-#include "Game.hpp"
-#include "GameEnums.hpp"

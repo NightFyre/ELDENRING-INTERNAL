@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.hpp"
 
-namespace ER
+namespace ELDEN_RING
 {
 	class MemoryHandle
 	{

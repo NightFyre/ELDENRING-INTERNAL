@@ -176,21 +176,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="libs\SDK\SDK.h" />
-    <ClInclude Include="MENU\include\Common.hpp" />
-    <ClInclude Include="MENU\include\D3DRenderer.hpp" />
-    <ClInclude Include="MENU\include\Game.hpp" />
-    <ClInclude Include="MENU\include\Hooking.hpp" />
-    <ClInclude Include="MENU\include\initialize.hpp" />
-    <ClInclude Include="MENU\include\Memory.hpp" />
-    <ClInclude Include="MENU\include\Tabs\Main.h" />
+    <ClInclude Include="Menu\Common.hpp" />
+    <ClInclude Include="Menu\D3DRenderer.hpp" />
+    <ClInclude Include="Menu\Hooking.hpp" />
+    <ClInclude Include="Menu\initialize.hpp" />
+    <ClInclude Include="Menu\Memory.hpp" />
+    <ClInclude Include="Menu\Tabs\Main.h" />
+    <ClInclude Include="Menu\Vector.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libs\SDK\Basic_Functions.cpp" />
     <ClCompile Include="libs\SDK\EldenRing_Functions.cpp" />
+    <ClCompile Include="Menu\D3DRenderer.cpp" />
     <ClCompile Include="MENU\dllmain.cpp" />
-    <ClCompile Include="MENU\src\D3DRenderer.cpp" />
-    <ClCompile Include="MENU\src\Hooking.cpp" />
-    <ClCompile Include="MENU\src\Tabs\Main.cpp" />
+    <ClCompile Include="Menu\Hooking.cpp" />
+    <ClCompile Include="Menu\Tabs\Main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
