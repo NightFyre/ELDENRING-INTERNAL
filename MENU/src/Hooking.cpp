@@ -1,7 +1,6 @@
 #include "../include/Hooking.hpp"
 #include "../include/D3DRenderer.hpp"
 #include "../include/Memory.hpp"
-#include "../include/Menu.hpp"
 
 // TEST
 #include "../include/WorldCharMan.hpp"

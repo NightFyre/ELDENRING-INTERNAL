@@ -30,10 +30,7 @@ namespace ER {
 		m_GamePath		= TempPath;
 	}
 
-	GameFunctions::GameFunctions()
-	{
-		return;
-	}
+	GameFunctions::GameFunctions() {}
 
 	void GameFunctions::FMVSkip(uintptr_t addr)
 	{

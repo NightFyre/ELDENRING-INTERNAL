@@ -1,12 +1,90 @@
 #include "../include/D3DRenderer.hpp"
-#include "../include/Game.hpp"
 #include "../include/Hooking.hpp"
-#include "../include/Menu.hpp"
 
 IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 namespace ER 
 {
+
+	//-----------------------------------------------------------------------------------
+	//									    MENU
+	//-----------------------------------------------------------------------------------
+
+	void Menu::Draw()
+	{
+		IM_ASSERT(ImGui::GetCurrentContext() != NULL && "Missing dear imgui context. Refer to examples app!");
+		if (!ImGui::Begin("ELDEN RING INTERNAL DEBUG", nullptr, 96))
+		{
+			ImGui::End();
+			return;
+		}
+
+		g_Styles->InitStyle();
+
+		DrawMenu();
+
+		if (this->bShowDemo)
+			ImGui::ShowDemoWindow();
+
+		ImGui::End();
+	}
+
+	void Menu::DrawMenu()
+	{
+		Tabs::Main::Draw();
+		ImGui::EndTabItem();
+	}
+
+	void Menu::loops()
+	{
+		auto worldCharMan = *HEXINTON::CGlobals::GWorldCharMan;
+
+		//	Set health to max health
+		if (this->bInfiniteHealth)
+		{
+			if (worldCharMan != nullptr)
+			{
+				auto charData = worldCharMan->GetLocalPlayerCharData();
+				if (charData != nullptr)
+				{
+					auto maxHP = charData->GetMaxHealth();
+					if (maxHP > NULL)
+						charData->SetHealth(maxHP);
+				}
+			}
+		}
+
+		//	Set mana to max mana
+		if (this->bInfiniteMana)
+		{
+			if (worldCharMan != nullptr)
+			{
+				auto charData = worldCharMan->GetLocalPlayerCharData();
+				if (charData != nullptr)
+				{
+					auto maxMP = charData->GetMaxMana();
+					if (maxMP > NULL)
+						charData->SetMana(maxMP);
+				}
+			}
+		}
+
+		//	Set stamina to max stamina
+		if (this->bInfiniteStamina)
+		{
+			if (worldCharMan != nullptr)
+			{
+				auto charData = worldCharMan->GetLocalPlayerCharData();
+				if (charData != nullptr)
+				{
+					auto maxSP = charData->GetMaxStamina();
+					if (maxSP > NULL)
+						charData->SetStamina(maxSP);
+				}
+			}
+		}
+	}
+
 	//-----------------------------------------------------------------------------------
 	//									    D3DWindow
 	//-----------------------------------------------------------------------------------
@@ -98,9 +176,11 @@ namespace ER
 	}
 
 	//	CUSTOM FUNCTIONS
-	bool DX12_Base::InitializeWindowContext(const wchar_t* wndwClassName)
+	bool DX12_Base::InitializeWindow(std::string windowName)
 	{
-		this->m_GameWindow	= FindWindow(wndwClassName, NULL);
+		if (!FindGameWindow(windowName, this->m_GameWindow))
+			return FALSE;
+
 		if (this->m_GameWindow == nullptr)
 			return FALSE;
 
@@ -276,6 +356,32 @@ namespace ER
 		//	success
 		return TRUE;
 	}
+	
+	bool DX12_Base::FindGameWindow(std::string title, HWND& out)
+	{
+		DWORD	tempWndwPID = NULL;
+		HWND	tempHWND = NULL;
+		DWORD	procID = GetCurrentProcessId();
+		HANDLE	tempHandle = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, procID);
+		do
+		{
+			tempHWND = FindWindowEx(NULL, tempHWND, NULL, NULL);
+			GetWindowThreadProcessId(tempHWND, &tempWndwPID);
+			if (tempWndwPID == procID)
+			{
+
+				char tempSTRING[MAX_PATH];
+				GetWindowTextA(tempHWND, (LPSTR)tempSTRING, MAX_PATH);
+
+				if (tempSTRING == title)
+				{
+					//	@TODO: This is a perfect time to retrieve the rest of the window information
+					out = tempHWND;
+					return TRUE;
+				}
+			}
+		} while (tempHWND != NULL);
+	}
 
 	bool DX12_Base::ObtainDevice(IDXGISwapChain* pSwapChain)
 	{
@@ -382,11 +488,6 @@ namespace ER
 		pDevice->Release();
 	}
 
-	static float f = 0.0f;
-	static int counter = 0;
-	static bool bDemoWindow;
-	static bool bStyleEditor;
-	ImVec4 clear_color = ImVec4(0.06f, 0.06f, 0.06f, .94f);
 	void DX12_Base::Overlay()
 	{
 
@@ -473,8 +574,6 @@ namespace ER
 		DisableHook(MethodsTable[146]);
 		MH_RemoveHook(MH_ALL_HOOKS);
 	}
-
-	
 
 	//-----------------------------------------------------------------------------------
 	//									    STYLES

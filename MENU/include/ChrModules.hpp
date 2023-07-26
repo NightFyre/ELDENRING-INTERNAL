@@ -60,4 +60,5 @@ public:
 	uint64_t vfx;
 	uint64_t behaviordata;
 };
+#pragma pack(pop)
 

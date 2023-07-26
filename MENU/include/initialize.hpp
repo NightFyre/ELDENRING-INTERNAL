@@ -1,12 +1,6 @@
-#include "include/Common.hpp"
-#include "include/D3DRenderer.hpp"
-#include "include/Hooking.hpp"
-#include "include/Menu.hpp"
-#include "include/GameDataMan.hpp"
-#include "include/WorldCharMan.hpp"
-#include <Windows.h>
-#include <XInput.h>
-#pragma comment(lib, "XInput.lib")
+#include "Common.hpp"
+#include "D3DRenderer.hpp"
+#include "Hooking.hpp"
 using namespace ER;
 
 bool GamePadGetKeyState(WORD combinationButtons)
@@ -22,40 +16,54 @@ bool GamePadGetKeyState(WORD combinationButtons)
     return false;
 }
 
-void MainThread()
+void CheatThread()
 {
-    //  MAIN LOOP
     while (g_DX12->bRunning)
     {
-        if (GamePadGetKeyState(XINPUT_GAMEPAD_RIGHT_THUMB | XINPUT_GAMEPAD_LEFT_THUMB))
-            g_DX12->m_ShowMenu ^= 1;
+        g_Menu->loops();
 
         std::this_thread::sleep_for(1ms);
         std::this_thread::yield();
     }
+}
 
-    FreeLibraryAndExitThread(g_Module, 0);
+static int LastTick = NULL;
+void MainThread()
+{
+    while (g_DX12->bRunning)
+    {
+        if (GamePadGetKeyState(XINPUT_GAMEPAD_RIGHT_THUMB | XINPUT_GAMEPAD_LEFT_THUMB) && ((GetTickCount64() - LastTick) > 350))
+        {
+            g_DX12->m_ShowMenu ^= 1;
+            LastTick = GetTickCount64();
+        }
+        std::this_thread::sleep_for(1ms);
+        std::this_thread::yield();
+    }
 }
 
 void init()
 {
-    ///  STRUCTS, HOOKS & VARIABLES
-    g_GameVariables     = std::make_unique<GameVariables>();
-    g_GameFunctions     = std::make_unique<GameFunctions>();
-
     //  WAIT FOR USER INPUT
-    while (!GamePadGetKeyState(XINPUT_GAMEPAD_RIGHT_THUMB | XINPUT_GAMEPAD_LEFT_THUMB))
+    while (!GamePadGetKeyState(XINPUT_GAMEPAD_RIGHT_THUMB | XINPUT_GAMEPAD_LEFT_THUMB) && GetAsyncKeyState(VK_INSERT) == 0)
           Sleep(60);
 
     g_Menu              = std::make_unique<Menu>();
-    g_DX12              = std::make_unique<DX12_Base>();
-    g_DX12->bRunning    = g_DX12->InitializeWindowContext(L"ELDEN RING™");
-    if (!g_DX12->bRunning)
-        return;
-
     g_Styles            = std::make_unique<Styles>();
-    g_Hooking           = std::make_unique<Hooking>();
-    g_Hooking->Hook();
+    g_DX12              = std::make_unique<DX12_Base>();
+    g_DX12->bRunning    = g_DX12->InitializeWindow("ELDEN RING™");
+    if (g_DX12->bRunning)
+    {
+        HEXINTON::InitSdk();
+        g_Hooking = std::make_unique<Hooking>();
+        g_Hooking->Hook();
 
-    MainThread();
+        std::thread bgWorker(CheatThread);
+        
+        MainThread();
+        
+        bgWorker.join();
+    }
+    HEXINTON::ShutdownSdk();
+    FreeLibraryAndExitThread(g_Module, 0);
 }

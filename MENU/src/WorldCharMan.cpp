@@ -1,5 +1,4 @@
 #include "../include/WorldCharMan.hpp"
-#include "../include/Menu.hpp"
 #include "../include/D3DRenderer.hpp"
 
 //  BUG : GAME CRASHES DURING WorldCharan::Update() loop

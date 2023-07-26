@@ -59,11 +59,12 @@
 #include <imgui_internal.h>
 #include <imgui_impl_dx12.h>
 #include <imgui_impl_win32.h>
+#include "../../libs/SDK/SDK.h"
+#include <XInput.h>
+#pragma comment(lib, "XInput.lib")
 
-extern void Nop(BYTE* dst, unsigned int size);
-extern void Patch(BYTE* dst, BYTE* src, unsigned int size);
-
-namespace ER {
+namespace ER 
+{
 
 	using namespace std::chrono_literals;
 	using namespace DirectX;
@@ -73,33 +74,6 @@ namespace ER {
 	inline HMODULE g_Module{};
 	inline std::atomic_bool g_Running = TRUE;
 	inline std::atomic_bool g_KillSwitch = FALSE;
-
-	template<typename T> inline T RPM(uint64_t lpBaseAddress)
-	{
-		__try
-		{
-			T A{};
-			A = *(T*)(lpBaseAddress);
-			return A;
-		}
-		__except (EXCEPTION_EXECUTE_HANDLER)
-		{
-			return T{};
-		}
-	}
-
-	template<typename T> inline void WPM(uint64_t lpBaseAddress, T Val)
-	{
-		__try
-		{
-			*(T*)(lpBaseAddress) = Val;
-			return;
-		}
-		__except (EXCEPTION_EXECUTE_HANDLER)
-		{
-		}
-	}
-
 	static uint64_t dwGameBase = (uint64_t)GetModuleHandle(NULL);
 }
 

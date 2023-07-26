@@ -1,9 +1,46 @@
 #pragma once
 #include "Common.hpp"
+#include "Tabs/Main.h"
+#include "Tabs/Character.h"
+#include "Tabs/Entities.h"
+#include "Tabs/Visuals.h"
+#include "Tabs/Debug.h"
 
 namespace ER
-{
-	//IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+{	
+	class Menu
+	{
+	public:	//	MEMBERS
+		float										size[2];
+		float										pos[2];
+		float										maxWidth;
+		float										maxHeight;
+		const char*									title			= "HEXINTON";
+		const char*									m_MenuFooter	= "ELDEN RING - STEAM DECK";
+		bool										bShowMenu;
+		bool										bShowDemo;
+		bool										bShowStyleEditor;
+
+
+		//	Cheat Controllers
+		bool										bInfiniteHealth;
+		bool										bInfiniteMana;
+		bool										bInfiniteStamina;
+	
+	public:	//	FUNCTIONS
+		void										Draw();
+		void										DrawMenu();
+		void										loops();
+
+	public:	//	CONSTRUCTOR
+		Menu()  noexcept = default;
+		~Menu() noexcept = default;
+		Menu(Menu const&) = delete;
+		Menu(Menu&&) = delete;
+		Menu& operator=(Menu const&) = delete;
+		Menu& operator=(Menu&&) = delete;
+	};
+	inline std::unique_ptr<Menu> g_Menu;
 
 	class DX12_Base
 	{
@@ -49,7 +86,8 @@ namespace ER
 		bool										bKillswitch = FALSE;
 
 	public:
-		bool										InitializeWindowContext(const wchar_t* wndwClassName);
+		bool										InitializeWindow(std::string windowName);
+		bool										FindGameWindow(std::string title, HWND& out);
 		bool										ObtainDevice(IDXGISwapChain* pSwapChain);
 		void										InitializeImGui(ID3D12Device* pDevice);
 		void										Overlay();
@@ -79,17 +117,20 @@ namespace ER
 	};
 	inline std::unique_ptr<DX12_Base> g_DX12;
 
-	class Styles {
-	public:
+	class Styles 
+	{
+	public:	//	MEMBERS
 
+	public:	//	FUNCTIONS
+		void										InitStyle();
+
+
+	public:	//	CONSTRUCTOR
 		explicit Styles() = default;
 		Styles(Styles const&) = delete;
 		Styles(Styles&&) = delete;
 		Styles& operator=(Styles const&) = delete;
 		Styles& operator=(Styles&&) = delete;
-
-		void InitStyle();
-
 	};
 	inline std::unique_ptr<Styles> g_Styles;
 }

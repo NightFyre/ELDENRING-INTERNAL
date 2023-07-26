@@ -1,6 +1,5 @@
 #pragma once
 #include "../../include/Tabs/Visuals.h"
-#include "../../include/Menu.hpp"
 #include "../../include/WorldCharMan.hpp"
 using namespace ER::Tabs;
 
