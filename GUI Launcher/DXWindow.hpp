@@ -4,33 +4,47 @@
 namespace ERLauncher {
 	
 
-	class DXWindow {
+	class DXWindow 
+	{
 	public:
-		ID3D11Device* pd3dDevice{};
-		ID3D11DeviceContext* pd3dDeviceContext{};
-		IDXGISwapChain* pSwapChain{};
-		ID3D11RenderTargetView* mainRenderTargetView{};
-		WNDCLASSEX wc{};
-		HWND hwnd{};
-		ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+		void SetWindowStyle(LONG style);
+		void SetWindowFocus(HWND window);
+		ImVec2 GetScreenSize();
+		ImVec2 GetWindowSize();
+		ImVec2 SetWindowPos();
+		ImVec2 GetWindowPos();
+		HWND GetWindowHandle();
+		ID3D11Device* GetD3DDevice();
+		IDXGISwapChain* GetSwapChain();
+		ID3D11DeviceContext* GetDeviceContext();
+		ID3D11RenderTargetView* GetRTV();
 
+	public:
+		void UpdateWindow();
+
+	public:
 		explicit DXWindow();
-		~DXWindow() noexcept = default;
-		
-		DXWindow(DXWindow const&) = delete;
-		DXWindow(DXWindow&&) = delete;
-		DXWindow& operator=(DXWindow const&) = delete;
-		DXWindow& operator=(DXWindow&&) = delete;
+		~DXWindow();
 
-		void Initialize();
+	private:
+		HWND m_hwnd{ 0 };
+		WNDCLASSEX m_wc{ };
+		ID3D11Device* m_pd3dDevice{ nullptr };
+		IDXGISwapChain* m_pSwapChain{ nullptr };
+		ID3D11DeviceContext* m_pd3dDeviceContext{ nullptr };
+		ID3D11RenderTargetView* m_mainRenderTargetView{ nullptr };
+		ImVec2 m_szScreen{ 0.0f, 0.0f };
+		ImVec2 m_szWndw{ 0.f, 0.f };
+		ImVec2 m_posWndw{ 0.f, 0.f };
+
+	private:
 		bool CreateDeviceD3D(HWND hWnd);
 		void CleanupDeviceD3D();
 		void CreateRenderTarget();
 		void CleanupRenderTarget();
 
-		void UpdateWindow();
+	private:
 		static LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
 	};
 
 	class Styles {

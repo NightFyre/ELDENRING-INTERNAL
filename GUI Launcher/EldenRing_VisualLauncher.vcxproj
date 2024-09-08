@@ -151,26 +151,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\libs\ImGui\DOCKING\imgui.cpp" />
-    <ClCompile Include="..\libs\ImGui\DOCKING\imgui_demo.cpp" />
-    <ClCompile Include="..\libs\ImGui\DOCKING\imgui_draw.cpp" />
-    <ClCompile Include="..\libs\ImGui\DOCKING\imgui_impl_dx11.cpp" />
-    <ClCompile Include="..\libs\ImGui\DOCKING\imgui_impl_win32.cpp" />
-    <ClCompile Include="..\libs\ImGui\DOCKING\imgui_tables.cpp" />
-    <ClCompile Include="..\libs\ImGui\DOCKING\imgui_widgets.cpp" />
+    <ClCompile Include="..\libs\ImGui\imgui.cpp" />
+    <ClCompile Include="..\libs\ImGui\imgui_demo.cpp" />
+    <ClCompile Include="..\libs\ImGui\imgui_draw.cpp" />
+    <ClCompile Include="..\libs\ImGui\imgui_impl_dx11.cpp" />
+    <ClCompile Include="..\libs\ImGui\imgui_impl_win32.cpp" />
+    <ClCompile Include="..\libs\ImGui\imgui_tables.cpp" />
+    <ClCompile Include="..\libs\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="DXWindow.cpp" />
     <ClCompile Include="Launcher.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\libs\ImGui\DOCKING\imconfig.h" />
-    <ClInclude Include="..\libs\ImGui\DOCKING\imgui.h" />
-    <ClInclude Include="..\libs\ImGui\DOCKING\imgui_impl_dx11.h" />
-    <ClInclude Include="..\libs\ImGui\DOCKING\imgui_impl_win32.h" />
-    <ClInclude Include="..\libs\ImGui\DOCKING\imgui_internal.h" />
-    <ClInclude Include="..\libs\ImGui\DOCKING\imstb_rectpack.h" />
-    <ClInclude Include="..\libs\ImGui\DOCKING\imstb_textedit.h" />
-    <ClInclude Include="..\libs\ImGui\DOCKING\imstb_truetype.h" />
     <ClInclude Include="DXWindow.hpp" />
     <ClInclude Include="helper.hpp" />
     <ClInclude Include="Launcher.hpp" />
