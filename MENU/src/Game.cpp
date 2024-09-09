@@ -9,7 +9,7 @@ namespace ER {
 	{
 		m_GamePid = GetCurrentProcessId();
 		m_GameHandle = GetCurrentProcess();
-		m_GameWindow = FindWindow("ELDEN RINGâ„¢", NULL);
+		m_GameWindow = FindWindow("ELDEN RING™", NULL);
 		m_ModuleBase = (uintptr_t)GetModuleHandle(NULL);
 
 		RECT TempRect;

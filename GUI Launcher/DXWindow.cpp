@@ -79,6 +79,8 @@ namespace ERLauncher
         if (!g_LauncherVariables->m_LauncherRunning) 
             g_Running = FALSE;
 
+        ::SetWindowPos(m_hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+
         ImGui_ImplDX11_NewFrame();
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();

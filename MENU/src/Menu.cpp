@@ -11,6 +11,7 @@ namespace ER {
         // MAIN WINDOW
         if (g_GameVariables->m_ShowMenu) 
         {
+
             IM_ASSERT(ImGui::GetCurrentContext() != NULL && "Missing dear imgui context. Refer to examples app!");
             if (dbg_RAINBOW_THEME) {
                 ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(g_Menu->dbg_RAINBOW));

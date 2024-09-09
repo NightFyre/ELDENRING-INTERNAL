@@ -34,7 +34,7 @@ namespace ER {
 		g_D3DRenderer->Hook();
 
 		FindHooks();
-    
+		
 		if (m_InputHandler)
 			MH_CreateHook((LPVOID)m_InputHandler, &HookInput, &m_OriginalInputHandler);
 

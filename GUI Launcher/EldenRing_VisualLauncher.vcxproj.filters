@@ -33,6 +33,9 @@
     <ClCompile Include="Launcher.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
+    <ClCompile Include="..\libs\ImGui\imgui_tables.cpp">
+      <Filter>libs\ImGui</Filter>
+    </ClCompile>
     <ClCompile Include="..\libs\ImGui\imgui_widgets.cpp">
       <Filter>libs\ImGui</Filter>
     </ClCompile>
@@ -49,9 +52,6 @@
       <Filter>libs\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="..\libs\ImGui\imgui_impl_win32.cpp">
-      <Filter>libs\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libs\ImGui\imgui_tables.cpp">
       <Filter>libs\ImGui</Filter>
     </ClCompile>
   </ItemGroup>
