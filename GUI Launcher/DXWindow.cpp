@@ -1,58 +1,72 @@
 #include "DXWindow.hpp"
 #include "Launcher.hpp"
 #include "resource.h"
+#include <dwmapi.h>
 
 // Forward declare message handler from imgui_impl_win32.cpp
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-namespace ERLauncher {
+namespace ERLauncher 
+{
 
+    MARGINS gMargin;
 	DXWindow::DXWindow()
 	{
-		Initialize();
-	}
+        m_szWndw = { 280.f , 200.f };
+        m_szScreen.x = GetSystemMetrics(SM_CXSCREEN);
+        m_szScreen.y = GetSystemMetrics(SM_CYSCREEN);
+        m_posWndw = { m_szScreen.x / 2 - m_szWndw.x / 2 , m_szScreen.y / 2 - m_szWndw.y / 2};
 
-	void DXWindow::Initialize()
-	{
-        wc = { sizeof(WNDCLASSEX), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(NULL), 
+        m_wc = { sizeof(WNDCLASSEX), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(NULL), 
             LoadIcon(g_LauncherVariables->hInstance, MAKEINTRESOURCE(IDI_ICON1)), 
             NULL, NULL, NULL, 
             _T("Dear ImGui Example Launcher"), 
             LoadIcon(g_LauncherVariables->hInstance, MAKEINTRESOURCE(IDI_APPLICATION)) 
         };
+        ::RegisterClassEx(&m_wc);
+        //  m_hwnd = ::CreateWindow(m_wc.lpszClassName, _T("ELDEN RING LAUNCHER"), WS_BORDER, m_posWndw.x, m_posWndw.y, m_szWndw.x, m_szWndw.y, NULL, NULL, m_wc.hInstance, NULL);  //  debug window
+        m_hwnd = ::CreateWindow(m_wc.lpszClassName, _T("ELDEN RING LAUNCHER"), WS_EX_TOPMOST | WS_POPUP, m_posWndw.x, m_posWndw.y, m_szWndw.x, m_szWndw.y, NULL, NULL, m_wc.hInstance, NULL);
+        SetLayeredWindowAttributes(m_hwnd, 0, 255, LWA_ALPHA);
+        gMargin = { 0, 0, static_cast<int>(m_szScreen.x), static_cast<int>(m_szScreen.y) };
+        DwmExtendFrameIntoClientArea(m_hwnd, &gMargin);
 
-        ::RegisterClassEx(&wc);
-        hwnd = ::CreateWindow(wc.lpszClassName, _T("ELDEN RING LAUNCHER"), WS_BORDER, 100, 100, 270, 350, NULL, NULL, wc.hInstance, NULL);
-        if (!CreateDeviceD3D(hwnd)) {
+        if (!CreateDeviceD3D(m_hwnd)) 
+        {
             CleanupDeviceD3D();
-            ::UnregisterClass(wc.lpszClassName, wc.hInstance);
+            ::UnregisterClass(m_wc.lpszClassName, m_wc.hInstance);
             return;
         }
-        ::ShowWindow(hwnd, SW_HIDE);
-        ::UpdateWindow(hwnd);
+        ::ShowWindow(m_hwnd, SW_SHOWDEFAULT);
+        ::UpdateWindow(m_hwnd);
 
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
         ImGuiIO& io = ImGui::GetIO(); (void)io;
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;        // Enable Gamepad Controls
-        io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
-        io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
         io.IniFilename = NULL;                                      // Disable Ini File
         
         ImGuiStyle& style = ImGui::GetStyle();
-        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-        {
-            style.WindowRounding = 0.0f;
-            style.Colors[ImGuiCol_WindowBg].w = 1.0f;
-        }
+        style.WindowTitleAlign = ImVec2(.5f, .5f);
 
-        ImGui_ImplWin32_Init(hwnd);
-        ImGui_ImplDX11_Init(pd3dDevice, pd3dDeviceContext);
+        ImGui_ImplWin32_Init(m_hwnd);
+        ImGui_ImplDX11_Init(m_pd3dDevice, m_pd3dDeviceContext);
 	}
+
+    DXWindow::~DXWindow()
+    {
+        ImGui_ImplDX11_Shutdown();
+        ImGui_ImplWin32_Shutdown();
+        ImGui::DestroyContext();
+        CleanupDeviceD3D();
+        DestroyWindow(m_hwnd);
+        UnregisterClass(m_wc.lpszClassName, m_wc.hInstance);
+    }
 
     void DXWindow::UpdateWindow()
     {
+        static float clearColor[4] = { 0.0f,0.0f,0.0f,0.0f };
+
         MSG msg;
         while (::PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))
         {
@@ -62,38 +76,24 @@ namespace ERLauncher {
                 g_LauncherVariables->m_LauncherRunning = FALSE;
         }
 
-        if (!g_LauncherVariables->m_LauncherRunning) {
+        if (!g_LauncherVariables->m_LauncherRunning) 
             g_Running = FALSE;
-            return;
-        }
 
         ImGui_ImplDX11_NewFrame();
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
 
-        //  RENDER OUR CUSTOM WINDOW HERE
-        //  - Passing our boolean to close when done
         g_Launcher->Draw(&g_LauncherVariables->m_LauncherRunning);
 
-        // Rendering
         ImGui::Render();
-        const float clear_color_with_alpha[4] = { clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w };
-        pd3dDeviceContext->OMSetRenderTargets(1, &mainRenderTargetView, NULL);
-        pd3dDeviceContext->ClearRenderTargetView(mainRenderTargetView, clear_color_with_alpha);
+        m_pd3dDeviceContext->OMSetRenderTargets(1, &m_mainRenderTargetView, NULL);
+        m_pd3dDeviceContext->ClearRenderTargetView(m_mainRenderTargetView, (float*)clearColor);
         ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-
-        if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-        {
-            ImGui::UpdatePlatformWindows();
-            ImGui::RenderPlatformWindowsDefault();
-        }
-
-        pSwapChain->Present(1, 0); // Present with vsync
+        m_pSwapChain->Present(1, 0);
     }
 
     bool DXWindow::CreateDeviceD3D(HWND hWnd)
     {
-        // Setup swap chain
         DXGI_SWAP_CHAIN_DESC sd;
         ZeroMemory(&sd, sizeof(sd));
         sd.BufferCount = 2;
@@ -113,34 +113,78 @@ namespace ERLauncher {
         UINT createDeviceFlags = 0;
         D3D_FEATURE_LEVEL featureLevel;
         const D3D_FEATURE_LEVEL featureLevelArray[2] = { D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_0, };
-        if (D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, createDeviceFlags, featureLevelArray, 2, D3D11_SDK_VERSION, &sd, &pSwapChain, &pd3dDevice, &featureLevel, &pd3dDeviceContext) != S_OK)
+        if (D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, createDeviceFlags, featureLevelArray, 2, D3D11_SDK_VERSION, &sd, &m_pSwapChain, &m_pd3dDevice, &featureLevel, &m_pd3dDeviceContext) != S_OK)
             return false;
 
         CreateRenderTarget();
-        return true;
-    }
 
-    void DXWindow::CleanupDeviceD3D()
-    {
-        CleanupRenderTarget();
-        if (pSwapChain) { pSwapChain->Release(); pSwapChain = NULL; }
-        if (pd3dDeviceContext) { pd3dDeviceContext->Release(); pd3dDeviceContext = NULL; }
-        if (pd3dDevice) { pd3dDevice->Release(); pd3dDevice = NULL; }
+        return true;
     }
 
     void DXWindow::CreateRenderTarget()
     {
         ID3D11Texture2D* pBackBuffer;
-        pSwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
-        pd3dDevice->CreateRenderTargetView(pBackBuffer, NULL, &mainRenderTargetView);
+        m_pSwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
+        m_pd3dDevice->CreateRenderTargetView(pBackBuffer, nullptr, &m_mainRenderTargetView);
         pBackBuffer->Release();
+    }
+
+    void DXWindow::CleanupDeviceD3D()
+    {
+        CleanupRenderTarget();
+
+        if (m_pSwapChain)
+        {
+            m_pSwapChain->Release();
+            m_pSwapChain = nullptr;
+        }
+
+        if (m_pd3dDeviceContext)
+        {
+            m_pd3dDeviceContext->Release();
+            m_pd3dDeviceContext = nullptr;
+        }
+
+        if (m_pd3dDevice)
+        {
+            m_pd3dDevice->Release();
+            m_pd3dDevice = nullptr;
+        }
     }
 
     void DXWindow::CleanupRenderTarget()
     {
-        if (mainRenderTargetView) { mainRenderTargetView->Release(); mainRenderTargetView = NULL; }
+        if (m_mainRenderTargetView)
+        {
+            m_mainRenderTargetView->Release();
+            m_mainRenderTargetView = nullptr;
+        }
     }
-    
+
+    void DXWindow::SetWindowStyle(LONG flags) { SetWindowLong(m_hwnd, GWL_EXSTYLE, flags); }
+
+    void DXWindow::SetWindowFocus(HWND window)
+    {
+        SetForegroundWindow(window);
+        SetActiveWindow(window);
+    }
+
+    ImVec2 DXWindow::GetScreenSize() { return m_szScreen; }
+
+    ImVec2 DXWindow::GetWindowPos() { return m_posWndw; }
+
+    ImVec2 DXWindow::GetWindowSize() { return m_szWndw; }
+
+    HWND DXWindow::GetWindowHandle() { return m_hwnd; }
+
+    ID3D11Device* DXWindow::GetD3DDevice() { return m_pd3dDevice; }
+
+    IDXGISwapChain* DXWindow::GetSwapChain() { return m_pSwapChain; }
+
+    ID3D11DeviceContext* DXWindow::GetDeviceContext() { return m_pd3dDeviceContext; }
+
+    ID3D11RenderTargetView* DXWindow::GetRTV() { return m_mainRenderTargetView; }
+
     LRESULT WINAPI DXWindow::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     {
         if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
@@ -148,14 +192,6 @@ namespace ERLauncher {
 
         switch (msg)
         {
-        case WM_SIZE:
-            if (g_DXwndw->pd3dDevice != NULL && wParam != SIZE_MINIMIZED)
-            {
-                g_DXwndw->CleanupRenderTarget();
-                g_DXwndw->pSwapChain->ResizeBuffers(0, (UINT)LOWORD(lParam), (UINT)HIWORD(lParam), DXGI_FORMAT_UNKNOWN, 0);
-                g_DXwndw->CreateRenderTarget();
-            }
-            return 0;
         case WM_SYSCOMMAND:
             if ((wParam & 0xfff0) == SC_KEYMENU) // Disable ALT application menu
                 return 0;
@@ -163,13 +199,6 @@ namespace ERLauncher {
         case WM_DESTROY:
             ::PostQuitMessage(0);
             return 0;
-        case WM_DPICHANGED:
-            if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DpiEnableScaleViewports)
-            {
-                const RECT* suggested_rect = (RECT*)lParam;
-                ::SetWindowPos(hWnd, NULL, suggested_rect->left, suggested_rect->top, suggested_rect->right - suggested_rect->left, suggested_rect->bottom - suggested_rect->top, SWP_NOZORDER | SWP_NOACTIVATE);
-            }
-            break;
         }
         return ::DefWindowProc(hWnd, msg, wParam, lParam);
     }

@@ -18,12 +18,5 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
         std::this_thread::yield();
     }
 
-    // Cleanup
-    ImGui_ImplDX11_Shutdown();
-    ImGui_ImplWin32_Shutdown();
-    ImGui::DestroyContext();
-    g_DXwndw->CleanupDeviceD3D();
-    ::DestroyWindow(g_DXwndw->hwnd);
-    ::UnregisterClass(g_DXwndw->wc.lpszClassName, g_DXwndw->wc.hInstance);
     return 0;
 }

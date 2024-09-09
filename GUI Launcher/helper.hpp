@@ -20,7 +20,8 @@
 #include <string>
 #include <thread>
 #include <chrono>
-namespace ERLauncher {
+namespace ERLauncher 
+{
 	using namespace std::chrono_literals;
 
 	inline HMODULE g_Module{};

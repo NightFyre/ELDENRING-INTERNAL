@@ -43,7 +43,6 @@ namespace ERLauncher {
 		bool m_DemoWindow{};
 		bool m_INJECT{};
 
-		ImVec2 BUTTONS{ 200, 30 };
 		//	INIT
 		explicit LauncherVariables();
 		~LauncherVariables() noexcept = default;
