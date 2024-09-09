@@ -15,7 +15,8 @@ void Debug::Draw()
     //  Initize so that we can set and store ImGui Content Positions
     ImGuiWindow* window = GImGui->CurrentWindow;
     ImVec2 ToolLocation;
-    ImGui::TextCentered("[ABOUT]", TRUE, ImColor(0, 255, 255, 200));
+    //  ImGui::TextCentered("[ABOUT]", TRUE, ImColor(0, 255, 255, 200));
+    ImGui::Text("[ABOUT]");
     ImGui::Spacing();
     ImGui::Separator();
 
@@ -95,7 +96,7 @@ void Debug::Draw()
     //  if (ImGui::Button("CALL WorldCharMan Update", ImVec2(ImGui::GetWindowContentRegionWidth() - 3, 20)))
     //      g_WorldCharMan->Update();
 
-    if (ImGui::Button("INITIALIZE STYLE", ImVec2(ImGui::GetWindowContentRegionWidth() - 3, 20)))
+    if (ImGui::Button("INITIALIZE STYLE", ImVec2(ImGui::GetContentRegionAvail().x, 20)))
         g_Styles->InitStyle();
 
     ImGui::Separator();
@@ -104,7 +105,7 @@ void Debug::Draw()
     
     ImGui::Spacing();
     
-    if (ImGui::Button("QUIT GAME", ImVec2(ImGui::GetWindowContentRegionWidth() - 3, 20)))
+    if (ImGui::Button("QUIT GAME", ImVec2(ImGui::GetContentRegionAvail().x, 20)))
         TerminateProcess(g_GameVariables->m_GameHandle, EXIT_SUCCESS);
 
 
@@ -113,5 +114,5 @@ void Debug::Draw()
     ImGui::Spacing();
     ImGui::Separator();
     std::string footer = g_Menu->m_MenuFooter + g_Console->GetTimeString();
-    ImGui::TextCentered(footer.c_str());
+    ImGui::Text(footer.c_str());
 }

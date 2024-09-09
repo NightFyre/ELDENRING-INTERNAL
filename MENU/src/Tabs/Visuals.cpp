@@ -14,7 +14,8 @@ void Visuals::Draw()
     //  Initize so that we can set and store ImGui Content Positions
     ImGuiWindow* window = GImGui->CurrentWindow;
     ImVec2 ToolLocation;
-    ImGui::TextCentered("[VISUALS]", TRUE, ImColor(0, 255, 255, 200));
+    //  ImGui::Text("[VISUALS]", TRUE, ImColor(0, 255, 255, 200));
+    ImGui::Text("[VISUALS]");
     ImGui::Spacing();
     ImGui::Separator();
 
@@ -27,7 +28,7 @@ void Visuals::Draw()
     ImGui::Spacing();
     ImGui::Separator();
     std::string footer = g_Menu->m_MenuFooter + g_Console->GetTimeString();
-    ImGui::TextCentered(footer.c_str());
+    ImGui::Text(footer.c_str());
 }
 
 void Visuals::DrawOptions()
