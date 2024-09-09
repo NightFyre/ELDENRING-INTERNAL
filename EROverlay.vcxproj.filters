@@ -37,6 +37,9 @@
     <Filter Include="Source Files\Core Classes">
       <UniqueIdentifier>{312b4082-fa88-4217-b5de-57270e87f4e3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="libs\SDK">
+      <UniqueIdentifier>{dd54a0d7-5009-4554-b4bd-e3f4deee60f5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="libs\ImGui\imconfig.h">
@@ -129,23 +132,11 @@
     <ClInclude Include="MENU\include\initialize.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MENU\include\ChrIns.hpp">
-      <Filter>Header Files\Core Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="MENU\include\ChrModules.hpp">
-      <Filter>Header Files\Core Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="MENU\include\GameDataMan.hpp">
-      <Filter>Header Files\Core Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="MENU\include\GameEnums.hpp">
-      <Filter>Header Files\Core Classes</Filter>
-    </ClInclude>
     <ClInclude Include="MENU\include\Hooking.hpp">
       <Filter>Header Files\Core Classes</Filter>
     </ClInclude>
-    <ClInclude Include="MENU\include\WorldCharMan.hpp">
-      <Filter>Header Files\Core Classes</Filter>
+    <ClInclude Include="libs\SDK\SDK.h">
+      <Filter>libs\SDK</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -185,22 +176,13 @@
     <ClCompile Include="libs\Minhook\trampoline.c">
       <Filter>libs\MinHook</Filter>
     </ClCompile>
-    <ClCompile Include="MENU\src\Common.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MENU\dllmain.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MENU\src\WorldCharMan.cpp">
-      <Filter>Source Files\Core Classes</Filter>
     </ClCompile>
     <ClCompile Include="MENU\src\Menu.cpp">
       <Filter>Source Files\Core Classes</Filter>
     </ClCompile>
     <ClCompile Include="MENU\src\Hooking.cpp">
-      <Filter>Source Files\Core Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="MENU\src\GameDataMan.cpp">
       <Filter>Source Files\Core Classes</Filter>
     </ClCompile>
     <ClCompile Include="MENU\src\Game.cpp">
@@ -210,12 +192,6 @@
       <Filter>Source Files\Core Classes</Filter>
     </ClCompile>
     <ClCompile Include="MENU\src\Console.cpp">
-      <Filter>Source Files\Core Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="MENU\src\ChrModules.cpp">
-      <Filter>Source Files\Core Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="MENU\src\ChrIns.cpp">
       <Filter>Source Files\Core Classes</Filter>
     </ClCompile>
     <ClCompile Include="MENU\src\Tabs\Character.cpp">
@@ -232,6 +208,12 @@
     </ClCompile>
     <ClCompile Include="MENU\src\Tabs\Visuals.cpp">
       <Filter>Source Files\Tabs</Filter>
+    </ClCompile>
+    <ClCompile Include="libs\SDK\Basic_Functions.cpp">
+      <Filter>libs\SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="libs\SDK\EldenRing_Functions.cpp">
+      <Filter>libs\SDK</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

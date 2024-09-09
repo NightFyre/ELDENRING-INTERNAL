@@ -310,4 +310,70 @@ namespace ER
 	private:
 		std::vector<Element> m_Elements;
 	};
+
+	class Memory
+	{
+	public:
+		static uint64_t dwGameBase;
+
+		template<typename T> 
+		inline T Read(uint64_t lpBaseAddress)
+		{
+			__try
+			{
+				T A{};
+				A = *(T*)(lpBaseAddress);
+				return A;
+			}
+			__except (EXCEPTION_EXECUTE_HANDLER)
+			{
+				return T{};
+			}
+		}
+
+		template<typename T> 
+		inline void Write(uint64_t lpBaseAddress, T Val)
+		{
+			__try
+			{
+				*(T*)(lpBaseAddress) = Val;
+				return;
+			}
+			__except (EXCEPTION_EXECUTE_HANDLER)
+			{
+
+			}
+		}
+
+
+		static uint64_t GetAddr(uint32_t offset) { return dwGameBase + offset; }
+
+		/// <summary>
+		/// Clear Bytes
+		/// </summary>
+		/// <param name="dst">Address</param>
+		/// <param name="size">Size</param>
+		static void Nop(BYTE* dst, unsigned int size)
+		{
+			DWORD oldprotect;
+			VirtualProtect(dst, size, PAGE_EXECUTE_READWRITE, &oldprotect);
+			memset(dst, 0x90, size);
+			VirtualProtect(dst, size, oldprotect, &oldprotect);
+		}
+
+		/// <summary>
+		/// Patch Bytes
+		/// </summary>
+		/// <param name="dst">Address</param>
+		/// <param name="src">Value</param>
+		/// <param name="size">Size</param>
+		static void Patch(BYTE* dst, BYTE* src, unsigned int size)
+		{
+			DWORD oldprotect;
+			VirtualProtect(dst, size, PAGE_EXECUTE_READWRITE, &oldprotect);
+			memcpy(dst, src, size);
+			VirtualProtect(dst, size, oldprotect, &oldprotect);
+		}
+	}; 
+	inline uint64_t Memory::dwGameBase = (uint64_t)GetModuleHandle(NULL);
 }

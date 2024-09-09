@@ -78,6 +78,26 @@ namespace HEXINTON
 		return result;
 	}
 
+	bool WorldCharacterManager::GetCharacterArray(std::vector<PlayerInstance*>* pOut)
+	{
+		std::vector<PlayerInstance*> result;
+
+		auto count = this->pEntArrayEnd - this->pEntArrayBegin / 8;
+		auto p = *(long long*)this->pEntArrayBegin;
+		for (int i = 0; i < count; i++)
+		{
+			auto pEnt = p + (PlayerInstance*)(i * 0x8);
+			if (pEnt <= 0)
+				continue;
+
+			result.push_back(pEnt);
+		}
+	
+		*pOut = result;
+
+		return result.size() > 0;
+	}
+
 	// --------------------------------------------------
 	// # LocalPlayer
 	// --------------------------------------------------

@@ -1,5 +1,9 @@
 #pragma once
 #include "Common.hpp"
+#include "../libs/ImGui/imgui.h"
+#include "../libs/ImGui/imgui_internal.h"
+#include "../libs/ImGui/imgui_impl_dx12.h"
+#include "../libs/ImGui/imgui_impl_win32.h"
 
 namespace ER
 {
@@ -78,7 +82,8 @@ namespace ER
 		_FrameContext* m_FrameContext{};
 	};
 
-	class Styles {
+	class Styles 
+	{
 	public:
 
 		explicit Styles() = default;
