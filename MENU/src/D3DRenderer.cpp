@@ -274,7 +274,7 @@ namespace ER
 			ImGuiIO& io = ImGui::GetIO();
 			io.IniFilename = NULL;
 
-			g_GameVariables->m_GameWindow = FindWindow("ELDEN RING™", NULL);
+			g_GameVariables->m_GameWindow = FindWindow("ELDEN RINGÂ™", NULL);
 
 			ImGui_ImplWin32_Init(g_GameVariables->m_GameWindow);
 			ImGui_ImplDX12_Init(pDevice, m_BuffersCounts, DXGI_FORMAT_R8G8B8A8_UNORM, NULL,
@@ -425,7 +425,7 @@ namespace ER
 				RTVHandle.ptr += RTVDescriptorSize;
 			}
 
-			g_GameVariables->m_GameWindow = FindWindow("ELDEN RING™", NULL);
+			g_GameVariables->m_GameWindow = FindWindow("ELDEN RINGÂ™", NULL);
 			m_OldWndProc = SetWindowLongPtrA(g_GameVariables->m_GameWindow, GWLP_WNDPROC, (LONG_PTR)WndProc);
 
 			ImGui_ImplWin32_Init(g_GameVariables->m_GameWindow);
