@@ -2,8 +2,6 @@
 #include "include/D3DRenderer.hpp"
 #include "include/Hooking.hpp"
 #include "include/Menu.hpp"
-#include "include/GameDataMan.hpp"
-#include "include/WorldCharMan.hpp"
 #include "include/Console.hpp"
 using namespace ER;
 void MainThread();
@@ -18,8 +16,8 @@ void UpdateThread()
     //  Optimizations still need to be made as crashing can and does still occur during load screens and other instances
     //  Nullptrs tend to be the underlying cause.
     while (g_Running) {
-        if (g_WorldCharMan->Update())
-            g_WorldCharMan->count = NULL;
+        //  if (g_WorldCharMan->Update())
+        //      g_WorldCharMan->count = NULL;
         std::this_thread::sleep_for(5s);
         std::this_thread::yield();
     }
@@ -54,8 +52,8 @@ void init()
 
     g_Console->printdbg("[+] PRESS [INSERT] TO SHOW/HIDE MENU\n\n", Console::Colors::DEFAULT);
 
-    g_GameFunctions->FMVSkip(g_GameVariables->m_ModuleBase);
-    g_GameFunctions->UnlockFPS(g_GameVariables->m_ModuleBase);
+    //  g_GameFunctions->FMVSkip(g_GameVariables->m_ModuleBase);
+    //  g_GameFunctions->UnlockFPS(g_GameVariables->m_ModuleBase);
 
     //  WAIT FOR USER INPUT
     while (GetAsyncKeyState(VK_INSERT) == NULL)
@@ -67,8 +65,8 @@ void init()
     g_Styles = std::make_unique<Styles>();
     g_Hooking = std::make_unique<Hooking>();
     g_Hooking->Hook();
-    g_GameDataMan = std::make_unique<GameDataMan>();
-    g_WorldCharMan = std::make_unique<WorldCharMan>();
+    //  g_GameDataMan = std::make_unique<GameDataMan>();
+    //  g_WorldCharMan = std::make_unique<WorldCharMan>();
 
     MainThread();
 }
@@ -76,15 +74,15 @@ void init()
 void MainThread()
 {
     //  CREATE WorldCharMan Update Thread
-    std::thread WCMUpdate(UpdateThread);
-    std::thread BGWorker(BackgroundWorker);
+    //  std::thread WCMUpdate(UpdateThread);
+    //  std::thread BGWorker(BackgroundWorker);
 
     //  MAIN LOOP
     while (g_Running)
     {
         if (GetAsyncKeyState(VK_INSERT) & 1) {
             g_GameVariables->m_ShowMenu = !g_GameVariables->m_ShowMenu;
-            g_GameFunctions->PauseGameplay(g_GameVariables->m_ModuleBase, g_GameVariables->m_ShowMenu);
+            //  g_GameFunctions->PauseGameplay(g_GameVariables->m_ModuleBase, g_GameVariables->m_ShowMenu);
         }
 
         if (GetAsyncKeyState(VK_DELETE) & 1) {
@@ -97,9 +95,9 @@ void MainThread()
     }
 
     //  EXIT THREAD
-    g_GameFunctions->PauseGameplay(g_GameVariables->m_ModuleBase, FALSE);    //  Due to unhooking requiring the menu being shown ... the game will remain paused unless we revert that here
-    BGWorker.join();
-    WCMUpdate.join();
+    //  g_GameFunctions->PauseGameplay(g_GameVariables->m_ModuleBase, FALSE);    //  Due to unhooking requiring the menu being shown ... the game will remain paused unless we revert that here
+    //  BGWorker.join();
+    //  WCMUpdate.join();
     g_Console->Free();
     std::this_thread::sleep_for(500ms);
     FreeLibraryAndExitThread(g_Module, 0);

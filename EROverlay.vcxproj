@@ -185,14 +185,11 @@
     <ClInclude Include="libs\Minhook\table32.h" />
     <ClInclude Include="libs\Minhook\table64.h" />
     <ClInclude Include="libs\Minhook\trampoline.h" />
-    <ClInclude Include="MENU\include\ChrIns.hpp" />
-    <ClInclude Include="MENU\include\ChrModules.hpp" />
     <ClInclude Include="MENU\include\Common.hpp" />
     <ClInclude Include="MENU\include\Console.hpp" />
     <ClInclude Include="MENU\include\D3DRenderer.hpp" />
     <ClInclude Include="MENU\include\framework.h" />
     <ClInclude Include="MENU\include\Game.hpp" />
-    <ClInclude Include="MENU\include\GameDataMan.hpp" />
     <ClInclude Include="MENU\include\GameEnums.hpp" />
     <ClInclude Include="MENU\include\Hooking.hpp" />
     <ClInclude Include="MENU\include\initialize.hpp" />
@@ -204,7 +201,6 @@
     <ClInclude Include="MENU\include\Tabs\Main.h" />
     <ClInclude Include="MENU\include\Tabs\Visuals.h" />
     <ClInclude Include="MENU\include\Tools\Vector.hpp" />
-    <ClInclude Include="MENU\include\WorldCharMan.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libs\ImGui\imgui.cpp" />
@@ -220,13 +216,10 @@
     <ClCompile Include="libs\Minhook\hook.c" />
     <ClCompile Include="libs\Minhook\trampoline.c" />
     <ClCompile Include="MENU\dllmain.cpp" />
-    <ClCompile Include="MENU\src\ChrIns.cpp" />
-    <ClCompile Include="MENU\src\ChrModules.cpp" />
     <ClCompile Include="MENU\src\Common.cpp" />
     <ClCompile Include="MENU\src\Console.cpp" />
     <ClCompile Include="MENU\src\D3DRenderer.cpp" />
     <ClCompile Include="MENU\src\Game.cpp" />
-    <ClCompile Include="MENU\src\GameDataMan.cpp" />
     <ClCompile Include="MENU\src\Hooking.cpp" />
     <ClCompile Include="MENU\src\Menu.cpp" />
     <ClCompile Include="MENU\src\Tabs\Character.cpp" />
@@ -234,7 +227,6 @@
     <ClCompile Include="MENU\src\Tabs\Entities.cpp" />
     <ClCompile Include="MENU\src\Tabs\Main.cpp" />
     <ClCompile Include="MENU\src\Tabs\Visuals.cpp" />
-    <ClCompile Include="MENU\src\WorldCharMan.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

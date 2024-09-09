@@ -6,15 +6,13 @@
 #include "../../include/Console.hpp"
 using namespace ER::Tabs;
 
-/// <summary>
-/// PLAYER OPTIONS
-/// </summary>
-void Main::Reset() {
+void Main::Reset() 
+{
 
 }
 
-void Main::Draw() {
-    //  Initize so that we can set and store ImGui Content Positions
+void Main::Draw() 
+{
     ImGuiWindow* window = GImGui->CurrentWindow;
     ImVec2 ToolLocation;
     ImGui::TextCentered("[ABOUT]", TRUE, ImColor(0, 255, 255, 200));

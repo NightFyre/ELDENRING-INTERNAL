@@ -3,8 +3,6 @@
 #include "../include/Memory.hpp"
 #include "../include/Menu.hpp"
 
-// TEST
-#include "../include/WorldCharMan.hpp"
 namespace ER {
 
 	//	MinHook
@@ -36,7 +34,7 @@ namespace ER {
 		g_D3DRenderer->Hook();
 
 		FindHooks();
-
+		
 		if (m_InputHandler)
 			MH_CreateHook((LPVOID)m_InputHandler, &HookInput, &m_OriginalInputHandler);
 

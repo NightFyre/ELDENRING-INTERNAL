@@ -281,7 +281,7 @@ namespace ER
 				m_DescriptorHeap->GetCPUDescriptorHandleForHeapStart(),
 				m_DescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 			ImGui_ImplDX12_CreateDeviceObjects();
-			ImGui::GetIO().ImeWindowHandle = g_GameVariables->m_GameWindow;
+			//	ImGui::GetIO().ImeWindowHandle = g_GameVariables->m_GameWindow;
 			m_OldWndProc = SetWindowLongPtr(g_GameVariables->m_GameWindow, GWLP_WNDPROC, (LONG_PTR)WndProc);
 
 			m_Init = true;
@@ -431,7 +431,7 @@ namespace ER
 			ImGui_ImplWin32_Init(g_GameVariables->m_GameWindow);
 			ImGui_ImplDX12_Init(m_Device, m_BuffersCounts, DXGI_FORMAT_R8G8B8A8_UNORM, NULL, m_DescriptorHeap->GetCPUDescriptorHandleForHeapStart(), m_DescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 			ImGui_ImplDX12_CreateDeviceObjects();
-			ImGui::GetIO().ImeWindowHandle = g_GameVariables->m_GameWindow;
+			//	ImGui::GetIO().ImeWindowHandle = g_GameVariables->m_GameWindow;
 			m_Device->Release();
             return 1;
 		}

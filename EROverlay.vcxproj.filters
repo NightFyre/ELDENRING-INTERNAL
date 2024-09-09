@@ -129,22 +129,10 @@
     <ClInclude Include="MENU\include\initialize.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MENU\include\ChrIns.hpp">
-      <Filter>Header Files\Core Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="MENU\include\ChrModules.hpp">
-      <Filter>Header Files\Core Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="MENU\include\GameDataMan.hpp">
-      <Filter>Header Files\Core Classes</Filter>
-    </ClInclude>
     <ClInclude Include="MENU\include\GameEnums.hpp">
       <Filter>Header Files\Core Classes</Filter>
     </ClInclude>
     <ClInclude Include="MENU\include\Hooking.hpp">
-      <Filter>Header Files\Core Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="MENU\include\WorldCharMan.hpp">
       <Filter>Header Files\Core Classes</Filter>
     </ClInclude>
   </ItemGroup>
@@ -191,16 +179,10 @@
     <ClCompile Include="MENU\dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MENU\src\WorldCharMan.cpp">
-      <Filter>Source Files\Core Classes</Filter>
-    </ClCompile>
     <ClCompile Include="MENU\src\Menu.cpp">
       <Filter>Source Files\Core Classes</Filter>
     </ClCompile>
     <ClCompile Include="MENU\src\Hooking.cpp">
-      <Filter>Source Files\Core Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="MENU\src\GameDataMan.cpp">
       <Filter>Source Files\Core Classes</Filter>
     </ClCompile>
     <ClCompile Include="MENU\src\Game.cpp">
@@ -210,12 +192,6 @@
       <Filter>Source Files\Core Classes</Filter>
     </ClCompile>
     <ClCompile Include="MENU\src\Console.cpp">
-      <Filter>Source Files\Core Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="MENU\src\ChrModules.cpp">
-      <Filter>Source Files\Core Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="MENU\src\ChrIns.cpp">
       <Filter>Source Files\Core Classes</Filter>
     </ClCompile>
     <ClCompile Include="MENU\src\Tabs\Character.cpp">
