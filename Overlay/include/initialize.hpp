@@ -68,6 +68,9 @@ void init()
     //  g_GameDataMan = std::make_unique<GameDataMan>();
     //  g_WorldCharMan = std::make_unique<WorldCharMan>();
 
+    HEXINTON::InitSdk();
+    g_Console->printdbg("WorldChrMan: 0x%llX\nGameDataMan: 0x%llX\nGameMan: 0x%llX\n", Console::Colors::yellow, HEXINTON::CGlobals::GWorldCharMan, HEXINTON::CGlobals::GGameDataMan, HEXINTON::CGlobals::GGameMan);
+
     MainThread();
 }
 

@@ -59,6 +59,7 @@
 #include "../libs/ImGui/imgui_internal.h"
 #include "../libs/ImGui/imgui_impl_dx12.h"
 #include "../libs/ImGui/imgui_impl_win32.h"
+#include "../libs/SDK/sdk.h"
 
 extern void Nop(BYTE* dst, unsigned int size);
 extern void Patch(BYTE* dst, BYTE* src, unsigned int size);
