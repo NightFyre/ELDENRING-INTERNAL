@@ -37,106 +37,100 @@
     <Filter Include="Source Files\Core Classes">
       <UniqueIdentifier>{312b4082-fa88-4217-b5de-57270e87f4e3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="libs\SDK">
+      <UniqueIdentifier>{44779a9c-0a80-48c6-ae64-92f1bb864db3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="libs\ImGui\imconfig.h">
-      <Filter>libs\ImGui</Filter>
+    <ClInclude Include="Overlay\include\Hooking.hpp">
+      <Filter>Header Files\Core Classes</Filter>
     </ClInclude>
-    <ClInclude Include="libs\ImGui\imgui.h">
-      <Filter>libs\ImGui</Filter>
+    <ClInclude Include="Overlay\include\Memory.hpp">
+      <Filter>Header Files\Core Classes</Filter>
     </ClInclude>
-    <ClInclude Include="libs\ImGui\imgui_impl_dx12.h">
-      <Filter>libs\ImGui</Filter>
+    <ClInclude Include="Overlay\include\Menu.hpp">
+      <Filter>Header Files\Core Classes</Filter>
     </ClInclude>
-    <ClInclude Include="libs\ImGui\imgui_impl_win32.h">
-      <Filter>libs\ImGui</Filter>
+    <ClInclude Include="Overlay\include\Console.hpp">
+      <Filter>Header Files\Core Classes</Filter>
     </ClInclude>
-    <ClInclude Include="libs\ImGui\imgui_internal.h">
-      <Filter>libs\ImGui</Filter>
+    <ClInclude Include="Overlay\include\D3DRenderer.hpp">
+      <Filter>Header Files\Core Classes</Filter>
     </ClInclude>
-    <ClInclude Include="libs\ImGui\imstb_rectpack.h">
-      <Filter>libs\ImGui</Filter>
+    <ClInclude Include="Overlay\include\Game.hpp">
+      <Filter>Header Files\Core Classes</Filter>
     </ClInclude>
-    <ClInclude Include="libs\ImGui\imstb_textedit.h">
-      <Filter>libs\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="libs\ImGui\imstb_truetype.h">
-      <Filter>libs\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="libs\Minhook\buffer.h">
-      <Filter>libs\MinHook</Filter>
-    </ClInclude>
-    <ClInclude Include="libs\Minhook\hde32.h">
-      <Filter>libs\MinHook</Filter>
-    </ClInclude>
-    <ClInclude Include="libs\Minhook\hde64.h">
-      <Filter>libs\MinHook</Filter>
-    </ClInclude>
-    <ClInclude Include="libs\Minhook\MinHook.h">
-      <Filter>libs\MinHook</Filter>
-    </ClInclude>
-    <ClInclude Include="libs\Minhook\pstdint.h">
-      <Filter>libs\MinHook</Filter>
-    </ClInclude>
-    <ClInclude Include="libs\Minhook\table32.h">
-      <Filter>libs\MinHook</Filter>
-    </ClInclude>
-    <ClInclude Include="libs\Minhook\table64.h">
-      <Filter>libs\MinHook</Filter>
-    </ClInclude>
-    <ClInclude Include="libs\Minhook\trampoline.h">
-      <Filter>libs\MinHook</Filter>
-    </ClInclude>
-    <ClInclude Include="MENU\include\Common.hpp">
+    <ClInclude Include="Overlay\include\Common.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MENU\include\framework.h">
+    <ClInclude Include="Overlay\include\framework.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MENU\include\Tools\Vector.hpp">
+    <ClInclude Include="Overlay\include\initialize.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Overlay\include\Tabs\Main.h">
+      <Filter>Header Files\Tabs</Filter>
+    </ClInclude>
+    <ClInclude Include="Overlay\include\Tabs\Visuals.h">
+      <Filter>Header Files\Tabs</Filter>
+    </ClInclude>
+    <ClInclude Include="Overlay\include\Tabs\Character.h">
+      <Filter>Header Files\Tabs</Filter>
+    </ClInclude>
+    <ClInclude Include="Overlay\include\Tabs\Debug.h">
+      <Filter>Header Files\Tabs</Filter>
+    </ClInclude>
+    <ClInclude Include="Overlay\include\Tabs\Entities.h">
+      <Filter>Header Files\Tabs</Filter>
+    </ClInclude>
+    <ClInclude Include="Overlay\include\Tools\Vector.hpp">
       <Filter>Header Files\Tools</Filter>
     </ClInclude>
-    <ClInclude Include="MENU\include\Console.hpp">
-      <Filter>Header Files\Core Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="MENU\include\D3DRenderer.hpp">
-      <Filter>Header Files\Core Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="MENU\include\Game.hpp">
-      <Filter>Header Files\Core Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="MENU\include\Memory.hpp">
-      <Filter>Header Files\Core Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="MENU\include\Menu.hpp">
-      <Filter>Header Files\Core Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="MENU\include\Tabs\Character.h">
-      <Filter>Header Files\Tabs</Filter>
-    </ClInclude>
-    <ClInclude Include="MENU\include\Tabs\Debug.h">
-      <Filter>Header Files\Tabs</Filter>
-    </ClInclude>
-    <ClInclude Include="MENU\include\Tabs\Entities.h">
-      <Filter>Header Files\Tabs</Filter>
-    </ClInclude>
-    <ClInclude Include="MENU\include\Tabs\Main.h">
-      <Filter>Header Files\Tabs</Filter>
-    </ClInclude>
-    <ClInclude Include="MENU\include\Tabs\Visuals.h">
-      <Filter>Header Files\Tabs</Filter>
-    </ClInclude>
-    <ClInclude Include="MENU\include\initialize.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MENU\include\GameEnums.hpp">
-      <Filter>Header Files\Core Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="MENU\include\Hooking.hpp">
-      <Filter>Header Files\Core Classes</Filter>
+    <ClInclude Include="libs\SDK\SDK.h">
+      <Filter>libs\SDK</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Overlay\src\Game.cpp">
+      <Filter>Source Files\Core Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Overlay\src\Hooking.cpp">
+      <Filter>Source Files\Core Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Overlay\src\Menu.cpp">
+      <Filter>Source Files\Core Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Overlay\src\Console.cpp">
+      <Filter>Source Files\Core Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Overlay\src\D3DRenderer.cpp">
+      <Filter>Source Files\Core Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Overlay\src\Tabs\Entities.cpp">
+      <Filter>Source Files\Tabs</Filter>
+    </ClCompile>
+    <ClCompile Include="Overlay\src\Tabs\Main.cpp">
+      <Filter>Source Files\Tabs</Filter>
+    </ClCompile>
+    <ClCompile Include="Overlay\src\Tabs\Visuals.cpp">
+      <Filter>Source Files\Tabs</Filter>
+    </ClCompile>
+    <ClCompile Include="Overlay\src\Tabs\Character.cpp">
+      <Filter>Source Files\Tabs</Filter>
+    </ClCompile>
+    <ClCompile Include="Overlay\src\Tabs\Debug.cpp">
+      <Filter>Source Files\Tabs</Filter>
+    </ClCompile>
+    <ClCompile Include="Overlay\src\Common.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Overlay\dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libs\ImGui\imgui_widgets.cpp">
+      <Filter>libs\ImGui</Filter>
+    </ClCompile>
     <ClCompile Include="libs\ImGui\imgui.cpp">
       <Filter>libs\ImGui</Filter>
     </ClCompile>
@@ -155,13 +149,10 @@
     <ClCompile Include="libs\ImGui\imgui_tables.cpp">
       <Filter>libs\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="libs\ImGui\imgui_widgets.cpp">
-      <Filter>libs\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="libs\Minhook\buffer.c">
+    <ClCompile Include="libs\Minhook\trampoline.c">
       <Filter>libs\MinHook</Filter>
     </ClCompile>
-    <ClCompile Include="libs\Minhook\hde32.c">
+    <ClCompile Include="libs\Minhook\buffer.c">
       <Filter>libs\MinHook</Filter>
     </ClCompile>
     <ClCompile Include="libs\Minhook\hde64.c">
@@ -170,44 +161,11 @@
     <ClCompile Include="libs\Minhook\hook.c">
       <Filter>libs\MinHook</Filter>
     </ClCompile>
-    <ClCompile Include="libs\Minhook\trampoline.c">
-      <Filter>libs\MinHook</Filter>
+    <ClCompile Include="libs\SDK\Basic_Functions.cpp">
+      <Filter>libs\SDK</Filter>
     </ClCompile>
-    <ClCompile Include="MENU\src\Common.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MENU\dllmain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MENU\src\Menu.cpp">
-      <Filter>Source Files\Core Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="MENU\src\Hooking.cpp">
-      <Filter>Source Files\Core Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="MENU\src\Game.cpp">
-      <Filter>Source Files\Core Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="MENU\src\D3DRenderer.cpp">
-      <Filter>Source Files\Core Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="MENU\src\Console.cpp">
-      <Filter>Source Files\Core Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="MENU\src\Tabs\Character.cpp">
-      <Filter>Source Files\Tabs</Filter>
-    </ClCompile>
-    <ClCompile Include="MENU\src\Tabs\Debug.cpp">
-      <Filter>Source Files\Tabs</Filter>
-    </ClCompile>
-    <ClCompile Include="MENU\src\Tabs\Entities.cpp">
-      <Filter>Source Files\Tabs</Filter>
-    </ClCompile>
-    <ClCompile Include="MENU\src\Tabs\Main.cpp">
-      <Filter>Source Files\Tabs</Filter>
-    </ClCompile>
-    <ClCompile Include="MENU\src\Tabs\Visuals.cpp">
-      <Filter>Source Files\Tabs</Filter>
+    <ClCompile Include="libs\SDK\EldenRing_Functions.cpp">
+      <Filter>libs\SDK</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -21,7 +21,8 @@ namespace HEXINTON
 	class GameManager
 	{
 	private:
-
+		char									pad_0000[8];			//	0x0000
+		ChrGameData*							pChrGameData;			//	0x0008
 	};
 
 	class GameDataManager
@@ -36,8 +37,8 @@ namespace HEXINTON
 		char								pad_0008[69360];			//0x0008
 		class LocalPlayer*					pLocalPlayer;				//0x10EF8
 		char								pad_10F00[58032];			//0x10F00
-		void*								pEntArray;					//0x1F1B0
-		void*								pEntArraySize;				//0x1F1B8
+		uint64_t							pEntArrayBegin;				//0x1F1B0
+		uint64_t							pEntArrayEnd;				//0x1F1B8
 	
 	private:
 		virtual void						vf_Function0();
@@ -48,6 +49,7 @@ namespace HEXINTON
 		class CharacterModules*				GetLocalPlayerCharModules();
 		class CSCharData*					GetLocalPlayerCharData();
 		class CSCharPhysics*				GetLocalPlayerCharPhysics();
+		bool								GetCharacterArray(std::vector<PlayerInstance*>* pOut);
 	};	//Size: 0x10F00
 
 	class LocalPlayer
@@ -71,7 +73,8 @@ namespace HEXINTON
 		char								pad_0030[32];				//0x0030
 		class CSCharModelIns*				pCharModelInstance;			//0x0050
 		class CSPlayerCtrl*					pPlayerCtrl;				//0x0058
-		char								pad_0060[8];				//0x0060
+		int32_t								paramID;					//0x0060
+		char								pad_0064[4];				//0x0064
 		int32_t								CharacterType;				//0x0068
 		int32_t								TeamType;					//0x006C
 		char								pad_0070[80];				//0x0070

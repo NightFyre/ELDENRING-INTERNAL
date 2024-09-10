@@ -104,4 +104,3 @@ namespace ER {
 }
 
 #include "Game.hpp"
-#include "GameEnums.hpp"

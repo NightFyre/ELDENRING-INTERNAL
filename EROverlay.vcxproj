@@ -24,7 +24,7 @@
     <ProjectGuid>{18ec0ebf-58d4-4f9b-b6e0-9e1c8b7d33cf}</ProjectGuid>
     <RootNamespace>ERHelper</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>ER Overlay</ProjectName>
+    <ProjectName>EldenRing_Overlay</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -169,38 +169,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="libs\ImGui\imconfig.h" />
-    <ClInclude Include="libs\ImGui\imgui.h" />
-    <ClInclude Include="libs\ImGui\imgui_impl_dx12.h" />
-    <ClInclude Include="libs\ImGui\imgui_impl_win32.h" />
-    <ClInclude Include="libs\ImGui\imgui_internal.h" />
-    <ClInclude Include="libs\ImGui\imstb_rectpack.h" />
-    <ClInclude Include="libs\ImGui\imstb_textedit.h" />
-    <ClInclude Include="libs\ImGui\imstb_truetype.h" />
-    <ClInclude Include="libs\Minhook\buffer.h" />
-    <ClInclude Include="libs\Minhook\hde32.h" />
-    <ClInclude Include="libs\Minhook\hde64.h" />
-    <ClInclude Include="libs\Minhook\MinHook.h" />
-    <ClInclude Include="libs\Minhook\pstdint.h" />
-    <ClInclude Include="libs\Minhook\table32.h" />
-    <ClInclude Include="libs\Minhook\table64.h" />
-    <ClInclude Include="libs\Minhook\trampoline.h" />
-    <ClInclude Include="MENU\include\Common.hpp" />
-    <ClInclude Include="MENU\include\Console.hpp" />
-    <ClInclude Include="MENU\include\D3DRenderer.hpp" />
-    <ClInclude Include="MENU\include\framework.h" />
-    <ClInclude Include="MENU\include\Game.hpp" />
-    <ClInclude Include="MENU\include\GameEnums.hpp" />
-    <ClInclude Include="MENU\include\Hooking.hpp" />
-    <ClInclude Include="MENU\include\initialize.hpp" />
-    <ClInclude Include="MENU\include\Memory.hpp" />
-    <ClInclude Include="MENU\include\Menu.hpp" />
-    <ClInclude Include="MENU\include\Tabs\Character.h" />
-    <ClInclude Include="MENU\include\Tabs\Debug.h" />
-    <ClInclude Include="MENU\include\Tabs\Entities.h" />
-    <ClInclude Include="MENU\include\Tabs\Main.h" />
-    <ClInclude Include="MENU\include\Tabs\Visuals.h" />
-    <ClInclude Include="MENU\include\Tools\Vector.hpp" />
+    <ClInclude Include="libs\SDK\SDK.h" />
+    <ClInclude Include="Overlay\include\Common.hpp" />
+    <ClInclude Include="Overlay\include\Console.hpp" />
+    <ClInclude Include="Overlay\include\D3DRenderer.hpp" />
+    <ClInclude Include="Overlay\include\framework.h" />
+    <ClInclude Include="Overlay\include\Game.hpp" />
+    <ClInclude Include="Overlay\include\Hooking.hpp" />
+    <ClInclude Include="Overlay\include\initialize.hpp" />
+    <ClInclude Include="Overlay\include\Memory.hpp" />
+    <ClInclude Include="Overlay\include\Menu.hpp" />
+    <ClInclude Include="Overlay\include\Tabs\Character.h" />
+    <ClInclude Include="Overlay\include\Tabs\Debug.h" />
+    <ClInclude Include="Overlay\include\Tabs\Entities.h" />
+    <ClInclude Include="Overlay\include\Tabs\Main.h" />
+    <ClInclude Include="Overlay\include\Tabs\Visuals.h" />
+    <ClInclude Include="Overlay\include\Tools\Vector.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libs\ImGui\imgui.cpp" />
@@ -211,22 +195,23 @@
     <ClCompile Include="libs\ImGui\imgui_tables.cpp" />
     <ClCompile Include="libs\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="libs\Minhook\buffer.c" />
-    <ClCompile Include="libs\Minhook\hde32.c" />
     <ClCompile Include="libs\Minhook\hde64.c" />
     <ClCompile Include="libs\Minhook\hook.c" />
     <ClCompile Include="libs\Minhook\trampoline.c" />
-    <ClCompile Include="MENU\dllmain.cpp" />
-    <ClCompile Include="MENU\src\Common.cpp" />
-    <ClCompile Include="MENU\src\Console.cpp" />
-    <ClCompile Include="MENU\src\D3DRenderer.cpp" />
-    <ClCompile Include="MENU\src\Game.cpp" />
-    <ClCompile Include="MENU\src\Hooking.cpp" />
-    <ClCompile Include="MENU\src\Menu.cpp" />
-    <ClCompile Include="MENU\src\Tabs\Character.cpp" />
-    <ClCompile Include="MENU\src\Tabs\Debug.cpp" />
-    <ClCompile Include="MENU\src\Tabs\Entities.cpp" />
-    <ClCompile Include="MENU\src\Tabs\Main.cpp" />
-    <ClCompile Include="MENU\src\Tabs\Visuals.cpp" />
+    <ClCompile Include="libs\SDK\Basic_Functions.cpp" />
+    <ClCompile Include="libs\SDK\EldenRing_Functions.cpp" />
+    <ClCompile Include="Overlay\dllmain.cpp" />
+    <ClCompile Include="Overlay\src\Common.cpp" />
+    <ClCompile Include="Overlay\src\Console.cpp" />
+    <ClCompile Include="Overlay\src\D3DRenderer.cpp" />
+    <ClCompile Include="Overlay\src\Game.cpp" />
+    <ClCompile Include="Overlay\src\Hooking.cpp" />
+    <ClCompile Include="Overlay\src\Menu.cpp" />
+    <ClCompile Include="Overlay\src\Tabs\Character.cpp" />
+    <ClCompile Include="Overlay\src\Tabs\Debug.cpp" />
+    <ClCompile Include="Overlay\src\Tabs\Entities.cpp" />
+    <ClCompile Include="Overlay\src\Tabs\Main.cpp" />
+    <ClCompile Include="Overlay\src\Tabs\Visuals.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
