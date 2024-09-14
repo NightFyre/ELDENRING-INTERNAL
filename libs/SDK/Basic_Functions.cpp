@@ -21,7 +21,10 @@ namespace HEXINTON
 	//
 	//---------------------------------------------------------------------------------------------------
 
-    bool InitSdk() { return InitSdk("EldenRing.exe", 0x3CE0708, 0x3CD4D88, 0x3CDCDD8); }
+	//	GameMan: 48 8B 05 ?? ?? ?? ?? 80 B8 ?? ?? ?? ?? 0D 0F94 C0 C3
+	//	GameDataMan: 48 8B 05 ?? ?? ?? ?? 48 85 C0 74 05 48 8B 40 58 C3 C3
+	//	WorldChrMan: 48 8B 05 ?? ?? ?? ?? 48 85 C0 74 0F 48 39 88
+    bool InitSdk() { return InitSdk("EldenRing.exe", 0x3D69938, 0x3D5DF58, 0x3D65FA8); }
 	bool InitSdk(const std::string& moduleName, unsigned int gGameMan, unsigned int gGameDataMan, unsigned int gWorldCharMan)
 	{
 		auto mBaseAddress = reinterpret_cast<uintptr_t>(GetModuleHandleA(moduleName.c_str()));
